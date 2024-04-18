@@ -7,6 +7,9 @@ import MyDividendsChart from './dividends/MyDividendsChart.vue'
 import MyDividendsSummary from './dividends/MyDividendsSummary.vue'
 import MonthlyDividendsHeading from './dividends/MonthlyDividendsHeading.vue'
 import DividendDetail from './dividends/DividendDetail.vue'
+import PlannerTitle from './planner/PlannerTitle.vue'
+import PlannerSummaryBarChart from './planner/PlannerSummaryBarChart.vue'
+import PlannerSummaryAccounts from './planner/PlannerSummaryAccounts.vue'
 
 export {
   PieChart,
@@ -17,5 +20,8 @@ export {
   MyDividendsChart,
   MyDividendsSummary,
   MonthlyDividendsHeading,
-  DividendDetail
+  DividendDetail,
+  PlannerTitle,
+  PlannerSummaryBarChart,
+  PlannerSummaryAccounts
 }

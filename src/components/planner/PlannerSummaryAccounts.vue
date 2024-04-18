@@ -1,0 +1,54 @@
+<script setup>
+import { ref } from 'vue'
+import { formatNumberWithComma } from '@/utils'
+const props = defineProps({
+  modelValue: Array
+})
+const emit = defineEmits(['update:modelValue'])
+
+const accounts = ref(props.modelValue)
+const iconBaseUrl = 'src/assets/icons/'
+
+// TODO : amount가 업데이트 될 때, weight도 업데이트하기
+// weights를 computed로 만들면 될듯?
+const update = (target, key, value) => {
+  target[key] = value
+  emit('update:modelValue', accounts)
+}
+</script>
+<template>
+  <div class="account">
+    <div v-for="(account, i) in accounts" :key="i" class="flex justify-between my-4">
+      <section class="flex items-center">
+        <v-avatar :color="account.bgColorHex + '80'" size="40" class="mr-4">
+          <figure
+            class="w-6 h-6 rounded-full p-[6px]"
+            :style="{ backgroundColor: account.bgColorHex }"
+          >
+            <img :src="iconBaseUrl + account.iconUrl" alt="아바타 이미지" />
+          </figure>
+        </v-avatar>
+        <div class="flex flex-col justify-center">
+          <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
+            <span>{{ account.accountName }}</span>
+          </div>
+          <div class="text-sm text-neutral-500">{{ account.accountIssuer }}</div>
+        </div>
+      </section>
+      <section>
+        <div class="flex flex-col items-end">
+          <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
+            <span>{{ formatNumberWithComma(account.amount) }}원</span>
+            <v-text-field
+              variant="outlined"
+              hide-details
+              :modelValue="account.amount"
+              @change="update(account, 'amount', $event.target.value)"
+            ></v-text-field>
+          </div>
+          <div class="text-sm text-neutral-500">{{ account.weight }}%</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</template>

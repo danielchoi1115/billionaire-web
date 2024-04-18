@@ -15,7 +15,8 @@ import {
   Legend,
   Title,
   CategoryScale,
-  LinearScale
+  LinearScale,
+  Colors
 } from 'chart.js'
 
 import ChartDataLabels from 'chartjs-plugin-datalabels'
@@ -30,7 +31,8 @@ Chart.register(
   Title,
   ChartDataLabels,
   CategoryScale,
-  LinearScale
+  LinearScale,
+  Colors
 )
 const app = createApp(App)
 
