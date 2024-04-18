@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { PlannerTitle, PlannerSummaryBarChart, PlannerSummaryAccounts } from '@/components'
+import AccountDetailModal from '@/components/planner/AccountDetailModal.vue'
 
 const planSummary = reactive({
   totalBudget: ref(2620000),
@@ -48,14 +49,36 @@ let totalAmount = planSummary.accounts.reduce((acc, cur) => acc + cur.amount, 0)
 planSummary.accounts.forEach((a) => {
   a.weight = Math.round((a.amount / totalAmount) * 10000) / 100
 })
+const accountDetailOpen = ref(false)
+
+const selectedAccount = ref()
+
+const accountEdited = ref(false)
+
+function openAccountDetailModal(val) {
+  accountDetailOpen.value = true
+  selectedAccount.value = val
+}
+function closeAccountDetailModal() {
+  accountDetailOpen.value = false
+  accountEdited.value = false
+}
 </script>
 
 <template>
   <div class="px-6 max-w-[720px] my-0 mx-auto">
     <PlannerTitle v-model="planSummary" />
-    {{ planSummary }}
     <PlannerSummaryBarChart v-model="planSummary" />
-    <PlannerSummaryAccounts v-model="planSummary.accounts" />
+    <PlannerSummaryAccounts
+      v-model="planSummary.accounts"
+      @click:accountItem="(val) => openAccountDetailModal(val)"
+    />
+    <AccountDetailModal
+      v-model="accountDetailOpen"
+      @update:closeModal="closeAccountDetailModal"
+      :edited="accountEdited"
+      :account="selectedAccount"
+    />
   </div>
 </template>
 

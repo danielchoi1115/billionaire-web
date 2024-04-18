@@ -9,9 +9,9 @@ const imgBaseUrl = 'src/assets/company-logos/'
 <template>
   <div
     @click="$emit('openDividendDetailModal')"
-    class="px-2 my-2 detail-wrapper active:bg-neutral-200 active:bg-opacity-70 transition-colors rounded-lg cursor-default select-none"
+    class="list-item-wrapper px-2 my-2 active:bg-neutral-200 active:bg-opacity-70 transition-colors rounded-lg cursor-default select-none"
   >
-    <div class="py-3 detail-inner-wrapper flex items-center transition-transform">
+    <div class="list-item-inner-wrapper py-3 flex items-center transition-transform">
       <v-avatar :color="dividend.bgColorHex" size="40" class="mr-4">
         <figure class="w-8 h-8">
           <img :src="imgBaseUrl + dividend.iconUrl" alt="아바타 이미지" class="rounded-full" />
@@ -31,8 +31,8 @@ const imgBaseUrl = 'src/assets/company-logos/'
   </div>
 </template>
 
-<style scoped>
-.detail-wrapper:active .detail-inner-wrapper {
+<style>
+.list-item-wrapper:active .list-item-inner-wrapper {
   transform: scale(0.97);
 }
 </style>

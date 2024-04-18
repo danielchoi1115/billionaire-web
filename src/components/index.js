@@ -10,7 +10,7 @@ import DividendDetail from './dividends/DividendDetail.vue'
 import PlannerTitle from './planner/PlannerTitle.vue'
 import PlannerSummaryBarChart from './planner/PlannerSummaryBarChart.vue'
 import PlannerSummaryAccounts from './planner/PlannerSummaryAccounts.vue'
-
+import AccountDetailModal from './planner/AccountDetailModal.vue'
 export {
   PieChart,
   StockAccount,
@@ -23,5 +23,6 @@ export {
   DividendDetail,
   PlannerTitle,
   PlannerSummaryBarChart,
-  PlannerSummaryAccounts
+  PlannerSummaryAccounts,
+  AccountDetailModal
 }
