@@ -11,6 +11,9 @@ import PlannerTitle from './planner/PlannerTitle.vue'
 import PlannerSummaryBarChart from './planner/PlannerSummaryBarChart.vue'
 import PlannerSummaryAccounts from './planner/PlannerSummaryAccounts.vue'
 import AccountDetailModal from './planner/AccountDetailModal.vue'
+import PlannerTab from './planner/PlannerTab.vue'
+import StockItem from './stocks/StockItem.vue'
+import AccountItem from './accounts/AccountItem.vue'
 export {
   PieChart,
   StockAccount,
@@ -24,5 +27,8 @@ export {
   PlannerTitle,
   PlannerSummaryBarChart,
   PlannerSummaryAccounts,
-  AccountDetailModal
+  AccountDetailModal,
+  PlannerTab,
+  StockItem,
+  AccountItem
 }

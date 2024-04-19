@@ -1,5 +1,4 @@
 <script setup>
-import { formatNumberWithComma } from '@/utils'
 
 defineProps({
   data: Object
@@ -11,7 +10,7 @@ defineProps({
       <span>{{ data.month }}</span>
     </div>
     <div class="text-sm text-neutral-500">
-      {{ formatNumberWithComma(data.totalDividends) }}
+      {{ data.totalDividends.toLocaleString('ko-KR') }}
       <span class="text-xs">원</span>
     </div>
   </dt>

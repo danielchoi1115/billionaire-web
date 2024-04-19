@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import { formatNumberWithComma } from '@/utils'
 
 const props = defineProps({
   modelValue: Object
@@ -12,7 +11,7 @@ function calculateYearlyDividends() {
   let yearlyDividends = innerProp.value?.dividends
     .map((d) => d.totalDividends)
     .reduce((acc, cur) => acc + cur, 0)
-  return `${formatNumberWithComma(yearlyDividends)}원`
+  return `${yearlyDividends.toLocaleString('ko-KR')}원`
 }
 </script>
 

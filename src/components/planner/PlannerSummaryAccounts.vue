@@ -1,17 +1,19 @@
 <script setup>
+import { onUpdated } from 'vue'
 import { ref } from 'vue'
-import { formatNumberWithComma } from '@/utils'
 
 const props = defineProps({
-  modelValue: Array
+  modelValue: Array,
+  weights: Object
 })
 const emit = defineEmits(['update:modelValue', 'click:accountItem'])
 
 const accounts = ref(props.modelValue)
 const iconBaseUrl = 'src/assets/icons/'
 
-// TODO : amount가 업데이트 될 때, weight도 업데이트하기
-// weights를 computed로 만들면 될듯?
+onUpdated(() => {
+  accounts.value.sort((a, b) => b.amount - a.amount)
+})
 </script>
 <template>
   <div class="account">
@@ -42,9 +44,9 @@ const iconBaseUrl = 'src/assets/icons/'
           <section>
             <div class="flex flex-col items-end">
               <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
-                <span>{{ formatNumberWithComma(account.amount) }}원</span>
+                <span>{{ account.amount.toLocaleString('ko-KR') }}원</span>
               </div>
-              <div class="text-sm text-neutral-500">{{ account.weight }}%</div>
+              <div class="text-sm text-neutral-500">{{ weights[account.accountNo] }}%</div>
             </div>
           </section>
         </div>

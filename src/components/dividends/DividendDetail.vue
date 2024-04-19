@@ -1,5 +1,5 @@
 <script setup>
-import { formatNumberWithComma, toKRW, toUSD } from '@/utils'
+import { toKRW, toUSD } from '@/utils'
 const props = defineProps({
   dividend: Object
 })
@@ -19,8 +19,8 @@ const imgBaseUrl = 'src/assets/company-logos/'
       </v-avatar>
       <div class="flex flex-col justify-center">
         <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
-          <span>${{ formatNumberWithComma(toUSD(dividend.amount, dividend.currency)) }}</span>
-          <span>({{ formatNumberWithComma(toKRW(dividend.amount, dividend.currency)) }}원)</span>
+          <span>${{ toUSD(dividend.amount, dividend.currency).toLocaleString('ko-KR') }}</span>
+          <span>({{ toKRW(dividend.amount, dividend.currency).toLocaleString('ko-KR') }}원)</span>
         </div>
         <div class="text-sm">
           {{ dividend.stockName }}

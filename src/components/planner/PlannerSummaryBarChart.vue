@@ -1,9 +1,12 @@
 <script setup>
+import { onUpdated } from 'vue'
+import { watch } from 'vue'
 import { ref, onMounted, nextTick } from 'vue'
 import { Bar } from 'vue-chartjs'
 
 const props = defineProps({
-  modelValue: Object
+  modelValue: Object,
+  weights: Object
 })
 const chartData = ref()
 const chartOptions = {
@@ -11,18 +14,13 @@ const chartOptions = {
   responsive: true,
   clip: false,
   maintainAspectRatio: false,
-  borderRadius: {
-    topLeft: 20,
-    bottomLeft: 20,
-    topRight: 20,
-    bottomRight: 20
-  },
+
   layout: {
     padding: {
-      top: 14
+      top: 11
     }
   },
-  barThickness: 20,
+  barThickness: 24,
   scales: {
     y: {
       stacked: true,
@@ -51,7 +49,6 @@ const chartOptions = {
     }
   }
 }
-
 function createChartData(planSummary) {
   let labels = []
   let datasets = []
@@ -60,12 +57,12 @@ function createChartData(planSummary) {
     labels.push(a.accountName)
     let dataset = {
       label: a.accountName,
-      data: [a.weight],
-      backgroundColor: a.bgColorHex + '90'
+      data: [props.weights[a.accountNo] > 0.1 ? props.weights[a.accountNo] : 0],
+      backgroundColor: a.bgColorHex + 'bb'
     }
     if (i === 0) {
       dataset.borderSkipped = 'right'
-    } else if (i !== planSummary.accounts.length - 1) {
+    } else if (i !== planSummary.accounts?.length - 1) {
       dataset.borderSkipped = true
     }
     datasets.push(dataset)
@@ -82,10 +79,17 @@ onMounted(() => {
   chartData.value = createChartData(props.modelValue)
   nextTick(() => (loaded.value = true))
 })
+
+watch(
+  () => props.weights,
+  (newVal) => {
+    chartData.value = createChartData(props.modelValue)
+  }
+)
 </script>
 
 <template>
-  <div class="flex justify-center my-4 h-8">
+  <div class="flex justify-center my-4 h-[25px] rounded-lg overflow-hidden mx-2">
     <Bar v-if="loaded" :data="chartData" :options="chartOptions" />
   </div>
 </template>

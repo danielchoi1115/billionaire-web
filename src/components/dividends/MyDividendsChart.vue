@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
 import { Bar } from 'vue-chartjs'
-import { formatNumberWithComma } from '@/utils'
 
 const props = defineProps({
   data: Array
@@ -43,7 +42,7 @@ const chartOptions = {
     legend: { display: false },
     datalabels: {
       formatter: (value) => {
-        return value > 0 ? formatNumberWithComma(value) : ''
+        return value > 0 ? value.toLocaleString('ko-KR') : ''
       },
       clamp: true,
       align: 'end',
