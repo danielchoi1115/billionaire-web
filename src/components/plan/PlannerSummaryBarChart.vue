@@ -1,5 +1,4 @@
 <script setup>
-import { onUpdated } from 'vue'
 import { watch } from 'vue'
 import { ref, onMounted, nextTick } from 'vue'
 import { Bar } from 'vue-chartjs'
@@ -14,7 +13,6 @@ const chartOptions = {
   responsive: true,
   clip: false,
   maintainAspectRatio: false,
-
   layout: {
     padding: {
       top: 11
@@ -49,21 +47,16 @@ const chartOptions = {
     }
   }
 }
-function createChartData(planSummary) {
+function createChartData(planMst) {
   let labels = []
   let datasets = []
 
-  planSummary.accounts.forEach((a, i) => {
-    labels.push(a.accountName)
+  planMst?.planAccDtl.forEach((a, i) => {
+    labels.push(a.accMst.accName)
     let dataset = {
-      label: a.accountName,
-      data: [props.weights[a.accountNo] > 0.1 ? props.weights[a.accountNo] : 0],
-      backgroundColor: a.bgColorHex + 'bb'
-    }
-    if (i === 0) {
-      dataset.borderSkipped = 'right'
-    } else if (i !== planSummary.accounts?.length - 1) {
-      dataset.borderSkipped = true
+      label: a.accMst.accName,
+      data: [props.weights[a.accMst.accNo] > 0.1 ? props.weights[a.accMst.accNo] : 0],
+      backgroundColor: a.accMst.accBgColorHex + 'bb'
     }
     datasets.push(dataset)
   })

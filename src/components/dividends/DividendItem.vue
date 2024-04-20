@@ -3,12 +3,12 @@ import { toKRW, toUSD } from '@/utils'
 const props = defineProps({
   dividend: Object
 })
-const emit = defineEmits(['openDividendDetailModal'])
+const emit = defineEmits(['openDividendItemModal'])
 const imgBaseUrl = 'src/assets/company-logos/'
 </script>
 <template>
   <div
-    @click="$emit('openDividendDetailModal')"
+    @click="$emit('openDividendItemModal')"
     class="list-item-wrapper px-2 my-2 active:bg-neutral-200 active:bg-opacity-70 transition-colors rounded-lg cursor-default select-none"
   >
     <div class="list-item-inner-wrapper py-3 flex items-center transition-transform">
@@ -19,8 +19,8 @@ const imgBaseUrl = 'src/assets/company-logos/'
       </v-avatar>
       <div class="flex flex-col justify-center">
         <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
-          <span>${{ toUSD(dividend.amount, dividend.currency).toLocaleString('ko-KR') }}</span>
-          <span>({{ toKRW(dividend.amount, dividend.currency).toLocaleString('ko-KR') }}원)</span>
+          <span>${{ toUSD(dividend.amount, dividend.currency).toLocaleString() }}</span>
+          <span>({{ toKRW(dividend.amount, dividend.currency).toLocaleString() }}원)</span>
         </div>
         <div class="text-sm">
           {{ dividend.stockName }}

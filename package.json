@@ -11,7 +11,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "axios": "^1.6.8",
     "chart.js": "^4.4.2",
+    "chartjs-chart-treemap": "^2.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "vue": "^3.4.21",
     "vue-chartjs": "^5.3.1",

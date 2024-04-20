@@ -9,7 +9,7 @@ const tab = ref(null)
 </script>
 
 <template>
-  <v-tabs bg-color="white" ripple="false" fixed-tabs v-model="tab">
+  <v-tabs bg-color="white" fixed-tabs v-model="tab">
     <v-tab :value="tabs.byAsset"> 상품별 </v-tab>
     <v-tab :value="tabs.byAccount"> 계좌별 </v-tab>
   </v-tabs>

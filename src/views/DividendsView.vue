@@ -100,7 +100,7 @@ const dividendsData = reactive({
   <div class="dividends px-6 max-w-[720px] my-0 mx-auto">
     <div class="wrapper">
       <MyDividendsSummary v-model="dividendsData" />
-      <MyDividendsChart :data="dividendsData.dividends"></MyDividendsChart>
+      <MyDividendsChart :data="dividendsData.dividends" />
       <MyDividendsHistory v-model="dividendsData" />
     </div>
   </div>

@@ -18,4 +18,8 @@ const toUSD = (amount, currencyFrom) => {
   return convertCurrency(amount, currencyFrom, 'USD')
 }
 
-export { toKRW, toUSD }
+function calculateStockValueKRW(stock) {
+  if (!stock || !stock.price) return 0
+  return toKRW(stock.price, stock.currency) * stock.quantity
+}
+export { toKRW, toUSD, calculateStockValueKRW }

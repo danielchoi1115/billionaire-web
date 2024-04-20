@@ -19,6 +19,7 @@ import {
   Colors
 } from 'chart.js'
 
+import { TreemapController, TreemapElement } from 'chartjs-chart-treemap'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 Chart.register(
@@ -32,7 +33,9 @@ Chart.register(
   ChartDataLabels,
   CategoryScale,
   LinearScale,
-  Colors
+  Colors,
+  TreemapController,
+  TreemapElement
 )
 const app = createApp(App)
 

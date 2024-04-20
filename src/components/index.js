@@ -6,14 +6,17 @@ import MyDividendsHistory from './dividends/MyDividendsHistory.vue'
 import MyDividendsChart from './dividends/MyDividendsChart.vue'
 import MyDividendsSummary from './dividends/MyDividendsSummary.vue'
 import MonthlyDividendsHeading from './dividends/MonthlyDividendsHeading.vue'
-import DividendDetail from './dividends/DividendDetail.vue'
-import PlannerTitle from './planner/PlannerTitle.vue'
-import PlannerSummaryBarChart from './planner/PlannerSummaryBarChart.vue'
-import PlannerSummaryAccounts from './planner/PlannerSummaryAccounts.vue'
-import AccountDetailModal from './planner/AccountDetailModal.vue'
-import PlannerTab from './planner/PlannerTab.vue'
+import DividendItem from './dividends/DividendItem.vue'
+import PlannerTitle from '@/components/plan/PlannerTitle.vue'
+import PlannerSummaryBarChart from '@/components/plan/PlannerSummaryBarChart.vue'
+import PlannerSummaryAccounts from '@/components/plan/PlannerSummaryAccounts.vue'
+import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
+import PlannerTab from '@/components/plan/PlannerTab.vue'
 import StockItem from './stocks/StockItem.vue'
-import AccountItem from './accounts/AccountItem.vue'
+import StockItemColumn from './stocks/StockItemColumn.vue'
+import StockItemAvatar from './stocks/StockItemAvatar.vue'
+import AccountSectionItem from './accounts/AccountSectionItem.vue'
+import PortfolioTreemap from '@/components/charts/PortfolioTreemap.vue'
 export {
   PieChart,
   StockAccount,
@@ -23,12 +26,15 @@ export {
   MyDividendsChart,
   MyDividendsSummary,
   MonthlyDividendsHeading,
-  DividendDetail,
+  DividendItem,
   PlannerTitle,
   PlannerSummaryBarChart,
   PlannerSummaryAccounts,
   AccountDetailModal,
   PlannerTab,
   StockItem,
-  AccountItem
+  AccountSectionItem,
+  StockItemColumn,
+  StockItemAvatar,
+  PortfolioTreemap
 }

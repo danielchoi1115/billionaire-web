@@ -1,16 +1,20 @@
 <script setup>
-import { toUSD, toKRW } from '@/utils'
+import { calculateStockValueKRW } from '@/utils'
 import { nextTick } from 'vue'
 import { watch, ref } from 'vue'
+import StockItemAvatar from '@/components/stocks/StockItemAvatar.vue'
+import StockItemColumn from '@/components/stocks/StockItemColumn.vue'
 const props = defineProps({
   stock: Object,
   weight: Number
 })
-const quantity = ref(props.stock.quantity)
+const emits = defineEmits(['update:quantity'])
+
 const quantitySelected = ref(false)
-const imgBaseUrl = 'src/assets/company-logos/'
 
 const quantityTextField = ref(null)
+const escapePressed = ref(false)
+
 watch(quantitySelected, (val) => {
   if (val) {
     nextTick(() => {
@@ -18,46 +22,52 @@ watch(quantitySelected, (val) => {
     })
   }
 })
+
+function resetQuantity() {
+  escapePressed.value = true
+  quantitySelected.value = false
+}
+function submitQuantity(e) {
+  // escape 눌렀을 때 무시
+  // 입력값이 없거나, 숫자가 아닐경우 무시
+  if (!escapePressed.value && e.target.value.trim().length > 0 && !isNaN(Number(e.target.value))) {
+    let newStock = Object.assign({}, props.stock)
+    newStock.quantity = e.target.value
+    emits('update:quantity', newStock)
+  }
+  nextTick(() => {
+    escapePressed.value = false
+    quantitySelected.value = false
+  })
+}
 </script>
 <template>
   <div class="px-2 my-2 transition-colors rounded-lg">
     <div class="py-3 transition-transform flex items-center">
-      <v-row>
-        <v-col cols="1" class="flex items-end mr-4">
-          <v-avatar :color="stock.bgColorHex" size="40">
-            <figure class="w-8 h-8">
-              <img :src="imgBaseUrl + stock.iconUrl" alt="아바타 이미지" class="rounded-full" />
-            </figure>
-          </v-avatar>
-        </v-col>
-        <v-col cols="6" class="flex flex-col justify-end">
-          <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
-            <!-- <span>{{ toKRW(stock.price, stock.currency)?.toLocaleString('ko-KR') }}원</span>
-          <span>(${{ toUSD(stock.price, stock.currency)?.toLocaleString('ko-KR') }})</span> -->
+      <v-row class="w-full">
+        <StockItemAvatar :color="stock.bgColorHex" :icon-url="stock.iconUrl" />
+        <StockItemColumn>
+          <template v-slot:title>
             {{ stock.displayName }}
-          </div>
-          <div class="text-sm text-neutral-500">
-            <!-- {{ stock.displayName }} -->
-            <span v-if="stock.market !== 'KRX1'">{{ stock.ticker }}</span>
-          </div>
-        </v-col>
-        <v-col class="flex flex-col justify-end">
-          <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
-            {{ props.weight }}%
-          </div>
-          <div class="text-sm text-neutral-500">
-            {{ toKRW(stock.price, stock.currency)?.toLocaleString('ko-KR') }}원
-          </div>
-        </v-col>
-        <v-col cols="2" class="flex flex-col justify-center">
+          </template>
+          <template v-slot:subtitle>
+            {{ stock.ticker }}
+          </template>
+        </StockItemColumn>
+        <StockItemColumn cols="3">
+          <template v-slot:title> {{ calculateStockValueKRW(stock).toLocaleString() }}원 </template>
+          <template v-slot:subtitle>{{ props.weight }}%</template>
+        </StockItemColumn>
+        <v-col cols="2" class="flex flex-col justify-center items-center">
           <v-btn
             v-if="!quantitySelected"
             :ripple="false"
             variant="text"
             type="button"
+            width="80"
             @click="quantitySelected = true"
           >
-            <div class="text-lg font-semibold text-neutral-700 flex gap-1 leading-6">
+            <div class="text-base font-semibold text-neutral-700 flex gap-1 leading-6">
               {{ stock.quantity }}주
             </div>
           </v-btn>
@@ -67,11 +77,14 @@ watch(quantitySelected, (val) => {
               variant="outlined"
               density="compact"
               hide-details
-              v-model="quantity"
-              @keydown.escape="quantitySelected = false"
-              @blur="quantitySelected = false"
-            >
-            </v-text-field>
+              style="width: 80px"
+              :placeholder="stock.quantity.toString()"
+              :persistent-placeholder="true"
+              @keydown.enter="submitQuantity"
+              @keydown.escape="resetQuantity"
+              @blur="submitQuantity"
+              suffix="주"
+            />
           </div>
         </v-col>
       </v-row>

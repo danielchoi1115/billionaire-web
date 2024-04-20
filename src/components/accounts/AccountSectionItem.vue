@@ -1,6 +1,7 @@
 <script setup>
 import { StockItem } from '@/components'
 import { computed } from 'vue'
+import { calculateStockValueKRW } from '@/utils'
 const props = defineProps({
   account: Object
 })
@@ -13,6 +14,9 @@ const weights = computed(() =>
     acc[cur.ticker] = Math.round(((cur.price * cur.quantity) / totalStockPrice.value) * 10000) / 100
     return acc
   }, {})
+)
+const sortedStocks = computed(() =>
+  props.account.stocks?.sort((a, b) => calculateStockValueKRW(b) - calculateStockValueKRW(a))
 )
 </script>
 <template>
@@ -27,10 +31,11 @@ const weights = computed(() =>
     </dt>
     <dd>
       <StockItem
-        v-for="(stock, i) in account.stocks"
+        v-for="(stock, i) in sortedStocks"
         :key="i"
         :stock="stock"
         :weight="weights[stock?.ticker]"
+        @update:quantity="(arg) => Object.assign(stock, arg)"
       />
     </dd>
   </dl>

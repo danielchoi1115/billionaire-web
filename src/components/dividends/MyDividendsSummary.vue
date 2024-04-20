@@ -11,7 +11,7 @@ function calculateYearlyDividends() {
   let yearlyDividends = innerProp.value?.dividends
     .map((d) => d.totalDividends)
     .reduce((acc, cur) => acc + cur, 0)
-  return `${yearlyDividends.toLocaleString('ko-KR')}원`
+  return `${yearlyDividends.toLocaleString()}원`
 }
 </script>
 

@@ -1,5 +1,4 @@
 <script setup>
-
 defineProps({
   data: Object
 })
@@ -10,7 +9,7 @@ defineProps({
       <span>{{ data.month }}</span>
     </div>
     <div class="text-sm text-neutral-500">
-      {{ data.totalDividends.toLocaleString('ko-KR') }}
+      {{ data.totalDividends.toLocaleString() }}
       <span class="text-xs">원</span>
     </div>
   </dt>

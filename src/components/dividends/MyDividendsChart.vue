@@ -42,7 +42,7 @@ const chartOptions = {
     legend: { display: false },
     datalabels: {
       formatter: (value) => {
-        return value > 0 ? value.toLocaleString('ko-KR') : ''
+        return value > 0 ? value.toLocaleString() : ''
       },
       clamp: true,
       align: 'end',
@@ -89,5 +89,4 @@ onMounted(() => {
   <div class="h-[130px] flex justify-center">
     <Bar v-if="loaded" :data="chartData" :options="chartOptions" />
   </div>
-  <button @click="console.log(dividendsChartRef)"></button>
 </template>

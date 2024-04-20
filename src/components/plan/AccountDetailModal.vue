@@ -1,5 +1,4 @@
 <script setup>
-import { nextTick } from 'vue'
 import { onMounted, watch } from 'vue'
 import { ref, reactive } from 'vue'
 const props = defineProps({
@@ -37,7 +36,7 @@ function formatNumber(numStr) {
   if (isNaN(value)) {
     return 0
   }
-  return value.toLocaleString('ko-KR')
+  return value.toLocaleString()
 }
 function formatNumberAndSet(e) {
   if (!e.target) return

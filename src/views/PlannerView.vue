@@ -1,13 +1,15 @@
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import {
   PlannerTitle,
   PlannerSummaryBarChart,
   PlannerSummaryAccounts,
   PlannerTab,
-  AccountItem
+  AccountSectionItem
 } from '@/components'
-import AccountDetailModal from '@/components/planner/AccountDetailModal.vue'
+import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
+import PortfolioDoughnutChart from '@/components/charts/PortfolioDoughnutChart.vue'
+import planApi from '@/services/planApi.js'
 
 const planSummary = reactive({
   totalBudget: ref(2620000),
@@ -31,7 +33,8 @@ const planSummary = reactive({
           currency: 'USD',
           market: 'NASDAQ',
           iconUrl: 'moneybag.png',
-          bgColorHex: '#96151D'
+          bgColorHex: '#96151D',
+          assetTypeName: '안전자산'
         }
       ]
     },
@@ -54,7 +57,8 @@ const planSummary = reactive({
           quantity: 25,
           iconUrl: 'krx-316140.png',
           bgColorHex: '#B0D8F1',
-          market: 'KRX'
+          market: 'KRX',
+          assetTypeName: '위험자산'
         },
         {
           index: 2,
@@ -66,7 +70,21 @@ const planSummary = reactive({
           quantity: 10,
           iconUrl: 'moneybag.png',
           bgColorHex: '#F18321',
-          market: 'KRX'
+          market: 'KRX',
+          assetTypeName: '위험자산'
+        },
+        {
+          index: 3,
+          stockName: 'SOL 초단기국고채',
+          displayName: 'SOL 초단기국고채',
+          ticker: '999999',
+          price: 100000,
+          currency: 'KRW',
+          quantity: 2,
+          iconUrl: 'moneybag.png',
+          bgColorHex: '#1351c5',
+          market: 'KRX',
+          assetTypeName: '안전자산'
         }
       ]
     },
@@ -90,11 +108,60 @@ const planSummary = reactive({
     }
   ])
 })
-let totalAmount = computed(() => planSummary.accounts.reduce((acc, cur) => acc + cur.amount, 0))
+
+const planMst = ref({
+  planNo: 1,
+  userNo: '000000',
+  planName: '테스트플랜',
+  useYn: 'Y',
+  planAccDtl: [
+    {
+      accNo: 1,
+      budgetAmount: 750000,
+      accMst: {
+        accNo: 1,
+        userNo: 0,
+        accName: 'ISA',
+        accIssuer: '삼성증권',
+        accCurrency: 'KRW',
+        accBgColorHex: '#36a2eb',
+        accIconUrl: 'won-white.png'
+      },
+      accPurDtl: [
+        {
+          planStockNo: 1,
+          quantity: 5,
+          stockMst: {
+            ticker: '316140',
+            stockName: '우리금융지주',
+            market: 'KRX',
+            stockCurrency: 'KRW',
+            assetTypeCd: '01',
+            assetTypeName: '위험자산',
+            assetClassCd: '01',
+            assetClassName: '주식',
+            assetCountryCd: '01',
+            assetCountryName: '국내',
+            stockBgColorHex: '#B0D8F1',
+            stockIconUrl: 'krx-316140.png'
+          }
+        }
+      ]
+    }
+  ]
+})
+
+onMounted(async () => {
+  planMst.value = await planApi.getOnePlanMst(1)
+})
+
+let totalBudgetAmount = computed(() =>
+  planMst.value.planAccDtl?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
+)
 
 const weights = computed(() =>
-  planSummary.accounts.reduce((acc, cur) => {
-    acc[cur.accountNo] = Math.round((cur.amount / totalAmount.value) * 10000) / 100
+  planMst.value.planAccDtl?.reduce((acc, cur) => {
+    acc[cur.accMst.accNo] = (cur.budgetAmount / totalBudgetAmount.value) * 100
     return acc
   }, {})
 )
@@ -124,15 +191,22 @@ function saveChanges(newAccount) {
 
 <template>
   <div class="px-6 max-w-[720px] my-0 mx-auto">
+    {{ totalBudgetAmount }}
+    , {{ weights }}
     <PlannerTab>
       <template v-slot:byAsset>
-        <AccountItem v-for="(account, i) in planSummary.accounts" :key="i" :account="account" />
+        <PortfolioDoughnutChart :accounts="planSummary.accounts" />
+        <AccountSectionItem
+          v-for="(account, i) in planSummary.accounts"
+          :key="i"
+          :account="account"
+        />
       </template>
       <template v-slot:byAccount>
-        <PlannerTitle v-model="planSummary" />
-        <PlannerSummaryBarChart v-model="planSummary" :weights="weights" />
+        <PlannerTitle v-model="planSummary" :totalBudgetAmount="totalBudgetAmount" />
+        <PlannerSummaryBarChart v-model="planMst" :weights="weights" />
         <PlannerSummaryAccounts
-          v-model="planSummary.accounts"
+          v-model="planMst.planAccDtl"
           :weights="weights"
           @click:accountItem="(val) => openAccountDetailModal(val)"
         />
