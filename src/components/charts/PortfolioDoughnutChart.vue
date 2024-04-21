@@ -1,7 +1,8 @@
 <script setup>
 import { Doughnut } from 'vue-chartjs'
 import { computed } from 'vue'
-import { calculateStockValueKRW } from '@/utils'
+import { calculateStockValueKRW, toKRW } from '@/utils'
+import { stockPrices } from '@/stores/stocks.js'
 
 const props = defineProps({
   accounts: Array
@@ -17,7 +18,12 @@ const props = defineProps({
 
 const totalValueKRW = computed(() =>
   props.accounts
-    .map((account) => account.stocks?.reduce((acc, obj) => acc + calculateStockValueKRW(obj), 0))
+    .map((account) =>
+      account.accPurDtl?.reduce(
+        (acc, obj) => acc + obj.quantity * toKRW(stockPrices[obj.ticker].price, obj.stockCurrency),
+        0
+      )
+    )
     .reduce((acc, obj) => acc + (obj || 0), 0)
 )
 
@@ -99,7 +105,7 @@ const options = {
 </script>
 
 <template>
-  {{ chartData }}, {{ totalValueKRW }}
+  {{ totalValueKRW }}
   <div class="h-[200px] flex justify-center">
     <Doughnut :data="chartData" :options="options" />
   </div>

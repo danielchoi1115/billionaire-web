@@ -2,16 +2,26 @@
 import { StockItem } from '@/components'
 import { computed } from 'vue'
 import { calculateStockValueKRW } from '@/utils'
+import { stockPrices } from '@/stores/stocks.js'
+
 const props = defineProps({
   account: Object
 })
 
-const totalStockPrice = computed(() =>
-  props.account.stocks?.reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
-)
+function calculateTotalStockPrice(account) {
+  console.log(
+    'total',
+    account?.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
+  )
+  return account?.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
+}
+
+const totalStockPrice = computed(() => calculateTotalStockPrice(props.account))
+
 const weights = computed(() =>
   props.account.stocks?.reduce((acc, cur) => {
-    acc[cur.ticker] = Math.round(((cur.price * cur.quantity) / totalStockPrice.value) * 10000) / 100
+    acc[cur.ticker] =
+      Math.round((calculateStockValueKRW(cur) / totalStockPrice.value) * 10000) / 100
     return acc
   }, {})
 )
@@ -23,7 +33,7 @@ const sortedStocks = computed(() =>
   <dl>
     <dt class="flex align-baseline justify-between">
       <div class="text-lg font-bold ml-1">
-        <span>{{ account.accountName }}</span>
+        <span>{{ account.accName }}</span>
       </div>
       <div class="text-sm text-neutral-500">
         <span class="text-xs">원</span>

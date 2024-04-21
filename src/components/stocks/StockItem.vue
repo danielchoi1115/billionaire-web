@@ -45,10 +45,10 @@ function submitQuantity(e) {
   <div class="px-2 my-2 transition-colors rounded-lg">
     <div class="py-3 transition-transform flex items-center">
       <v-row class="w-full">
-        <StockItemAvatar :color="stock.bgColorHex" :icon-url="stock.iconUrl" />
+        <StockItemAvatar :color="stock.stockBgColorHex" :icon-url="stock.stockIconUrl" />
         <StockItemColumn>
           <template v-slot:title>
-            {{ stock.displayName }}
+            {{ stock.stockNameKor }}
           </template>
           <template v-slot:subtitle>
             {{ stock.ticker }}

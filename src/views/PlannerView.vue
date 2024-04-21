@@ -114,37 +114,30 @@ const planMst = ref({
   userNo: '000000',
   planName: '테스트플랜',
   useYn: 'Y',
-  planAccDtl: [
+  accounts: [
     {
       accNo: 1,
       budgetAmount: 750000,
-      accMst: {
-        accNo: 1,
-        userNo: 0,
-        accName: 'ISA',
-        accIssuer: '삼성증권',
-        accCurrency: 'KRW',
-        accBgColorHex: '#36a2eb',
-        accIconUrl: 'won-white.png'
-      },
-      accPurDtl: [
+      userNo: 0,
+      accName: 'ISA',
+      accIssuer: '삼성증권',
+      accCurrency: 'KRW',
+      accBgColorHex: '#36a2eb',
+      accIconUrl: 'won-white.png',
+      stocks: [
         {
           planStockNo: 1,
+          ticker: '316140',
           quantity: 5,
-          stockMst: {
-            ticker: '316140',
-            stockName: '우리금융지주',
-            market: 'KRX',
-            stockCurrency: 'KRW',
-            assetTypeCd: '01',
-            assetTypeName: '위험자산',
-            assetClassCd: '01',
-            assetClassName: '주식',
-            assetCountryCd: '01',
-            assetCountryName: '국내',
-            stockBgColorHex: '#B0D8F1',
-            stockIconUrl: 'krx-316140.png'
-          }
+          stockCd: 'KR7316140003',
+          exchCd: 'KOSPI',
+          stockNameKor: '우리금융지주',
+          stockCurrency: 'KRW',
+          assetClassCd: '01',
+          assetClassName: '주식',
+          assetCountryCd: '01',
+          assetCountryName: '국내',
+          secTypeCd: 'ST'
         }
       ]
     }
@@ -156,15 +149,16 @@ onMounted(async () => {
 })
 
 let totalBudgetAmount = computed(() =>
-  planMst.value.planAccDtl?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
+  planMst.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
 )
 
 const weights = computed(() =>
-  planMst.value.planAccDtl?.reduce((acc, cur) => {
-    acc[cur.accMst.accNo] = (cur.budgetAmount / totalBudgetAmount.value) * 100
+  planMst.value.accounts?.reduce((acc, cur) => {
+    acc[cur.account.accNo] = (cur.budgetAmount / totalBudgetAmount.value) * 100
     return acc
   }, {})
 )
+
 const accountDetailOpen = ref(false)
 
 const selectedAccount = ref()
@@ -191,16 +185,10 @@ function saveChanges(newAccount) {
 
 <template>
   <div class="px-6 max-w-[720px] my-0 mx-auto">
-    {{ totalBudgetAmount }}
-    , {{ weights }}
     <PlannerTab>
       <template v-slot:byAsset>
-        <PortfolioDoughnutChart :accounts="planSummary.accounts" />
-        <AccountSectionItem
-          v-for="(account, i) in planSummary.accounts"
-          :key="i"
-          :account="account"
-        />
+        <PortfolioDoughnutChart :accounts="planMst.accounts" />
+        <AccountSectionItem v-for="(account, i) in planMst.accounts" :key="i" :account="account" />
       </template>
       <template v-slot:byAccount>
         <PlannerTitle v-model="planSummary" :totalBudgetAmount="totalBudgetAmount" />

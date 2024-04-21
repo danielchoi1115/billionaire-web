@@ -1,3 +1,5 @@
+import { stockPrices } from '@/stores/stocks.js'
+
 const usdToKrwRate = 1384
 
 const convertCurrency = (amount, currencyFrom, currencyTo) => {
@@ -19,7 +21,8 @@ const toUSD = (amount, currencyFrom) => {
 }
 
 function calculateStockValueKRW(stock) {
-  if (!stock || !stock.price) return 0
-  return toKRW(stock.price, stock.currency) * stock.quantity
+  if (!stock || !stockPrices[stock.ticker]?.price) return 0
+  return toKRW(stockPrices[stock.ticker]?.price, stock.stockCurrency) * stock.quantity
 }
+
 export { toKRW, toUSD, calculateStockValueKRW }
