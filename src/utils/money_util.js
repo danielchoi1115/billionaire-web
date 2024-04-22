@@ -1,4 +1,5 @@
-import { stockPrices } from '@/stores/stocks.js'
+import { useStockStore } from '@/stores/stock.js'
+import { storeToRefs } from 'pinia'
 
 const usdToKrwRate = 1384
 
@@ -21,8 +22,11 @@ const toUSD = (amount, currencyFrom) => {
 }
 
 function calculateStockValueKRW(stock) {
-  if (!stock || !stockPrices[stock.ticker]?.price) return 0
-  return toKRW(stockPrices[stock.ticker]?.price, stock.stockCurrency) * stock.quantity
+  const store = useStockStore()
+
+  if (!stock) return 0
+  let price = store.getPrice(stock.ticker)
+  return toKRW(price, stock.stockCurrency) * stock.quantity
 }
 
 export { toKRW, toUSD, calculateStockValueKRW }

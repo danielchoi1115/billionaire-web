@@ -1,2 +1,3 @@
 import { toKRW, toUSD, calculateStockValueKRW } from './money_util'
-export { toKRW, toUSD, calculateStockValueKRW }
+import { getAssetType } from './stock_utils'
+export { toKRW, toUSD, calculateStockValueKRW, getAssetType }

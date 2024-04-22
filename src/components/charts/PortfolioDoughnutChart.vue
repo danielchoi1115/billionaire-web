@@ -2,7 +2,12 @@
 import { Doughnut } from 'vue-chartjs'
 import { computed } from 'vue'
 import { calculateStockValueKRW, toKRW } from '@/utils'
-import { stockPrices } from '@/stores/stocks.js'
+import { useStockStore } from '@/stores/stock.js'
+import { storeToRefs } from 'pinia'
+
+const store = useStockStore()
+
+const { priceMap } = storeToRefs(store)
 
 const props = defineProps({
   accounts: Array
@@ -16,46 +21,36 @@ const props = defineProps({
 // )
 //
 
-const totalValueKRW = computed(() =>
-  props.accounts
-    .map((account) =>
-      account.accPurDtl?.reduce(
-        (acc, obj) => acc + obj.quantity * toKRW(stockPrices[obj.ticker].price, obj.stockCurrency),
-        0
-      )
-    )
-    .reduce((acc, obj) => acc + (obj || 0), 0)
-)
+const totalValueKRW = computed(() => props.accounts.reduce((acc, obj) => acc + obj.budgetAmount, 0))
 
-const chartData = computed(() => {
-  let accountData = props.accounts.map((accounts) =>
-    accounts.stocks?.reduce(
-      (acc, stk) => {
-        acc[stk.assetTypeName] += calculateStockValueKRW(stk)
-        return acc
-      },
-      { 안전자산: 0, 위험자산: 0 }
-    )
+const chartData = computed(() => {})
+let accountData = props.accounts.map((accounts) =>
+  accounts.stocks?.reduce(
+    (acc, stk) => {
+      acc[stk.assetTypeName] += calculateStockValueKRW(stk)
+      return acc
+    },
+    { 안전자산: 0, 위험자산: 0 }
   )
-  let summary = [0, 0]
-  accountData.forEach((item) => {
-    if (item) {
-      summary[0] += item['위험자산'] || 0
-      summary[1] += item['안전자산'] || 0
-    }
-  })
-  return {
-    labels: ['위험자산', '안전자산'],
-    datasets: [
-      {
-        labels: ['위험자산', '안전자산'],
-        backgroundColor: ['#d96d20', '#3d80d9'],
-        data: summary,
-        weights: summary.map((a) => a / totalValueKRW.value)
-      }
-    ]
+)
+let summary = [0, 0]
+accountData.forEach((item) => {
+  if (item) {
+    summary[0] += item['위험자산'] || 0
+    summary[1] += item['안전자산'] || 0
   }
 })
+// return {
+//   labels: ['위험자산', '안전자산'],
+//   datasets: [
+//     {
+//       labels: ['위험자산', '안전자산'],
+//       backgroundColor: ['#d96d20', '#3d80d9'],
+//       data: summary,
+//       weights: summary.map((a) => a / totalValueKRW.value)
+//     }
+//   ]
+// }
 
 const options = {
   responsive: true,
@@ -107,6 +102,6 @@ const options = {
 <template>
   {{ totalValueKRW }}
   <div class="h-[200px] flex justify-center">
-    <Doughnut :data="chartData" :options="options" />
+    <!-- <Doughnut :data="chartData" :options="options" /> -->
   </div>
 </template>

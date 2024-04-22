@@ -4,12 +4,16 @@ defineProps({
   justify: {
     type: String,
     default: 'center'
+  },
+  textColor: {
+    type: String,
+    default: 'text-neutral-700'
   }
 })
 </script>
 <template>
   <v-col :cols="cols" class="flex flex-col" :class="'justify-' + justify">
-    <div class="text-base font-semibold text-neutral-700 flex gap-1 leading-6">
+    <div class="text-base font-semibold flex gap-1 leading-6" :class="textColor">
       <slot name="title"></slot>
     </div>
     <div class="text-sm text-neutral-500">

@@ -4,6 +4,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { vuetify } from './common.js'
+import { createPinia } from 'pinia'
+import VueApexCharts from 'vue3-apexcharts'
 
 import {
   Chart,
@@ -19,7 +21,6 @@ import {
   Colors
 } from 'chart.js'
 
-import { TreemapController, TreemapElement } from 'chartjs-chart-treemap'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 Chart.register(
@@ -33,13 +34,9 @@ Chart.register(
   ChartDataLabels,
   CategoryScale,
   LinearScale,
-  Colors,
-  TreemapController,
-  TreemapElement
+  Colors
 )
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(router)
-
-app.use(vuetify)
-app.mount('#app')
+app.use(router).use(pinia).use(vuetify).use(VueApexCharts).mount('#app')
