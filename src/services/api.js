@@ -31,7 +31,6 @@ function printError(error) {
   } else {
     console.error('Axios 서버 응답 없음:', error.message)
   }
-  console.log('요청 URL: ', error.config.baseURL + error.config.url)
 }
 function instanceResolver(type) {
   // if (type === 'fs') {
@@ -52,11 +51,11 @@ async function _get(url, config = {}, instance) {
   return await instance
     .get(url, config)
     .then((response) => {
-      return response.data
+      return response
     })
     .catch((error) => {
       printError(error)
-      throw error
+      return error
     })
 }
 
@@ -65,10 +64,10 @@ async function _post(url, data, config, instance) {
   appendAuthorization(config)
   return await instance
     .post(url, data, config)
-    .then((response) => response.data)
+    .then((response) => response)
     .catch((error) => {
       printError(error)
-      throw error
+      return error
     })
 }
 async function post(url, data, config = {}, type) {
@@ -80,10 +79,10 @@ async function _put(url, data, config, instance) {
   appendAuthorization(config)
   return await instance
     .put(url, data, config)
-    .then((response) => response.data)
+    .then((response) => response)
     .catch((error) => {
       printError(error)
-      throw error
+      return error
     })
 }
 // Function to handle PUT requests
@@ -98,10 +97,10 @@ function remove(url, config = {}, type) {
   const instance = instanceResolver(type)
   return instance
     .delete(url, config)
-    .then((response) => response.data)
+    .then((response) => response)
     .catch((error) => {
       printError(error)
-      throw error
+      return error
     })
 }
 

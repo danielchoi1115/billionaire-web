@@ -1,8 +1,9 @@
 import ApiClient from '@/services/api'
 
-async function getOnePlanMst(planSeq) {
-  return await ApiClient.get(`/plans/${planSeq}`)
+const PlanApi = {
+  getOnePlanMst: async (planSeq) => {
+    return await ApiClient.get(`/plans/${planSeq}`)
+  }
 }
-export default {
-  getOnePlanMst
-}
+
+export default PlanApi

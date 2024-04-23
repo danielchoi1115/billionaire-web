@@ -10,7 +10,7 @@ import {
 } from '@/components'
 import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
 import PortfolioDoughnutChart from '@/components/charts/PortfolioDoughnutChart.vue'
-import planApi from '@/services/planApi.js'
+import { PlanApi } from '@/services'
 import { generate_plan_mst } from '@/utils/dummy_data_generator'
 
 const planMst = ref()
@@ -23,7 +23,9 @@ const planStore = usePlanStore()
 const { totalBudgetAmount } = storeToRefs(stockStore)
 
 onMounted(async () => {
-  // planMst.value = await planApi.getOnePlanMst(1)
+  // let res = await PlanApi.getOnePlanMst(1)
+  // planMst.value = res.data
+
   await planStore.refresh()
   await stockStore.refresh()
 })

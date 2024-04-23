@@ -25,9 +25,21 @@ export const usePlanStore = defineStore('plan', () => {
     if (isLoading.value) return
     fetchPlan()
   }
-  const updateStockQuantity = (account, stock) => {
-    console.log(data.value.planNo, account.accNo, stock.ticker, Number(stock.quantity))
+  const updatePlanStock = (account, stock) => {
+    console.log(
+      'PlanNo: ',
+      data.value.planNo,
+      'AccNo',
+      account.accNo,
+      'planStockNo',
+      stock.planStockNo,
+      'ticker',
+      stock.ticker,
+      'quantity',
+      Number(stock.quantity)
+    )
   }
+
   const planSummary = computed(() => {
     if (!data.value.accounts) return []
     let temp = []
@@ -76,5 +88,5 @@ export const usePlanStore = defineStore('plan', () => {
   )
   const summary = () => planSummary
   const accounts = () => data.value?.accounts
-  return { isLoading, refresh, summary, totalBudgetAmount, accounts, updateStockQuantity }
+  return { isLoading, refresh, summary, totalBudgetAmount, accounts, updatePlanStock }
 })

@@ -37,7 +37,10 @@ export const useStockStore = defineStore('stock', () => {
     return priceMap.value[ticker]?.price
   }
 
-  return { isLoading, refresh, priceMap, getPrice }
+  const updateStock = (stock) => {
+    console.log(stock)
+  }
+  return { isLoading, refresh, priceMap, getPrice, updateStock }
 })
 
 const stockPrices = [

@@ -42,7 +42,7 @@ const dividendsData = reactive({
           accoundName: 'ISA',
           amount: 2800,
           currency: 'KRW',
-          iconUrl: 'krx-316140.png',
+          iconUrl: 'krx_316140.png',
           bgColorHex: '#B0D8F1'
         }
       ]
@@ -88,7 +88,7 @@ const dividendsData = reactive({
           accoundName: 'ISA',
           amount: 2800,
           currency: 'KRW',
-          iconUrl: 'krx-316140.png',
+          iconUrl: 'krx_316140.png',
           bgColorHex: '#B0D8F1'
         }
       ]

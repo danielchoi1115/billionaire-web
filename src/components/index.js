@@ -15,8 +15,12 @@ import PlannerTab from '@/components/plan/PlannerTab.vue'
 import StockItem from './stocks/StockItem.vue'
 import StockItemColumn from './stocks/StockItemColumn.vue'
 import StockItemAvatar from './stocks/StockItemAvatar.vue'
+import StockSearchResult from './stocks/StockSearchResult.vue'
 import AccountSectionItem from './accounts/AccountSectionItem.vue'
 import PortfolioTreemap from '@/components/charts/PortfolioTreemap.vue'
+import SearchBar from './commons/SearchBar.vue'
+import StockDetailModal from './stocks/StockDetailModal.vue'
+
 export {
   PieChart,
   StockAccount,
@@ -33,8 +37,11 @@ export {
   AccountDetailModal,
   PlannerTab,
   StockItem,
+  StockSearchResult,
   AccountSectionItem,
   StockItemColumn,
   StockItemAvatar,
-  PortfolioTreemap
+  PortfolioTreemap,
+  SearchBar,
+  StockDetailModal
 }

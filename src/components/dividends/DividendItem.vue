@@ -4,7 +4,7 @@ const props = defineProps({
   dividend: Object
 })
 const emit = defineEmits(['openDividendItemModal'])
-const imgBaseUrl = 'src/assets/company-logos/'
+const imgBaseUrl = 'src/assets/icons/'
 </script>
 <template>
   <div

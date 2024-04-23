@@ -33,7 +33,7 @@ function weightFrom(numerator, denominator) {
 
 const updateQuantity = (oldObj, newObj) => {
   Object.assign(oldObj, newObj)
-  planStore.updateStockQuantity(props.account, newObj)
+  planStore.updatePlanStock(props.account, newObj)
 }
 </script>
 <template>
