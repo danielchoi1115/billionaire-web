@@ -1,27 +1,17 @@
 <script setup>
-import { ref } from 'vue'
 import StockItem from './StockItem.vue'
-import { StockDetailModal } from '@/components'
-import { nextTick } from 'vue'
 
 const props = defineProps({
   stocks: Array,
   notFound: {
     type: Boolean,
     default: false
+  },
+  onClick: {
+    type: Function,
+    default: () => {}
   }
 })
-
-const selectedStock = ref({})
-const detailModal = ref(false)
-
-function openModal(stock) {
-  nextTick(() => {
-    // Object.assign(selectedStock.value, stock)
-    selectedStock.value = stock
-    detailModal.value = true
-  })
-}
 </script>
 <!-- #f3f5f6 -->
 <template>
@@ -31,9 +21,8 @@ function openModal(stock) {
       :key="i"
       :stock="stock"
       type="default"
-      @click="openModal(stock)"
+      @click="onClick(stock)"
     />
-    <StockDetailModal v-model="detailModal" :stock="selectedStock" />
   </div>
   <div v-else>
     <span class="text-2xl">검색 결과가 없습니다.</span>

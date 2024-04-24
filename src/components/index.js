@@ -20,6 +20,9 @@ import AccountSectionItem from './accounts/AccountSectionItem.vue'
 import PortfolioTreemap from '@/components/charts/PortfolioTreemap.vue'
 import SearchBar from './commons/SearchBar.vue'
 import StockDetailModal from './stocks/StockDetailModal.vue'
+import StockAddButton from './stocks/StockAddButton.vue'
+import StockMultiPickerModal from './stocks/StockMultiPickerModal.vue'
+import PlanAccounts from './plan/PlanAccounts.vue'
 
 export {
   PieChart,
@@ -43,5 +46,8 @@ export {
   StockItemAvatar,
   PortfolioTreemap,
   SearchBar,
-  StockDetailModal
+  StockDetailModal,
+  StockAddButton,
+  StockMultiPickerModal,
+  PlanAccounts
 }

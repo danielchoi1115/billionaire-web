@@ -1,33 +1,52 @@
 <!-- https://chartjs-chart-treemap.pages.dev/samples/labelsFontsAndColors.html -->
 <script setup>
-import { Chart } from 'chart.js'
 import { onMounted, ref, computed } from 'vue'
-import { color } from 'chart.js/helpers'
 import { usePlanStore } from '@/stores'
-const planStore = usePlanStore()
+import { storeToRefs } from 'pinia'
 
-const series = computed(() => {
-  const safe = {
-    name: '안전자산',
-    data: []
-  }
-  const danger = {
+const planStore = usePlanStore()
+const { planSummary } = storeToRefs(planStore)
+// const series = computed(() => {
+//   const safe = {
+//     name: '안전자산',
+//     data: []
+//   }
+//   const danger = {
+//     name: '위험자산',
+//     data: []
+//   }
+//   if (planSummary) {
+//     planSummary.value.forEach((obj) => {
+//       let data = { x: obj.assetClass, y: obj.value }
+//       if (obj.assetType === '위험자산') {
+//         danger.data.push(data)
+//       } else safe.data.push(data)
+//     })
+//     console.log(JSON.stringify([danger, safe]))
+//     return [danger, safe]
+//   }
+//   return []
+// })
+
+const series = [
+  {
     name: '위험자산',
-    data: []
+    data: [
+      { x: '국내주식', y: 1029731 },
+      { x: '미국주식', y: 404128 }
+    ]
+  },
+  {
+    name: '안전자산',
+    data: [
+      { x: '현금(KRW)', y: 780900 },
+      { x: '현금(USD)', y: 215241 }
+    ]
   }
-  if (planStore.summary().value) {
-    planStore.summary().value.forEach((obj) => {
-      let data = { x: obj.assetClass, y: obj.value }
-      if (obj.assetType === '위험자산') {
-        danger.data.push(data)
-      } else safe.data.push(data)
-    })
-  }
-  return [danger, safe]
-})
+]
 
 const weightMap = computed(() =>
-  planStore.summary().value?.reduce((acc, cur) => {
+  planSummary.value.reduce((acc, cur) => {
     acc[cur.assetClass] = cur.weight
     return acc
   }, {})
@@ -51,6 +70,21 @@ const chartOptions = {
         enabled: true,
         speed: 350
       }
+    },
+    toolbar: {
+      show: false
+    }
+  },
+  xaxis: {
+    show: true,
+    labels: {
+      show: false
+    },
+    axisBorder: {
+      show: false
+    },
+    axisTicks: {
+      show: false
     }
   },
   title: {
@@ -81,7 +115,12 @@ onMounted(() => {})
 </script>
 <template>
   <div id="chart">
-    {{ weightMap }}
-    <apexchart type="treemap" height="350" :options="chartOptions" :series="series"></apexchart>
+    <apexchart
+      v-if="planStore.hasData()"
+      type="treemap"
+      height="350"
+      :options="chartOptions"
+      :series="series"
+    ></apexchart>
   </div>
 </template>

@@ -95,7 +95,7 @@ function getAvatarIcon() {
 </script>
 <template>
   <div
-    class="px-2 my-2 transition-colors rounded-lg"
+    class="px-2 mb-1 transition-colors rounded-lg"
     :class="type === 'default' ? 'clickable-wrapper' : ''"
   >
     <div

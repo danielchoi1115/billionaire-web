@@ -4,9 +4,10 @@ import { generate_plan_mst } from '@/utils/dummy_data_generator'
 import { calculateStockValueKRW, getAssetType } from '@/utils'
 
 export const usePlanStore = defineStore('plan', () => {
-  const data = ref({})
+  const data = ref(null)
   const isLoading = ref(false)
 
+  const hasData = () => data.value != null
   const fetchPlan = async () => {
     isLoading.value = true
     try {
@@ -25,6 +26,12 @@ export const usePlanStore = defineStore('plan', () => {
     if (isLoading.value) return
     fetchPlan()
   }
+
+  const insertPlanStock = (account, stock) => {
+    account.stocks.push(stock)
+    console.log('Added to account: ', account.accNo, ' Stock: ', stock)
+  }
+
   const updatePlanStock = (account, stock) => {
     console.log(
       'PlanNo: ',
@@ -41,7 +48,7 @@ export const usePlanStore = defineStore('plan', () => {
   }
 
   const planSummary = computed(() => {
-    if (!data.value.accounts) return []
+    if (!data.value || !data.value.accounts) return []
     let temp = []
     data.value.accounts.forEach((account) => {
       let totalValue = 0
@@ -86,7 +93,15 @@ export const usePlanStore = defineStore('plan', () => {
   const totalBudgetAmount = computed(() =>
     data.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
   )
-  const summary = () => planSummary
   const accounts = () => data.value?.accounts
-  return { isLoading, refresh, summary, totalBudgetAmount, accounts, updatePlanStock }
+  return {
+    isLoading,
+    refresh,
+    planSummary,
+    totalBudgetAmount,
+    accounts,
+    updatePlanStock,
+    insertPlanStock,
+    hasData
+  }
 })

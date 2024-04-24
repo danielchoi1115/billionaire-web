@@ -5,9 +5,10 @@ import {
   PlannerSummaryBarChart,
   PlannerSummaryAccounts,
   PlannerTab,
-  AccountSectionItem,
+  PlanAccounts,
   PortfolioTreemap
 } from '@/components'
+
 import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
 import PortfolioDoughnutChart from '@/components/charts/PortfolioDoughnutChart.vue'
 import { PlanApi } from '@/services'
@@ -58,9 +59,9 @@ function saveChanges(newAccount) {
 </script>
 
 <template>
-  <div class="px-6 max-w-[720px] my-0 mx-auto">
+  <div class="px-3 max-w-[720px] my-0 mx-auto">
     <PortfolioTreemap />
-    <AccountSectionItem v-for="(account, i) in planStore.accounts()" :key="i" :account="account" />
+    <PlanAccounts />
   </div>
 </template>
 

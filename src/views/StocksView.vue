@@ -1,34 +1,23 @@
 <script setup>
-import { StocksLayout } from '@/layouts'
-import { ref, onBeforeMount } from 'vue'
-import { SearchBar, StockSearchResult } from '@/components'
-import { StockApi } from '@/services'
-import { onMounted } from 'vue'
+import { ref, onBeforeMount, nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { StocksLayout } from '@/layouts'
+import { SearchBar, StockSearchResult, StockDetailModal } from '@/components'
+import { StockApi } from '@/services'
 
 const router = useRouter()
 const route = useRoute()
 const searchResult = ref([])
-onMounted(async () => {
-  // searchResult.value = await StockApi.search()
-  if (route.query.keyword) {
-    search()
-  }
-})
+onMounted(async () => {})
 
 async function onSearch() {
-  router.push({ path: '/stocks', query: { keyword: keyword.value } })
-  search()
-}
-
-async function search() {
   loading.value = true
   setTimeout(async () => {
-    console.log(route.query)
-    searchResult.value = await StockApi.search(route.query.keyword)
+    searchResult.value = await StockApi.search(keyword.value)
     loading.value = false
-  }, 2000)
+  }, 500)
 }
+
 onBeforeMount(() => {
   initData()
 })
@@ -36,6 +25,20 @@ function initData() {}
 
 const keyword = ref('')
 const loading = ref(false)
+function print(e) {
+  console.log(e)
+}
+
+const selectedStock = ref({})
+const detailModalOpen = ref(false)
+
+function openModal(stock) {
+  nextTick(() => {
+    // Object.assign(selectedStock.value, stock)
+    selectedStock.value = stock
+    detailModalOpen.value = true
+  })
+}
 </script>
 
 <template>
@@ -45,8 +48,10 @@ const loading = ref(false)
         <SearchBar v-model="keyword" :loading="loading" @search="onSearch" />
       </template>
       <template v-slot:stockList>
-        <StockSearchResult :stocks="searchResult" />
+        <StockSearchResult :stocks="searchResult" :onClick="openModal" />
       </template>
     </StocksLayout>
+
+    <StockDetailModal v-model="detailModalOpen" :stock="selectedStock" />
   </main>
 </template>

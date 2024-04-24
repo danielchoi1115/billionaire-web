@@ -1,5 +1,5 @@
 <script setup>
-import { StockItem } from '@/components'
+import { StockAddButton, StockItem, StockMultiPickerModal } from '@/components'
 import { computed } from 'vue'
 import { calculateStockValueKRW, getAssetType } from '@/utils'
 import { storeToRefs } from 'pinia'
@@ -8,7 +8,8 @@ import { useStockStore, usePlanStore } from '@/stores'
 const planStore = usePlanStore()
 
 const props = defineProps({
-  account: Object
+  account: Object,
+  onAddClick: Function
 })
 
 function calculateTotalStockPrice(account) {
@@ -37,14 +38,14 @@ const updateQuantity = (oldObj, newObj) => {
 }
 </script>
 <template>
-  <dl class="mb-8">
-    <dt class="flex align-baseline justify-between">
+  <dl class="my-4">
+    <dt class="flex align-baseline justify-between mb-4">
       <div class="text-xl font-bold ml-1">
         <span>{{ account.accName }}</span>
       </div>
       <!-- <div class="text-sm text-neutral-700">{{ account.budgetAmount?.toLocaleString() }}원</div> -->
     </dt>
-    <dd>
+    <dd class="bg-[#f8faf7] px-2 py-2 rounded-md">
       <StockItem
         v-for="(stock, i) in sortedStocks"
         :key="i"
@@ -58,6 +59,7 @@ const updateQuantity = (oldObj, newObj) => {
         :deposit-amount="account.budgetAmount - totalStockPrice"
         :weight="weightFrom(account.budgetAmount - totalStockPrice, account.budgetAmount)"
       />
+      <StockAddButton @click="onAddClick(account)" />
     </dd>
   </dl>
 </template>
