@@ -1,21 +1,28 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
-import { VFab } from 'vuetify/labs/VFab'
 
 const Colors = {
   background: '#FFFFFF',
   surface: '#FFFFFF',
-  primary: '#044589',
+  primary: '#89043b',
   'primary-darken-1': '#3700B3',
   secondary: '#03DAC6',
   'secondary-darken-1': '#018786',
   error: '#B00020',
   info: '#2196F3',
   success: '#4CAF50',
-  warning: '#FB8C00'
+  warning: '#FB8C00',
+  'grey-0': '#f8f9fa',
+  'grey-1': '#f1f3f5',
+  'grey-2': '#e9ecef',
+  'grey-3': '#dee2e6',
+  'grey-4': '#ced4da',
+  'grey-5': '#adb5bd',
+  'grey-6': '#868e96',
+  'grey-7': '#495057',
+  'grey-8': '#343a40',
+  'grey-9': '#212529'
 }
 
 const myCustomLightTheme = {
@@ -24,11 +31,6 @@ const myCustomLightTheme = {
 }
 
 const vuetify = createVuetify({
-  components: {
-    ...components,
-    VFab
-  },
-  directives,
   theme: {
     defaultTheme: 'myCustomLightTheme',
 

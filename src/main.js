@@ -6,6 +6,8 @@ import router from './router'
 import { vuetify } from './common.js'
 import { createPinia } from 'pinia'
 import VueApexCharts from 'vue3-apexcharts'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
 import {
   Chart,
   PieController,
@@ -38,4 +40,7 @@ Chart.register(
 const app = createApp(App)
 const pinia = createPinia()
 
-app.use(router).use(pinia).use(vuetify).use(VueApexCharts).mount('#app')
+const toastOptions = {
+  // You can set your default options here
+}
+app.use(router).use(pinia).use(vuetify).use(VueApexCharts).use(Toast, toastOptions).mount('#app')

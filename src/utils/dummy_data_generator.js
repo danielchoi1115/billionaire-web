@@ -309,3 +309,26 @@ export const generate_search_result = async () => {
     }
   ]
 }
+
+export const generate_common_code = async () => {
+  return {
+    assetClass: {
+      '01': '주식',
+      '02': '채권',
+      '03': '원자재',
+      '04': '부동산',
+      '05': '금',
+      '06': '현금'
+    },
+    assetCountry: {
+      '01': '국내',
+      '02': '미국',
+      '03': '일본',
+      '04': '인도'
+    },
+    currency: {
+      KRW: '원화 (₩)',
+      USD: '달러 ($)'
+    }
+  }
+}

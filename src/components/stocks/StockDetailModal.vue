@@ -1,13 +1,16 @@
 <script setup>
-const imgBaseUrl = 'src/assets/icons/'
+import { StockItemAvatar } from '@/components'
 
-import { ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { StockApi } from '@/services'
+import { imgBaseUrl } from '@/utils/index.js'
+import { useCommonStore } from '@/stores'
 
 const props = defineProps({
   modelValue: Boolean,
   stock: Object
 })
+const commonStore = useCommonStore()
 
 const emit = defineEmits(['update:modelValue', 'update:stock'])
 const edited = ref(false)
@@ -16,6 +19,12 @@ watch(
   () => props.stock,
   (newVal) => {
     Object.assign(editedStock.value, newVal)
+    select.assetClass = { code: props.stock.assetClassCd, name: props.stock.assetClassName }
+    select.assetCountry = { code: props.stock.assetCountryCd, name: props.stock.assetCountryName }
+    select.currency = {
+      code: props.stock.stockCurrency,
+      name: commonStore.getCurrency(props.stock.stockCurrency)
+    }
   }
 )
 
@@ -37,6 +46,19 @@ async function update() {
     console.error('Could not update resource')
   }
 }
+function getAvatarColor() {
+  if (props.deposit === true) return props.account.accBgColorHex
+  return props.stock.stockBgColorHex || '#798599'
+}
+function getAvatarIcon() {
+  if (props.deposit === true) return props.account.accIconUrl
+  return props.stock.stockIconUrl || 'default-logo.png'
+}
+const select = reactive({
+  assetClass: {},
+  assetCountry: {},
+  currency: {}
+})
 </script>
 <template>
   <v-dialog
@@ -46,74 +68,88 @@ async function update() {
     max-width="720"
   >
     <v-card>
-      <v-toolbar>
-        <v-btn icon="mdi-close" @click="handleModalClose"></v-btn>
-
-        <v-toolbar-title>Settings</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-toolbar-items> </v-toolbar-items>
-      </v-toolbar>
-      <v-list>
-        <div class="p-4">
-          <v-text-field variant="outlined" v-model="editedStock.ticker" label="ticker" />
-          <v-text-field variant="outlined" v-model="editedStock.stockCd" label="stockCd" />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.stockNameKor"
-            label="stockNameKor"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.stockNameEng"
-            label="stockNameEng"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.stockCurrency"
-            label="stockCurrency"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.assetClassCd"
-            label="assetClassCd"
-          />
-
-          <v-divider></v-divider>
-          <!-- <v-list-subheader>User Controls</v-list-subheader> -->
-
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.assetClassName"
-            label="assetClassName"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.assetCountryCd"
-            label="assetCountryCd"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.assetCountryName"
-            label="assetCountryName"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.stockBgColorHex"
-            label="stockBgColorHex"
-          />
-          <v-text-field
-            variant="outlined"
-            v-model="editedStock.stockIconUrl"
-            label="stockIconUrl"
-          />
-          <v-text-field variant="outlined" v-model="editedStock.secTypeCd" label="secTypeCd" />
-          <v-btn @click="update">Save Ticker</v-btn>
-
-          <v-checkbox v-model="edited" label="edited"></v-checkbox>
+      <template v-slot:title>
+        <div class="flex items-center gap-4">
+          <v-avatar :color="getAvatarColor()" size="52">
+            <figure class="w-12 h-12 flex justify-center items-center">
+              <img
+                :src="imgBaseUrl + getAvatarIcon()"
+                alt="아바타 이미지"
+                class="object-contain w-auto h-6 object-center"
+                draggable="false"
+              />
+            </figure>
+          </v-avatar>
+          <div>
+            <div>
+              <span class="mr-2">{{ stock.stockNameKor }}</span>
+              <span class="text-neutral-500">{{ stock.stockNameEng }}</span>
+            </div>
+            <div class="text-sm text-neutral-400 font-normal">{{ stock.ticker }}</div>
+          </div>
         </div>
-      </v-list>
+      </template>
+      <v-card-text>
+        <v-list>
+          <div class="">
+            <v-text-field variant="outlined" v-model="editedStock.ticker" label="ticker" />
+            <v-text-field variant="outlined" v-model="editedStock.kisCd" label="KisCd" />
+            <v-text-field variant="outlined" v-model="editedStock.stockNameKor" label="한글명" />
+            <v-text-field variant="outlined" v-model="editedStock.stockNameEng" label="영문명" />
+            <v-text-field variant="outlined" v-model="editedStock.stockCurrency" label="통화" />
+
+            <v-select
+              v-model="select.assetClass"
+              :items="commonStore.assetClass()"
+              item-title="name"
+              item-value="code"
+              label="Select"
+              persistent-hint
+              return-object
+              single-line
+              variant="outlined"
+            />
+            <v-select
+              v-model="select.assetCountry"
+              :items="commonStore.assetCountry()"
+              item-title="name"
+              item-value="code"
+              label="Select"
+              persistent-hint
+              return-object
+              single-line
+              variant="outlined"
+            /><v-select
+              v-model="select.currency"
+              :items="commonStore.currency()"
+              item-title="name"
+              item-value="code"
+              label="Select"
+              persistent-hint
+              return-object
+              single-line
+              variant="outlined"
+            />
+            <v-divider></v-divider>
+            <!-- <v-list-subheader>User Controls</v-list-subheader> -->
+
+            <v-text-field
+              variant="outlined"
+              v-model="editedStock.stockBgColorHex"
+              label="stockBgColorHex"
+            />
+            <v-text-field
+              variant="outlined"
+              v-model="editedStock.stockIconUrl"
+              label="stockIconUrl"
+            />
+            <v-text-field variant="outlined" v-model="editedStock.secTypeCd" label="secTypeCd" />
+
+            <v-checkbox v-model="edited" label="edited"></v-checkbox>
+          </div>
+        </v-list>
+      </v-card-text>
+      <v-card-actions> <v-btn block @click="update">Save Ticker</v-btn> </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

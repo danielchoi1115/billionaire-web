@@ -4,9 +4,11 @@ import { ref, computed, reactive } from 'vue'
 import { calculateStockValueKRW, getAssetType } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { useStockStore, usePlanStore } from '@/stores'
+import { useToast } from 'vue-toastification'
+
 // https://github.com/Maronato/vue-toastification
 const planStore = usePlanStore()
-
+const toast = useToast()
 const props = defineProps({
   account: Object,
   onAddClick: Function
@@ -59,6 +61,9 @@ const onDeletePlanStock = async (stock) => {
   setTimeout(() => {
     loading.delete = false
     accountEditMode.value = false
+    toast.success('삭제되었습니다', {
+      timeout: 2000
+    })
   }, 1000)
 }
 
@@ -97,9 +102,15 @@ function addClicked() {
           </v-btn>
         </div>
         <div v-if="accountEditMode">
-          <v-btn width="80" class="mr-2" variant="tonal" color="grey" @click="discardAccountChanges"
-            >취소</v-btn
+          <v-btn
+            width="80"
+            class="mr-2"
+            variant="tonal"
+            color="grey-9"
+            @click="discardAccountChanges"
           >
+            취소
+          </v-btn>
           <v-btn
             width="80"
             variant="flat"
