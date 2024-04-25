@@ -22,7 +22,9 @@ const props = defineProps({
       return value === 'portfolio' || value === 'default'
     },
     default: 'portfolio'
-  }
+  },
+  selected: Boolean,
+  accountEditMode: Boolean
 })
 const emits = defineEmits(['update:quantity'])
 
@@ -95,16 +97,21 @@ function getAvatarIcon() {
 </script>
 <template>
   <div
-    class="px-2 mb-1 transition-colors rounded-lg"
-    :class="type === 'default' ? 'clickable-wrapper' : ''"
+    class="px-2 mb-1 transition-colors rounded-lg relative cursor-pointer"
+    :class="{ 'bg-neutral-200': selected }"
   >
+    <div class="clickable-wrapper__overlay absolute top-0 left-0 rounded-lg w-full h-full"></div>
     <div
-      class="py-2 transition-transform flex items-center"
+      class="clickable-inner-wrapper py-2 flex items-center"
       :class="type === 'default' ? 'clickable-inner-wrapper' : ''"
     >
       <v-row class="w-full">
-        <v-col cols="1" class="flex items-center mr-4">
-          <StockItemAvatar :color="getAvatarColor()" :icon-url="getAvatarIcon()" />
+        <v-col cols="1" class="flex items-center mr-4 relative">
+          <StockItemAvatar
+            :color="getAvatarColor()"
+            :icon-url="getAvatarIcon()"
+            :selected="selected"
+          />
         </v-col>
         <StockItemColumn>
           <template v-slot:title>
@@ -128,6 +135,7 @@ function getAvatarIcon() {
               type="button"
               width="80"
               @click="quantitySelected = true"
+              :disabled="accountEditMode"
             >
               <div class="text-base font-semibold text-neutral-700 flex gap-1 leading-6">
                 {{ stock.quantity }}주
@@ -161,6 +169,7 @@ function getAvatarIcon() {
           <template v-slot:title> {{ makePriceString(stock) }} </template>
           <template v-slot:subtitle>{{ props.weight }}%</template>
         </StockItemColumn>
+
         <StockItemColumn v-if="type === 'default'" cols="3" class="items-end">
           <template v-slot:title>
             {{ toKRW(stock.price, stock.stockCurrency).toLocaleString() }}원
@@ -175,14 +184,15 @@ function getAvatarIcon() {
 </template>
 
 <style>
-.clickable-wrapper {
-  cursor: pointer;
-  user-select: none;
-}
-.clickable-wrapper:active {
+.clickable-wrapper__overlay:active {
   background-color: rgba(229, 229, 229, 0.6);
 }
-.clickable-wrapper:active .clickable-inner-wrapper {
+.clickable-wrapper__overlay:active + .clickable-inner-wrapper {
   transform: scale(0.97);
+}
+.clickable-inner-wrapper {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 250ms;
 }
 </style>

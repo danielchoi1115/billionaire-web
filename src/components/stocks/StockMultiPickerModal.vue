@@ -2,10 +2,15 @@
 import { watch } from 'vue'
 import { ref } from 'vue'
 import { StockApi } from '@/services'
-
+import { StockItem } from '@/components'
+// loading prop은 submit 시 사용
+// search loading은 검색 시 사용
 const props = defineProps({
   modelValue: Boolean,
-  onSubmit: Function
+  onSubmit: Function,
+  title: String,
+  loading: Boolean,
+  callChildMethod: Function
 })
 const items = ref([
   {
@@ -25,26 +30,30 @@ const emits = defineEmits(['submit', 'update:modelValue'])
 
 function handleModalClose(e) {
   emits('update:modelValue', e)
-
+  clearAllInput()
+}
+function clearAllInput() {
   selected.value.clear()
   searchInput.value = ''
   searchResult.value = []
 }
-
 const searchInput = ref('')
 const searchResult = ref([])
 
-const selected = ref(new Set([]))
-const toggle = (ticker) => {
-  if (isSelected(ticker)) {
-    selected.value.delete(ticker)
+const selected = ref(new Map())
+const toggle = (stock) => {
+  if (isSelected(stock.ticker)) {
+    deselect(stock.ticker)
   } else {
-    selected.value.add(ticker)
+    selected.value.set(stock.ticker, stock.stockNameKor)
   }
 }
 const isSelected = (ticker) => selected.value.has(ticker)
 
-const loading = ref(false)
+const deselect = (ticker) => {
+  selected.value.delete(ticker)
+}
+const searchLoading = ref(false)
 
 let timeout
 
@@ -54,13 +63,15 @@ const handleSearchInput = () => {
     if (searchInput.value.trim().length === 0) {
       return
     }
-
-    loading.value = true
+    searchLoading.value = true
     searchResult.value = await StockApi.search(searchInput.value)
     console.log(searchInput.value, searchResult.value)
-    loading.value = false
+    searchLoading.value = false
   }, 300)
 }
+const searchTextFieldRef = ref(null)
+
+defineExpose({ clearAllInput, searchTextFieldRef })
 </script>
 
 <template>
@@ -71,34 +82,64 @@ const handleSearchInput = () => {
     max-width="720"
   >
     <v-card>
-      <div class="p-2">
-        <slot name="title"></slot>
-        {{ selected }}
-        <v-text-field
-          :loading="loading"
-          v-model="searchInput"
-          prepend-inner-icon="mdi-magnify"
-          label="'애플'을 검색해보세요"
-          variant="outlined"
-          hide-details
-          single-line
-          clearable
-          @input="handleSearchInput"
-        />
-        <div class="h-[200px]">
-          <v-row>
-            <v-col v-for="stock in searchResult" :key="stock.ticker" cols="12" md="6">
-              <div>
-                <div @click="toggle(stock.ticker)">
-                  {{ stock.ticker }}: {{ stock.stockNameKor }}
-                  <v-btn :icon="isSelected(stock.ticker) ? 'mdi-heart' : 'mdi-heart-outline'" />
-                </div>
-              </div>
-            </v-col>
-          </v-row>
+      <template v-slot:title><slot name="title"></slot></template>
+      <template v-slot:subtitle><slot name="subtitle"></slot></template>
+      <v-card-text>
+        <div>
+          <v-text-field
+            ref="searchTextFieldRef"
+            :loading="searchLoading"
+            v-model="searchInput"
+            prepend-inner-icon="mdi-magnify"
+            label="'애플'을 검색해보세요"
+            variant="outlined"
+            hide-details
+            single-line
+            clearable
+            density="comfortable"
+            @input="handleSearchInput"
+          />
+          <div class="my-2 h-8">
+            <v-chip
+              class="animate__animated animate__fadeInRight animate__faster"
+              v-for="s in selected"
+              :key="s[0]"
+              variant="tonal"
+              color="primary"
+              closable
+              @click:close="deselect(s[0])"
+            >
+              {{ s[1] }}
+            </v-chip>
+          </div>
+          <div class="overflow-y-auto overflow-x-hidden h-[40dvh]">
+            <StockItem
+              v-for="(stock, i) in searchResult"
+              :key="i"
+              :stock="stock"
+              type="default"
+              @click="toggle(stock)"
+              :selected="isSelected(stock.ticker)"
+            />
+          </div>
         </div>
-        <v-btn color="blue" @click="onSubmit(selected)" block>추가하기</v-btn>
-      </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-slide-y-transition>
+          <v-btn
+            v-if="selected.size > 0"
+            variant="flat"
+            :disabled="searchLoading || loading"
+            color="blue"
+            @click="onSubmit(selected)"
+            block
+            :loading="loading"
+            size="large"
+          >
+            <span>{{ selected.size }}개 추가하기</span>
+          </v-btn>
+        </v-slide-y-transition>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

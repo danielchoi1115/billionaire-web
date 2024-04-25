@@ -6,7 +6,6 @@ import router from './router'
 import { vuetify } from './common.js'
 import { createPinia } from 'pinia'
 import VueApexCharts from 'vue3-apexcharts'
-
 import {
   Chart,
   PieController,

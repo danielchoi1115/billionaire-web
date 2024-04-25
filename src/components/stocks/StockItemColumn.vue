@@ -8,15 +8,23 @@ defineProps({
   textColor: {
     type: String,
     default: 'text-neutral-700'
+  },
+  hideContent: {
+    type: Boolean,
+    default: false
   }
 })
 </script>
 <template>
   <v-col :cols="cols" class="flex flex-col" :class="'justify-' + justify">
-    <div class="text-base font-semibold flex gap-1 leading-6" :class="textColor">
+    <div
+      v-if="!hideContent"
+      class="text-base font-semibold flex gap-1 leading-6 select-none"
+      :class="textColor"
+    >
       <slot name="title"></slot>
     </div>
-    <div class="text-sm text-neutral-500">
+    <div v-if="!hideContent" class="text-sm text-neutral-500 select-none">
       <slot name="subtitle"></slot>
     </div>
   </v-col>

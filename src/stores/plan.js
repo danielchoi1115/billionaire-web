@@ -27,11 +27,6 @@ export const usePlanStore = defineStore('plan', () => {
     fetchPlan()
   }
 
-  const insertPlanStock = (account, stock) => {
-    account.stocks.push(stock)
-    console.log('Added to account: ', account.accNo, ' Stock: ', stock)
-  }
-
   const updatePlanStock = (account, stock) => {
     console.log(
       'PlanNo: ',
@@ -45,6 +40,28 @@ export const usePlanStore = defineStore('plan', () => {
       'quantity',
       Number(stock.quantity)
     )
+  }
+
+  // Plan 계좌에 주식 추가
+  const insertStocks = (account, tickers) => {
+    console.log('insertStocks: ', account)
+    console.log('insertStocks tickers: ', tickers)
+
+    tickers.forEach((t) => {
+      account.stocks.push({
+        ticker: t,
+        quantity: 1,
+        stockCurrency: 'KRW'
+      })
+    })
+    console.log(account)
+    console.log(data.value)
+  }
+
+  const deleteStocks = async (account, tickers) => {
+    console.log('deleteStocks', account)
+    console.log('deleteStocks tickers', tickers)
+    account.stocks = account.stocks.filter((s) => !tickers.includes(s.ticker))
   }
 
   const planSummary = computed(() => {
@@ -94,6 +111,7 @@ export const usePlanStore = defineStore('plan', () => {
     data.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
   )
   const accounts = () => data.value?.accounts
+
   return {
     isLoading,
     refresh,
@@ -101,7 +119,8 @@ export const usePlanStore = defineStore('plan', () => {
     totalBudgetAmount,
     accounts,
     updatePlanStock,
-    insertPlanStock,
-    hasData
+    hasData,
+    insertStocks,
+    deleteStocks
   }
 })

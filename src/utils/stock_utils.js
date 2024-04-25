@@ -8,3 +8,5 @@ const assetTypes = {
 }
 
 export const getAssetType = (assetClassCd) => assetTypes[assetClassCd]
+
+export const imgBaseUrl = 'src/assets/icons/'

@@ -1,10 +1,9 @@
 <script setup>
-import { toKRW, toUSD } from '@/utils'
+import { toKRW, toUSD, imgBaseUrl } from '@/utils'
 const props = defineProps({
   dividend: Object
 })
 const emit = defineEmits(['openDividendItemModal'])
-const imgBaseUrl = 'src/assets/icons/'
 </script>
 <template>
   <div

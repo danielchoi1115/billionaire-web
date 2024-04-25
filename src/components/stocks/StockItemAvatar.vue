@@ -1,5 +1,5 @@
 <script setup>
-const imgBaseUrl = 'src/assets/icons/'
+import { imgBaseUrl } from '@/utils'
 
 defineProps({
   color: {
@@ -17,16 +17,24 @@ defineProps({
     },
     default: 'stock'
   },
-  cols: Number
+  cols: Number,
+  selected: Boolean
 })
 </script>
 <template>
   <v-avatar v-if="iconType === 'stock'" :color="color" size="40">
+    <div
+      v-show="selected"
+      class="w-full h-full flex justify-center items-center absolute bg-[#323438c2]"
+    >
+      <v-icon size="30" icon="mdi-check" color="white"></v-icon>
+    </div>
     <figure class="w-8 h-8 flex justify-center items-center">
       <img
         :src="imgBaseUrl + iconUrl"
         alt="아바타 이미지"
         class="object-contain w-auto h-5 object-center"
+        draggable="false"
       />
     </figure>
   </v-avatar>
