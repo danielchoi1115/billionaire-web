@@ -4,6 +4,7 @@ import { nextTick } from 'vue'
 import { watch, ref } from 'vue'
 import StockItemAvatar from '@/components/stocks/StockItemAvatar.vue'
 import StockItemColumn from '@/components/stocks/StockItemColumn.vue'
+import { FileApi } from '@/services'
 const props = defineProps({
   stock: {
     type: Object,
@@ -91,8 +92,10 @@ function getAvatarColor() {
   return props.stock.stockBgColorHex || '#798599'
 }
 function getAvatarIcon() {
-  if (props.deposit === true) return props.account.accIconUrl
-  return props.stock.stockIconUrl || 'default-logo.png'
+  let iconUrl
+  if (props.deposit === true) iconUrl = props.account.accIconUrl
+  else iconUrl = props.stock.stockIconUrl || 'default-logo.svg'
+  return FileApi.getUrl(iconUrl)
 }
 </script>
 <template>

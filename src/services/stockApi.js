@@ -13,10 +13,9 @@ function filterStock(stocks, keyword) {
 
 const StockApi = {
   search: async (keyword) => {
-    console.log('keyword: ', keyword)
     if (!keyword) return []
-    let stocks = await generate_search_result()
-    return filterStock(stocks, keyword)
+    let res = await ApiClient.get(`/stocks`, { params: { keyword } })
+    return res.data.slice(0, 10)
   },
   update: async (stock) => {
     if (!stock || !stock.ticker) return {}

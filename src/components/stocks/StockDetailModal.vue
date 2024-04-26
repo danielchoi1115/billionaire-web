@@ -52,7 +52,7 @@ function getAvatarColor() {
 }
 function getAvatarIcon() {
   if (props.deposit === true) return props.account.accIconUrl
-  return props.stock.stockIconUrl || 'default-logo.png'
+  return props.stock.stockIconUrl || 'default-logo.svg'
 }
 const select = reactive({
   assetClass: {},

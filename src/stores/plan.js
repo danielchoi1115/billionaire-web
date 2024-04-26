@@ -2,60 +2,66 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { generate_plan_mst } from '@/utils/dummy_data_generator'
 import { calculateStockValueKRW, getAssetType } from '@/utils'
+import { PlanApi } from '@/services'
 
 export const usePlanStore = defineStore('plan', () => {
-  const data = ref(null)
+  const planData = ref(null)
   const isLoading = ref(false)
+  const planNo = ref(null)
 
-  const hasData = () => data.value != null
+  const hasData = () => planData.value != null
+  const setPlanNo = (val) => (planNo.value = val)
   const fetchPlan = async () => {
-    isLoading.value = true
-    try {
-      const res = await generate_plan_mst()
-      data.value = res
-      console.log('generate_plan_mst API 호출 완료!')
-      console.log(res)
-    } catch (error) {
-      console.log('generate_plan_mst API 호출 실패...')
-    } finally {
-      isLoading.value = false
+    const res = await PlanApi.getOnePlanMst(planNo.value)
+    if (res.status === 200) {
+      console.log('fetchPlan API 호출 완료!')
+      return res
+    } else {
+      console.log('fetchPlan API 호출 실패...')
+      return []
     }
   }
 
-  const refresh = () => {
+  const refresh = async () => {
+    console.log('refresh planStore')
     if (isLoading.value) return
-    fetchPlan()
+    if (!planNo.value) {
+      console.error('PlanNo must be set to refresh planStore')
+      return
+    }
+    isLoading.value = true
+    let res = await fetchPlan()
+    console.log('PlanStore refresh data', res.data)
+    planData.value = res.data
+    isLoading.value = false
   }
 
-  const updatePlanStock = (account, stock) => {
-    console.log(
-      'PlanNo: ',
-      data.value.planNo,
-      'AccNo',
-      account.accNo,
-      'planStockNo',
-      stock.planStockNo,
-      'ticker',
-      stock.ticker,
-      'quantity',
-      Number(stock.quantity)
-    )
+  const updatePlanStock = async (account, stock) => {
+    const d = {
+      planNo: planData.value.planNo,
+      accNo: account.accNo,
+      ticker: stock.ticker,
+      quantity: Number(stock.quantity)
+    }
+    console.debug('updatePlanStock call API', d)
+    const res = await PlanApi.updateStock(d)
+    return res.status === 200
   }
 
   // Plan 계좌에 주식 추가
-  const insertStocks = (account, tickers) => {
-    console.log('insertStocks: ', account)
-    console.log('insertStocks tickers: ', tickers)
+  const insertStocks = async (account, tickers) => {
+    console.debug('insertStocks: ', account)
+    console.debug('insertStocks tickers: ', tickers)
 
-    tickers.forEach((t) => {
-      account.stocks.push({
+    const promises = tickers.map(async (t) => {
+      const res = await PlanApi.insertStock(planData.value.planNo, account.accNo, {
         ticker: t,
-        quantity: 1,
-        stockCurrency: 'KRW'
+        quantity: 1
       })
+      console.log('Plan Stock inserted!', res.data)
     })
-    console.log(account)
-    console.log(data.value)
+    await Promise.all(promises)
+    await refresh()
   }
 
   const deleteStocks = async (account, tickers) => {
@@ -65,9 +71,9 @@ export const usePlanStore = defineStore('plan', () => {
   }
 
   const planSummary = computed(() => {
-    if (!data.value || !data.value.accounts) return []
+    if (!planData.value || !planData.value.accounts) return []
     let temp = []
-    data.value.accounts.forEach((account) => {
+    planData.value.accounts.forEach((account) => {
       let totalValue = 0
       account.stocks.forEach((stock) => {
         let assetClass = stock.assetCountryName + stock.assetClassName
@@ -108,19 +114,19 @@ export const usePlanStore = defineStore('plan', () => {
   }
 
   const totalBudgetAmount = computed(() =>
-    data.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
+    planData.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
   )
-  const accounts = () => data.value?.accounts
 
   return {
     isLoading,
     refresh,
     planSummary,
     totalBudgetAmount,
-    accounts,
+    planData,
     updatePlanStock,
     hasData,
     insertStocks,
-    deleteStocks
+    deleteStocks,
+    setPlanNo
   }
 })

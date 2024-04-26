@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BACKEND_API_BASE_URL } from '/src/config'
+import { BACKEND_API_BASE_URL, FILE_SERVER_BASE_URL } from '/src/configs'
 
 const backendInstance = axios.create({
   baseURL: BACKEND_API_BASE_URL,
@@ -13,9 +13,9 @@ const backendInstance = axios.create({
 //     'Content-Type': 'application/json'
 //   }
 // })
-// const fsInstance = axios.create({
-//   baseURL: FILE_SERVER_BASE_URL
-// })
+const fsInstance = axios.create({
+  baseURL: FILE_SERVER_BASE_URL
+})
 
 function appendAuthorization(config) {
   let authorization = localStorage.getItem('Authorization')
@@ -33,9 +33,9 @@ function printError(error) {
   }
 }
 function instanceResolver(type) {
-  // if (type === 'fs') {
-  //   return fsInstance
-  // }
+  if (type === 'fs') {
+    return fsInstance
+  }
   // if (type === 'ai') {
   //   return aiInstance
   // }
@@ -85,12 +85,25 @@ async function _put(url, data, config, instance) {
       return error
     })
 }
+async function _patch(url, data, config, instance) {
+  appendAuthorization(config)
+  return await instance
+    .patch(url, data, config)
+    .then((response) => response)
+    .catch((error) => {
+      printError(error)
+      return error
+    })
+}
 // Function to handle PUT requests
 async function put(url, data, config = {}, type) {
   const instance = instanceResolver(type)
   return await _put(url, data, config, instance)
 }
-
+async function patch(url, data, config = {}, type) {
+  const instance = instanceResolver(type)
+  return await _patch(url, data, config, instance)
+}
 // Function to handle DELETE requests
 function remove(url, config = {}, type) {
   appendAuthorization(config)
@@ -124,6 +137,7 @@ const ApiClient = {
   get: async (url, config, type) => await get(url, config, type),
   post: async (url, data, config, type) => await post(url, data, config, type),
   put: (url, data, config, type) => put(url, data, config, type),
+  patch: (url, data, config, type) => patch(url, data, config, type),
   delete: (url) => remove(url),
   setTokenOnLocalStorage: (token, userRole) => setTokenOnLocalStorage(token, userRole),
   removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),

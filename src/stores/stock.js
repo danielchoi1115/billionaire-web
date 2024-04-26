@@ -63,7 +63,7 @@ const stockPrices = [
     volume: 2059911
   },
   {
-    ticker: 'BRK/B',
+    ticker: 'BRK.B',
     tradeTimestamp: '2024-04-19T20:00:00.000+00:00',
     price: 405.08,
     volume: 3999913
@@ -73,5 +73,17 @@ const stockPrices = [
     tradeTimestamp: '2024-04-21T00:52:00.000+00:00',
     price: 312,
     volume: 8000
+  },
+  {
+    ticker: 'SGOV',
+    tradeTimestamp: '2024-04-21T00:52:00.000+00:00',
+    price: 100.62,
+    volume: 3200045
+  },
+  {
+    ticker: 'V',
+    tradeTimestamp: '2024-04-21T00:52:00.000+00:00',
+    price: 275.02,
+    volume: 3200045
   }
 ]

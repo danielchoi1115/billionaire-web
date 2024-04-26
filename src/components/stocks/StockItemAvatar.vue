@@ -8,7 +8,7 @@ defineProps({
   },
   iconUrl: {
     type: String,
-    default: 'default-logo.png'
+    default: 'default-logo.svg'
   },
   iconType: {
     type: String,
@@ -31,7 +31,7 @@ defineProps({
     </div>
     <figure class="w-8 h-8 flex justify-center items-center">
       <img
-        :src="imgBaseUrl + iconUrl"
+        :src="iconUrl"
         alt="아바타 이미지"
         class="object-contain w-auto h-5 object-center"
         draggable="false"

@@ -1,6 +1,7 @@
 <script setup>
 import StockItemAvatar from '@/components/stocks/StockItemAvatar.vue'
 import StockItemColumn from '@/components/stocks/StockItemColumn.vue'
+import { FileApi } from '@/services'
 defineProps({ disabled: Boolean })
 </script>
 <template>
@@ -9,7 +10,7 @@ defineProps({ disabled: Boolean })
     <div class="clickable-inner-wrapper py-2 transition-transform flex items-center">
       <v-row class="w-full">
         <v-col cols="1" class="flex items-center mr-4">
-          <StockItemAvatar color="#f3f5f6" icon-url="plus.png" />
+          <StockItemAvatar color="#f3f5f6" :icon-url="FileApi.getUrl('plus.svg')" />
         </v-col>
         <StockItemColumn>
           <template v-slot:title>

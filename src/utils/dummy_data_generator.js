@@ -77,7 +77,7 @@ export const generate_plan_mst = () => {
           },
           {
             planStockNo: 4,
-            ticker: 'BRK/B',
+            ticker: 'BRK.B',
             quantity: 1,
             stockCd: 'NYEBRK/B',
             exchCd: 'NYE',
@@ -229,7 +229,7 @@ export const generate_search_result = async () => {
     },
     {
       stockCd: 'NYSBRK/B',
-      ticker: 'BRK/B',
+      ticker: 'BRK.B',
       exchCd: 'NYS',
       stockNameKor: '버크셔 해서웨이 B',
       stockNameEng: 'BERKSHIRE HATHAWAY INC',

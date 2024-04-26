@@ -27,23 +27,43 @@ const { planSummary } = storeToRefs(planStore)
 //   }
 //   return []
 // })
-
-const series = [
-  {
-    name: '위험자산',
-    data: [
-      { x: '국내주식', y: 1029731 },
-      { x: '미국주식', y: 404128 }
-    ]
-  },
-  {
-    name: '안전자산',
-    data: [
-      { x: '현금(KRW)', y: 780900 },
-      { x: '현금(USD)', y: 215241 }
-    ]
-  }
-]
+const chartData = computed(() => {
+  const serise = [
+    {
+      name: '위험자산',
+      data: []
+    },
+    {
+      name: '안전자산',
+      data: []
+    }
+  ]
+  planSummary.value.forEach((p) => {
+    const chartDataItem = { x: p.assetClass, y: p.value }
+    if (p.assetType === '위험자산') {
+      serise[0].data.push(chartDataItem)
+    } else {
+      serise[1].data.push(chartDataItem)
+    }
+  })
+  return serise
+})
+// const series = [
+//   {
+//     name: '위험자산',
+//     data: [
+//       { x: '국내주식', y: 1029731 },
+//       { x: '미국주식', y: 404128 }
+//     ]
+//   },
+//   {
+//     name: '안전자산',
+//     data: [
+//       { x: '현금(KRW)', y: 780900 },
+//       { x: '현금(USD)', y: 215241 }
+//     ]
+//   }
+// ]
 
 const weightMap = computed(() =>
   planSummary.value.reduce((acc, cur) => {
@@ -120,7 +140,7 @@ onMounted(() => {})
       type="treemap"
       height="350"
       :options="chartOptions"
-      :series="series"
+      :series="chartData"
     ></apexchart>
   </div>
 </template>

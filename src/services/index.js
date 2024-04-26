@@ -1,4 +1,5 @@
 import PlanApi from './planApi'
 import StockApi from './stockApi'
+import FileApi from './fileApi'
 
-export { StockApi, PlanApi }
+export { StockApi, PlanApi, FileApi }

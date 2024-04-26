@@ -26,7 +26,7 @@ const { totalBudgetAmount } = storeToRefs(stockStore)
 onMounted(async () => {
   // let res = await PlanApi.getOnePlanMst(1)
   // planMst.value = res.data
-
+  await planStore.setPlanNo(1)
   await planStore.refresh()
   await stockStore.refresh()
 })

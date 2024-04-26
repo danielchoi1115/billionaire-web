@@ -3,7 +3,7 @@ import { ref, onBeforeMount, nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { StocksLayout } from '@/layouts'
 import { SearchBar, StockSearchResult, StockDetailModal } from '@/components'
-import { StockApi } from '@/services'
+import { StockApi, FileApi } from '@/services'
 
 const router = useRouter()
 const route = useRoute()
@@ -25,9 +25,6 @@ function initData() {}
 
 const keyword = ref('')
 const loading = ref(false)
-function print(e) {
-  console.log(e)
-}
 
 const selectedStock = ref({})
 const detailModalOpen = ref(false)

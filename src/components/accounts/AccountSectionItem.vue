@@ -72,8 +72,12 @@ function weightFrom(numerator, denominator) {
 }
 
 const updateQuantity = (oldObj, newObj) => {
-  Object.assign(oldObj, newObj)
-  planStore.updatePlanStock(props.account, newObj)
+  const result = planStore.updatePlanStock(props.account, newObj)
+  if (result) {
+    Object.assign(oldObj, newObj)
+  } else {
+    console.error('Could not update Quantity for stock', oldObj)
+  }
 }
 function addClicked() {
   if (accountEditMode.value) {

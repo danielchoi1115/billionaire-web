@@ -12,7 +12,7 @@ function getAvatarColor() {
 function getAvatarIcon() {
   return props.stock?.stockIconUrl
     ? imgBaseUrl + props.stock.stockIconUrl
-    : imgBaseUrl + 'default-logo.png'
+    : imgBaseUrl + 'default-logo.svg'
 }
 </script>
 
