@@ -46,14 +46,6 @@ async function update() {
     console.error('Could not update resource')
   }
 }
-function getAvatarColor() {
-  if (props.deposit === true) return props.account.accBgColorHex
-  return props.stock.stockBgColorHex || '#798599'
-}
-function getAvatarIcon() {
-  if (props.deposit === true) return props.account.accIconUrl
-  return props.stock.stockIconUrl || 'default-logo.svg'
-}
 const select = reactive({
   assetClass: {},
   assetCountry: {},
@@ -70,16 +62,11 @@ const select = reactive({
     <v-card>
       <template v-slot:title>
         <div class="flex items-center gap-4">
-          <v-avatar :color="getAvatarColor()" size="52">
-            <figure class="w-12 h-12 flex justify-center items-center">
-              <img
-                :src="imgBaseUrl + getAvatarIcon()"
-                alt="아바타 이미지"
-                class="object-contain w-auto h-6 object-center"
-                draggable="false"
-              />
-            </figure>
-          </v-avatar>
+          <StockItemAvatar
+            :color="props.stock.stockBgColorHex"
+            :icon-url="props.stock.stockIconUrl"
+            :size="52"
+          />
           <div>
             <div>
               <span class="mr-2">{{ stock.stockNameKor }}</span>

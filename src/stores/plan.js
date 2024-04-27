@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { generate_plan_mst } from '@/utils/dummy_data_generator'
-import { calculateStockValueKRW, getAssetType } from '@/utils'
+import { calculateStockValueKRW, getAssetType, HttpStatus } from '@/utils'
 import { PlanApi } from '@/services'
+import { useToast } from 'vue-toastification'
 
 export const usePlanStore = defineStore('plan', () => {
   const planData = ref(null)
   const isLoading = ref(false)
   const planNo = ref(null)
-
+  const toast = useToast()
   const hasData = () => planData.value != null
   const setPlanNo = (val) => (planNo.value = val)
   const fetchPlan = async () => {
@@ -23,7 +24,6 @@ export const usePlanStore = defineStore('plan', () => {
   }
 
   const refresh = async () => {
-    console.log('refresh planStore')
     if (isLoading.value) return
     if (!planNo.value) {
       console.error('PlanNo must be set to refresh planStore')
@@ -31,7 +31,6 @@ export const usePlanStore = defineStore('plan', () => {
     }
     isLoading.value = true
     let res = await fetchPlan()
-    console.log('PlanStore refresh data', res.data)
     planData.value = res.data
     isLoading.value = false
   }
@@ -65,9 +64,15 @@ export const usePlanStore = defineStore('plan', () => {
   }
 
   const deleteStocks = async (account, tickers) => {
-    console.log('deleteStocks', account)
-    console.log('deleteStocks tickers', tickers)
-    account.stocks = account.stocks.filter((s) => !tickers.includes(s.ticker))
+    let d = {
+      planNo: planData.value.planNo,
+      accNo: account.accNo,
+      params: {
+        tickers: tickers.join(',')
+      }
+    }
+    let res = await PlanApi.deleteStocks(d)
+    return res.status === HttpStatus.OK
   }
 
   const planSummary = computed(() => {

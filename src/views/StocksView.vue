@@ -10,21 +10,14 @@ const route = useRoute()
 const searchResult = ref([])
 onMounted(async () => {})
 
-async function onSearch() {
-  loading.value = true
-  setTimeout(async () => {
-    searchResult.value = await StockApi.search(keyword.value)
-    loading.value = false
-  }, 500)
+const handleSearchInput = async (searchInput) => {
+  console.log('parent: handlesearchinput started')
+  searchResult.value = await StockApi.keywordSearch(searchInput)
 }
-
 onBeforeMount(() => {
   initData()
 })
 function initData() {}
-
-const keyword = ref('')
-const loading = ref(false)
 
 const selectedStock = ref({})
 const detailModalOpen = ref(false)
@@ -42,7 +35,7 @@ function openModal(stock) {
   <main>
     <StocksLayout>
       <template v-slot:searchBar>
-        <SearchBar v-model="keyword" :loading="loading" @search="onSearch" />
+        <SearchBar :searchHandler="handleSearchInput" />
       </template>
       <template v-slot:stockList>
         <StockSearchResult :stocks="searchResult" :onClick="openModal" />

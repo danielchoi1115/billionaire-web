@@ -1,5 +1,5 @@
 <script setup>
-import { AccountSectionItem, StockMultiPickerModal } from '@/components'
+import { AccountSectionItem, StockDetailModal, StockMultiPickerModal } from '@/components'
 import { ref } from 'vue'
 import { usePlanStore } from '@/stores'
 import { nextTick } from 'vue'
@@ -37,14 +37,26 @@ async function onSubmit(stockMap) {
   pickerModalOpen.value = false
   stockMultiPickerModalRef.value.clearAllInput()
 }
+
+function onStockClick(stock) {
+  console.log('onStockClick', stock)
+  selectedStock.value = stock
+  detailModalOpen.value = true
+}
+const selectedStock = ref({})
+const autoSort = ref(true)
+const detailModalOpen = ref(false)
 </script>
 
 <template>
+  <v-switch v-model="autoSort" color="primary" label="자동정렬" hide-details />
   <AccountSectionItem
     v-for="(account, i) in planData?.accounts"
     :key="i"
     :account="account"
     :onAddClick="onAddClick"
+    :onStockClick="onStockClick"
+    :autoSort="autoSort"
   />
 
   <StockMultiPickerModal
@@ -56,4 +68,6 @@ async function onSubmit(stockMap) {
     <template v-slot:title> 주식 추가하기 </template>
     <template v-slot:subtitle> Portfolio for {{ selectedAccount.accName }} </template>
   </StockMultiPickerModal>
+
+  <StockDetailModal v-model="detailModalOpen" :stock="selectedStock" />
 </template>

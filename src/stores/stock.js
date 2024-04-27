@@ -1,33 +1,31 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-
-async function getStockPrices() {
-  return stockPrices
-}
+import { StockApi } from '@/services'
 
 export const useStockStore = defineStore('stock', () => {
-  const data = ref()
+  const stockData = ref([])
   const isLoading = ref(false)
 
-  const fetchStockPrices = async () => {
-    isLoading.value = true
-    try {
-      const res = await getStockPrices()
-      data.value = res
-      console.log('getStockPrices API 호출 완료!')
-    } catch (error) {
-      console.log('getStockPrices API 호출 실패...')
-    } finally {
-      isLoading.value = false
+  const fetchStockPricesByTickers = async (tickers) => {
+    let res = StockApi.tickerSearch(tickers)
+    if (res?.status === 200) {
+      console.log(res)
+      stockData.value = res.data
     }
   }
-  const refresh = () => {
-    if (isLoading.value) return
-    fetchStockPrices()
-  }
+  // const refresh = async () => {
+  //   if (isLoading.value) return
+  //   isLoading.value = true
+  //   let res = await fetchStockPricesByTickers()
+  //   if (res?.status === 200) {
+  //     console.log(res)
+  //     stockData.value = res.data
+  //   }
+  //   isLoading.value = false
+  // }
   const priceMap = computed(() => {
     let tempMap = {}
-    data.value?.forEach((stock) => {
+    stockData.value?.forEach((stock) => {
       tempMap[stock.ticker] = stock
     })
     return tempMap
@@ -40,50 +38,5 @@ export const useStockStore = defineStore('stock', () => {
   const updateStock = (stock) => {
     console.log(stock)
   }
-  return { isLoading, refresh, priceMap, getPrice, updateStock }
+  return { isLoading, fetchStockPricesByTickers, priceMap, getPrice, updateStock }
 })
-
-const stockPrices = [
-  {
-    ticker: 'AAPL',
-    tradeTimestamp: '2024-04-21T00:50:00.000+00:00',
-    price: 146,
-    volume: 9600
-  },
-  {
-    ticker: '458730',
-    tradeTimestamp: '2024-04-19T06:30:00.000+00:00',
-    price: 11150,
-    volume: 1069443
-  },
-  {
-    ticker: '316140',
-    tradeTimestamp: '2024-04-19T06:30:00.000+00:00',
-    price: 13540,
-    volume: 2059911
-  },
-  {
-    ticker: 'BRK.B',
-    tradeTimestamp: '2024-04-19T20:00:00.000+00:00',
-    price: 405.08,
-    volume: 3999913
-  },
-  {
-    ticker: 'MSFT',
-    tradeTimestamp: '2024-04-21T00:52:00.000+00:00',
-    price: 312,
-    volume: 8000
-  },
-  {
-    ticker: 'SGOV',
-    tradeTimestamp: '2024-04-21T00:52:00.000+00:00',
-    price: 100.62,
-    volume: 3200045
-  },
-  {
-    ticker: 'V',
-    tradeTimestamp: '2024-04-21T00:52:00.000+00:00',
-    price: 275.02,
-    volume: 3200045
-  }
-]

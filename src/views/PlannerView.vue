@@ -6,7 +6,8 @@ import {
   PlannerSummaryAccounts,
   PlannerTab,
   PlanAccounts,
-  PortfolioTreemap
+  PortfolioTreemap,
+  StockDetailModal
 } from '@/components'
 
 import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
@@ -28,7 +29,6 @@ onMounted(async () => {
   // planMst.value = res.data
   await planStore.setPlanNo(1)
   await planStore.refresh()
-  await stockStore.refresh()
 })
 
 const weights = computed(() =>

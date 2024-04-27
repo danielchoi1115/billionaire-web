@@ -12,6 +12,9 @@ const PlanApi = {
       `/plans/${data.planNo}/accounts/${data.accNo}/stocks/${data.ticker}`,
       data
     )
+  },
+  deleteStocks: async (config) => {
+    return await ApiClient.delete(`/plans/${config.planNo}/accounts/${config.accNo}/stocks`, config)
   }
 }
 

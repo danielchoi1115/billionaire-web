@@ -22,11 +22,8 @@ const toUSD = (amount, currencyFrom) => {
 }
 
 function calculateStockValueKRW(stock) {
-  const store = useStockStore()
-
   if (!stock) return 0
-  let price = store.getPrice(stock.ticker)
-  return toKRW(price, stock.stockCurrency) * stock.quantity
+  return toKRW(stock.price, stock.stockCurrency) * stock.quantity
 }
 
 export { toKRW, toUSD, calculateStockValueKRW }

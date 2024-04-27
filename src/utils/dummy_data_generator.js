@@ -19,7 +19,7 @@ export const generate_plan_mst = () => {
             planStockNo: 1,
             ticker: '316140',
             quantity: 5,
-            stockCd: 'KR7316140003',
+            kisCd: 'KR7316140003',
             exchCd: 'KOSPI',
             stockNameKor: '우리금융지주',
             stockCurrency: 'KRW',
@@ -35,7 +35,7 @@ export const generate_plan_mst = () => {
             planStockNo: 2,
             ticker: '458730',
             quantity: 10,
-            stockCd: 'KR7316140003',
+            kisCd: 'KR7316140003',
             exchCd: 'KOSPI',
             stockNameKor: 'TIGER 미국배당다우존스',
             stockCurrency: 'KRW',
@@ -63,7 +63,7 @@ export const generate_plan_mst = () => {
             planStockNo: 3,
             ticker: 'AAPL',
             quantity: 2,
-            stockCd: 'NASAAPL',
+            kisCd: 'NASAAPL',
             exchCd: 'NAS',
             stockNameKor: '애플',
             stockCurrency: 'USD',
@@ -79,7 +79,7 @@ export const generate_plan_mst = () => {
             planStockNo: 4,
             ticker: 'BRK.B',
             quantity: 1,
-            stockCd: 'NYEBRK/B',
+            kisCd: 'NYEBRK/B',
             exchCd: 'NYE',
             stockNameKor: '버크셔 해서웨이 B',
             stockCurrency: 'USD',
@@ -107,7 +107,7 @@ export const generate_plan_mst = () => {
             planStockNo: 5,
             ticker: '458730',
             quantity: 26,
-            stockCd: 'KR7316140003',
+            kisCd: 'KR7316140003',
             exchCd: 'KOSPI',
             stockNameKor: 'TIGER 미국배당다우존스',
             stockCurrency: 'KRW',
@@ -128,7 +128,7 @@ export const generate_plan_mst = () => {
 export const generate_search_result = async () => {
   return [
     {
-      stockCd: 'KR7000660001',
+      kisCd: 'KR7000660001',
       ticker: '000660',
       exchCd: 'KOSPI',
       stockNameKor: 'SK하이닉스',
@@ -148,7 +148,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'KR7005380001',
+      kisCd: 'KR7005380001',
       ticker: '005380',
       exchCd: 'KOSPI',
       stockNameKor: '현대차',
@@ -168,7 +168,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'KR7005930003',
+      kisCd: 'KR7005930003',
       ticker: '005930',
       exchCd: 'KOSPI',
       stockNameKor: '삼성전자',
@@ -188,7 +188,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'KR7105560007',
+      kisCd: 'KR7105560007',
       ticker: '105560',
       exchCd: 'KOSPI',
       stockNameKor: 'KB금융',
@@ -208,7 +208,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'NASAAPL',
+      kisCd: 'NASAAPL',
       ticker: 'AAPL',
       exchCd: 'NAS',
       stockNameKor: '애플',
@@ -228,7 +228,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'NYSBRK/B',
+      kisCd: 'NYSBRK/B',
       ticker: 'BRK.B',
       exchCd: 'NYS',
       stockNameKor: '버크셔 해서웨이 B',
@@ -248,7 +248,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'NYSLLY',
+      kisCd: 'NYSLLY',
       ticker: 'LLY',
       exchCd: 'NYS',
       stockNameKor: '일라이 릴리',
@@ -268,7 +268,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'NASMETA',
+      kisCd: 'NASMETA',
       ticker: 'META',
       exchCd: 'NAS',
       stockNameKor: '메타 플랫폼스(페이스북)',
@@ -288,7 +288,7 @@ export const generate_search_result = async () => {
       MODIFIED_BY: 'KIS_CRAWLER'
     },
     {
-      stockCd: 'NASMSFT',
+      kisCd: 'NASMSFT',
       ticker: 'MSFT',
       exchCd: 'NAS',
       stockNameKor: '마이크로소프트',

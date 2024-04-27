@@ -18,11 +18,11 @@ const fsInstance = axios.create({
 })
 
 function appendAuthorization(config) {
-  let authorization = localStorage.getItem('Authorization')
-  if (config.headers === undefined) {
-    config['headers'] = {}
-  }
-  config.headers['Authorization'] = authorization
+  // let authorization = localStorage.getItem('Authorization')
+  // if (config.headers === undefined) {
+  //   config['headers'] = {}
+  // }
+  // config.headers['Authorization'] = authorization
 }
 function printError(error) {
   if (error.response) {
@@ -42,11 +42,8 @@ function instanceResolver(type) {
   return backendInstance
 }
 
-async function get(url, config = {}, type = null) {
+async function _get(url, config = {}, type) {
   const instance = instanceResolver(type)
-  return await _get(url, config, instance)
-}
-async function _get(url, config = {}, instance) {
   appendAuthorization(config)
   return await instance
     .get(url, config)
@@ -60,7 +57,8 @@ async function _get(url, config = {}, instance) {
 }
 
 // Function to handle POST requests
-async function _post(url, data, config, instance) {
+async function _post(url, data, config, type) {
+  const instance = instanceResolver(type)
   appendAuthorization(config)
   return await instance
     .post(url, data, config)
@@ -70,12 +68,9 @@ async function _post(url, data, config, instance) {
       return error
     })
 }
-async function post(url, data, config = {}, type) {
-  const instance = instanceResolver(type)
-  return await _post(url, data, config, instance)
-}
 
-async function _put(url, data, config, instance) {
+async function _put(url, data, config, type) {
+  const instance = instanceResolver(type)
   appendAuthorization(config)
   return await instance
     .put(url, data, config)
@@ -85,7 +80,8 @@ async function _put(url, data, config, instance) {
       return error
     })
 }
-async function _patch(url, data, config, instance) {
+async function _patch(url, data, config, type) {
+  const instance = instanceResolver(type)
   appendAuthorization(config)
   return await instance
     .patch(url, data, config)
@@ -95,19 +91,10 @@ async function _patch(url, data, config, instance) {
       return error
     })
 }
-// Function to handle PUT requests
-async function put(url, data, config = {}, type) {
-  const instance = instanceResolver(type)
-  return await _put(url, data, config, instance)
-}
-async function patch(url, data, config = {}, type) {
-  const instance = instanceResolver(type)
-  return await _patch(url, data, config, instance)
-}
 // Function to handle DELETE requests
-function remove(url, config = {}, type) {
-  appendAuthorization(config)
+function _delete(url, config = {}, type) {
   const instance = instanceResolver(type)
+  appendAuthorization(config)
   return instance
     .delete(url, config)
     .then((response) => response)
@@ -134,14 +121,14 @@ async function me() {
 }
 
 const ApiClient = {
-  get: async (url, config, type) => await get(url, config, type),
-  post: async (url, data, config, type) => await post(url, data, config, type),
-  put: (url, data, config, type) => put(url, data, config, type),
-  patch: (url, data, config, type) => patch(url, data, config, type),
-  delete: (url) => remove(url),
-  setTokenOnLocalStorage: (token, userRole) => setTokenOnLocalStorage(token, userRole),
-  removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),
-  me: () => me()
+  get: (url, config, type) => _get(url, config, type),
+  post: (url, data, config, type) => _post(url, data, config, type),
+  put: (url, data, config, type) => _put(url, data, config, type),
+  patch: (url, data, config, type) => _patch(url, data, config, type),
+  delete: (url, config, type) => _delete(url, config, type)
+  // setTokenOnLocalStorage: (token, userRole) => setTokenOnLocalStorage(token, userRole),
+  // removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),
+  // me: () => me()
 }
 
 export default ApiClient

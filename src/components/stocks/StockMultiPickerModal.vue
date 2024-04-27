@@ -64,7 +64,7 @@ const handleSearchInput = () => {
       return
     }
     searchLoading.value = true
-    searchResult.value = await StockApi.search(searchInput.value)
+    searchResult.value = await StockApi.keywordSearch(searchInput.value)
     searchLoading.value = false
   }, 300)
 }

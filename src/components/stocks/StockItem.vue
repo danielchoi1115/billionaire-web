@@ -32,6 +32,7 @@ const emits = defineEmits(['update:quantity'])
 const quantitySelected = ref(false)
 
 const quantityTextField = ref(null)
+
 const escapePressed = ref(false)
 
 watch(quantitySelected, (val) => {
@@ -43,10 +44,8 @@ watch(quantitySelected, (val) => {
 })
 
 function resetQuantity() {
-  nextTick(() => {
-    escapePressed.value = true
-    quantitySelected.value = false
-  })
+  escapePressed.value = true
+  quantitySelected.value = false
 }
 
 function submitQuantity(e) {
@@ -63,10 +62,8 @@ function submitQuantity(e) {
     newStock.quantity = e.target.value
     emits('update:quantity', newStock)
   }
-  nextTick(() => {
-    escapePressed.value = false
-    quantitySelected.value = false
-  })
+  escapePressed.value = false
+  quantitySelected.value = false
 }
 const rules = {
   nonNegative: (value) => Number(value) >= 0 || ''
@@ -89,27 +86,27 @@ function stockPriceColor(stock) {
 }
 function getAvatarColor() {
   if (props.deposit === true) return props.account.accBgColorHex
-  return props.stock.stockBgColorHex || '#798599'
+  return props.stock.stockBgColorHex
 }
 function getAvatarIcon() {
-  let iconUrl
-  if (props.deposit === true) iconUrl = props.account.accIconUrl
-  else iconUrl = props.stock.stockIconUrl || 'default-logo.svg'
-  return FileApi.getUrl(iconUrl)
+  if (props.deposit === true) return props.account.accIconUrl
+  else return props.stock.stockIconUrl
 }
 </script>
 <template>
   <div
+    type="stockitem-wrapper"
     class="px-2 mb-1 transition-colors rounded-lg relative cursor-pointer"
     :class="{ 'bg-neutral-200': selected }"
   >
-    <div class="clickable-wrapper__overlay absolute top-0 left-0 rounded-lg w-full h-full"></div>
+    <div class="clickable-wrapper__overlay absolute top-0 left-0 rounded-lg w-full h-full" />
+
     <div
       class="clickable-inner-wrapper py-2 flex items-center"
       :class="type === 'default' ? 'clickable-inner-wrapper' : ''"
     >
       <v-row class="w-full">
-        <v-col cols="1" class="flex items-center mr-4 relative">
+        <v-col cols="1" class="flex items-center mr-4">
           <StockItemAvatar
             :color="getAvatarColor()"
             :icon-url="getAvatarIcon()"

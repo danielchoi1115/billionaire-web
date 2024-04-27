@@ -11,7 +11,9 @@ const planStore = usePlanStore()
 const toast = useToast()
 const props = defineProps({
   account: Object,
-  onAddClick: Function
+  onAddClick: Function,
+  onStockClick: Function,
+  autoSort: Boolean
 })
 
 const totalStockPrice = computed(() => calculateTotalStockPrice(props.account))
@@ -22,20 +24,31 @@ const weights = computed(() =>
     return acc
   }, {})
 )
-const sortedStocks = computed(() =>
-  [...props.account.stocks]?.sort((a, b) => calculateStockValueKRW(b) - calculateStockValueKRW(a))
-)
+const sortedStocks = computed(() => {
+  if (!props.autoSort) {
+    return props.account.stocks
+  }
+  return [...props.account.stocks]?.sort(
+    (a, b) => calculateStockValueKRW(b) - calculateStockValueKRW(a)
+  )
+})
 
 function calculateTotalStockPrice(account) {
   return account?.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
 }
 const selected = ref(new Set())
-const toggleOnEditMode = (ticker) => {
-  if (!accountEditMode.value) return
-  if (isSelected(ticker)) {
-    deselect(ticker)
+const handleStockClick = (event, stock) => {
+  if (!accountEditMode.value) {
+    if (event.target.getAttribute('type') === 'stockitem-wrapper') {
+      props.onStockClick(stock)
+    }
+    return
+  }
+
+  if (isSelected(stock.ticker)) {
+    deselect(stock.ticker)
   } else {
-    selected.value.add(ticker)
+    selected.value.add(stock.ticker)
   }
 }
 const isSelected = (ticker) => selected.value.has(ticker)
@@ -54,17 +67,21 @@ const discardAccountChanges = () => {
 const loading = reactive({
   delete: false
 })
-const onDeletePlanStock = async (stock) => {
-  console.log('onDelete', stock)
+const onDeletePlanStock = async () => {
   loading.delete = true
-  await planStore.deleteStocks(props.account, Array.from(selected.value))
-  setTimeout(() => {
-    loading.delete = false
-    accountEditMode.value = false
-    toast.success('삭제되었습니다', {
+  let result = await planStore.deleteStocks(props.account, Array.from(selected.value))
+  if (result) {
+    toast.success('성공적으로 삭제했습니다.', {
       timeout: 2000
     })
-  }, 1000)
+    await planStore.refresh()
+  } else {
+    toast.success('삭제에 실패하였습니다.', {
+      timeout: 2000
+    })
+  }
+  loading.delete = false
+  accountEditMode.value = false
 }
 
 function weightFrom(numerator, denominator) {
@@ -137,7 +154,7 @@ function addClicked() {
         :weight="weights[stock?.ticker]"
         @update:quantity="(arg) => updateQuantity(stock, arg)"
         :accountEditMode="accountEditMode"
-        @click="toggleOnEditMode(stock.ticker)"
+        @click="(e) => handleStockClick(e, stock)"
         :selected="isSelected(stock.ticker)"
       />
       <StockItem

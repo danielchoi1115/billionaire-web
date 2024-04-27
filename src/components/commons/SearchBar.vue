@@ -2,27 +2,29 @@
 import { ref } from 'vue'
 
 const props = defineProps({
-  modelValue: String,
-  loading: Boolean
+  searchHandler: Function
 })
 
-const keyword = ref(props.modelValue)
+const searchInput = ref('')
+const searchLoading = ref(false)
 
-const emits = defineEmits(['search', 'update:modelValue'])
-
-function submit() {
-  if (keyword.value.trim().length === 0 || props.loading) return
-  emits('search')
-}
-
+let timeout
 function onInput() {
-  emits('update:modelValue', keyword.value)
+  clearTimeout(timeout)
+  timeout = setTimeout(async () => {
+    if (searchInput.value.trim().length === 0) {
+      return
+    }
+    searchLoading.value = true
+    await props.searchHandler(searchInput.value)
+    searchLoading.value = false
+  }, 300)
 }
 </script>
 <template>
   <v-text-field
-    :loading="loading"
-    v-model="keyword"
+    :loading="searchLoading"
+    v-model="searchInput"
     prepend-inner-icon="mdi-magnify"
     label="'애플'을 검색해보세요"
     variant="outlined"
@@ -30,8 +32,5 @@ function onInput() {
     single-line
     clearable
     @input="onInput"
-    :disabled="loading"
-    @click:append-inner="submit"
-    @keydown.enter="submit"
   />
 </template>

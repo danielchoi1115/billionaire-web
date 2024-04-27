@@ -12,10 +12,14 @@ function filterStock(stocks, keyword) {
 }
 
 const StockApi = {
-  search: async (keyword) => {
+  keywordSearch: async (keyword) => {
     if (!keyword) return []
     let res = await ApiClient.get(`/stocks`, { params: { keyword } })
     return res.data.slice(0, 10)
+  },
+  tickerSearch: async (tickers) => {
+    if (!tickers || tickers.isEmpty()) return []
+    return await ApiClient.get(`/stocks`, { params: { tickers } })
   },
   update: async (stock) => {
     if (!stock || !stock.ticker) return {}
