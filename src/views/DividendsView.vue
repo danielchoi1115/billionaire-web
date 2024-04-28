@@ -29,7 +29,7 @@ const dividendsData = reactive({
           accoundName: 'ISA',
           amount: 1400,
           currency: 'KRW',
-          iconUrl: 'moneybag.png',
+          iconUrl: 'moneybag.svg',
           bgColorHex: '#F18321'
         },
         {
@@ -42,7 +42,7 @@ const dividendsData = reactive({
           accoundName: 'ISA',
           amount: 2800,
           currency: 'KRW',
-          iconUrl: 'krx_316140.png',
+          iconUrl: 'woori-financial-group.svg',
           bgColorHex: '#B0D8F1'
         }
       ]
@@ -62,7 +62,7 @@ const dividendsData = reactive({
           accoundName: '일반',
           amount: 2.5,
           currency: 'USD',
-          iconUrl: 'moneybag.png',
+          iconUrl: 'moneybag.svg',
           bgColorHex: '#96151D'
         },
         {
@@ -75,7 +75,7 @@ const dividendsData = reactive({
           accoundName: 'ISA',
           amount: 2800,
           currency: 'KRW',
-          iconUrl: 'moneybag.png',
+          iconUrl: 'moneybag.svg',
           bgColorHex: '#F18321'
         },
         {
@@ -88,7 +88,7 @@ const dividendsData = reactive({
           accoundName: 'ISA',
           amount: 2800,
           currency: 'KRW',
-          iconUrl: 'krx_316140.png',
+          iconUrl: 'woori-financial-group.svg',
           bgColorHex: '#B0D8F1'
         }
       ]
