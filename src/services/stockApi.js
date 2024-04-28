@@ -21,9 +21,13 @@ const StockApi = {
     if (!tickers || tickers.isEmpty()) return []
     return await ApiClient.get(`/stocks`, { params: { tickers } })
   },
+  getByTicker: async (ticker) => {
+    if (!ticker) return {}
+    return await ApiClient.get(`/stocks/${ticker}`)
+  },
   update: async (stock) => {
     if (!stock || !stock.ticker) return {}
-    return await ApiClient.put(`/stocks/${stock.ticker}`, stock)
+    return await ApiClient.patch(`/stocks/${stock.ticker}`, stock)
   }
 }
 export default StockApi

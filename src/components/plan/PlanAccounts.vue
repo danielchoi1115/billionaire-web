@@ -10,6 +10,16 @@ const planStore = usePlanStore()
 const { planData } = storeToRefs(planStore)
 const pickerModalOpen = ref(false)
 const toast = useToast()
+const selectedAccount = ref({})
+
+const submitLoading = ref(false)
+
+const stockMultiPickerModalRef = ref(null)
+
+const selectedTicker = ref({})
+const autoSort = ref(true)
+const detailModalOpen = ref(false)
+
 function onAddClick(account) {
   selectedAccount.value = account
   pickerModalOpen.value = true
@@ -17,13 +27,8 @@ function onAddClick(account) {
     stockMultiPickerModalRef.value.searchTextFieldRef.focus()
   })
 }
-const selectedAccount = ref({})
 
-const submitLoading = ref(false)
-
-const stockMultiPickerModalRef = ref(null)
-
-async function onSubmit(stockMap) {
+async function onChangeQuantity(stockMap) {
   submitLoading.value = true
   let tickers = []
   stockMap.forEach((k, v) => tickers.push(v))
@@ -39,13 +44,18 @@ async function onSubmit(stockMap) {
 }
 
 function onStockClick(stock) {
-  console.log('onStockClick', stock)
-  selectedStock.value = stock
+  console.log('onStockClick', stock.ticker)
+  selectedTicker.value = stock.ticker
   detailModalOpen.value = true
 }
-const selectedStock = ref({})
-const autoSort = ref(true)
-const detailModalOpen = ref(false)
+
+async function onUpdateStock() {
+  submitLoading.value = true
+  await planStore.refresh()
+  submitLoading.value = false
+  detailModalOpen.value = false
+  toast.success('변경사항이 저장되었습니다.')
+}
 </script>
 
 <template>
@@ -62,12 +72,16 @@ const detailModalOpen = ref(false)
   <StockMultiPickerModal
     ref="stockMultiPickerModalRef"
     v-model="pickerModalOpen"
-    @submit="onSubmit"
+    @submit="onChangeQuantity"
     :loading="submitLoading"
   >
     <template v-slot:title> 주식 추가하기 </template>
     <template v-slot:subtitle> Portfolio for {{ selectedAccount.accName }} </template>
   </StockMultiPickerModal>
 
-  <StockDetailModal v-model="detailModalOpen" :stock="selectedStock" />
+  <StockDetailModal
+    v-model="detailModalOpen"
+    :ticker="selectedTicker"
+    :onAfterSubmit="onUpdateStock"
+  />
 </template>

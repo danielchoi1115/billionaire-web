@@ -12,6 +12,10 @@ defineProps({
   hideContent: {
     type: Boolean,
     default: false
+  },
+  colorSubtitle: {
+    type: String,
+    default: 'text-neutral-500'
   }
 })
 </script>
@@ -24,7 +28,7 @@ defineProps({
     >
       <slot name="title"></slot>
     </div>
-    <div v-if="!hideContent" class="text-sm text-neutral-500 select-none">
+    <div v-if="!hideContent" class="text-sm select-none" :class="colorSubtitle">
       <slot name="subtitle"></slot>
     </div>
   </v-col>

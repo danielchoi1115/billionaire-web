@@ -100,7 +100,6 @@ function getAvatarIcon() {
     :class="{ 'bg-neutral-200': selected }"
   >
     <div class="clickable-wrapper__overlay absolute top-0 left-0 rounded-lg w-full h-full" />
-
     <div
       class="clickable-inner-wrapper py-2 flex items-center"
       :class="type === 'default' ? 'clickable-inner-wrapper' : ''"
