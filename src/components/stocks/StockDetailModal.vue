@@ -17,7 +17,7 @@ const props = defineProps({
 })
 const commonStore = useCommonStore()
 const userStore = useUserStore()
-const emit = defineEmits(['update:modelValue', 'update:stock'])
+const emit = defineEmits(['update:modelValue'])
 const edited = ref(false)
 const editedStock = ref({})
 const toast = useToast()
@@ -26,19 +26,35 @@ const submitLoading = ref(false)
 const loadedStock = ref({})
 
 watch(
-  () => props.ticker,
-  async (newVal) => {
-    let result = await loadStock(newVal)
-    loadedStock.value = result
-    Object.assign(editedStock.value, result)
-    select.assetClass = { code: result.assetClassCd, name: result.assetClassName }
-    select.assetCountry = { code: result.assetCountryCd, name: result.assetCountryName }
-    select.currency = {
-      code: result.stockCurrency,
-      name: commonStore.getCurrency(result.stockCurrency)
-    }
+  () => props.modelValue,
+  async (newVal, oldVal) => {
+    if (oldVal && !newVal) return
+    loadedStock.value = await loadStock(props.ticker)
+    resetStockInfo()
+    resetAvatar()
   }
 )
+
+function resetStockInfo() {
+  Object.assign(editedStock.value, loadedStock.value)
+  select.assetClass = {
+    code: loadedStock.value.assetClassCd,
+    name: loadedStock.value.assetClassName
+  }
+  select.assetCountry = {
+    code: loadedStock.value.assetCountryCd,
+    name: loadedStock.value.assetCountryName
+  }
+  select.currency = {
+    code: loadedStock.value.stockCurrency,
+    name: commonStore.getCurrency(loadedStock.value.stockCurrency)
+  }
+}
+function resetAvatar() {
+  select.bgColorHex = editedStock.value.stockBgColorHex
+  select.iconUrl = editedStock.value.stockIconUrl
+}
+
 async function loadStock(ticker) {
   stockLoading.value = true
   let res = await StockApi.getByTicker(ticker)
@@ -74,8 +90,6 @@ async function onSubmit() {
   }
 
   editedStock.value.modifiedBy = userNo
-  console.log(this, `stock update API Call`, editedStock.value)
-
   let res = await StockApi.update(editedStock.value)
   if (res.status === 200) {
     // Object.assign(props.stock, editedStock.value)
@@ -91,6 +105,18 @@ const select = reactive({
   assetCountry: { code: '', name: '' },
   currency: { code: '', name: '' }
 })
+
+const avatarPickerDialogOpen = ref(false)
+function onAvatarClicked() {
+  avatarPickerDialogOpen.value = true
+}
+
+function handleAvatarDialogClosed(val) {
+  if (!val) {
+    resetAvatar()
+    avatarPickerDialogOpen.value = false
+  }
+}
 </script>
 <template>
   <v-dialog
@@ -101,31 +127,64 @@ const select = reactive({
   >
     <v-card>
       <template v-slot:title>
-        <v-skeleton-loader :loading="stockLoading" class="mx-auto" type="avatar, sentences">
+        <div class="flex justify-between w-full">
+          <!--          <v-skeleton-loader-->
+          <!--            color="transparent"-->
+          <!--            :loading="stockLoading"-->
+          <!--            class="mx-auto w-full"-->
+          <!--            type="avatar, sentences"-->
+          <!--          >-->
           <div class="flex items-center gap-4">
             <StockItemAvatar
-              :color="loadedStock.stockBgColorHex"
-              :icon-url="loadedStock.stockIconUrl"
+              :color="editedStock.stockBgColorHex"
+              :icon-url="editedStock.stockIconUrl"
               :size="52"
+              :showEdit="true"
+              :onEditClicked="onAvatarClicked"
             />
+
             <div>
-              <div>
+              <div class="">
                 <span class="mr-2">{{ loadedStock.stockNameKor }}</span>
-                <span class="text-neutral-500">{{ loadedStock.stockNameEng }}</span>
+                <span class="text-neutral-500 text-base">{{ loadedStock.stockNameEng }}</span>
               </div>
               <div class="text-sm text-neutral-400 font-normal">{{ loadedStock.ticker }}</div>
             </div>
           </div>
-        </v-skeleton-loader>
+          <!--          </v-skeleton-loader>-->
+
+          <v-btn @click="handleModalClose" icon="mdi-close" variant="plain" density="compact" />
+        </div>
       </template>
 
-      <v-card-text>
-        <v-list>
+      <template v-slot:default>
+        {{ editedStock }}
+        <v-card-text class="bg-neutral-100 mt-4 mx-2 rounded h-[60dvh] px-4 overflow-y-auto">
           <div class="">
-            <v-text-field variant="outlined" v-model="editedStock.ticker" label="ticker" />
-            <v-text-field variant="outlined" v-model="editedStock.kisCd" label="KisCd" />
-            <v-text-field variant="outlined" v-model="editedStock.stockNameKor" label="한글명" />
-            <v-text-field variant="outlined" v-model="editedStock.stockNameEng" label="영문명" />
+            <v-text-field
+              bg-color="white"
+              variant="outlined"
+              v-model="editedStock.ticker"
+              label="ticker"
+            />
+            <v-text-field
+              bg-color="white"
+              variant="outlined"
+              v-model="editedStock.kisCd"
+              label="KisCd"
+            />
+            <v-text-field
+              bg-color="white"
+              variant="outlined"
+              v-model="editedStock.stockNameKor"
+              label="한글명"
+            />
+            <v-text-field
+              bg-color="white"
+              variant="outlined"
+              v-model="editedStock.stockNameEng"
+              label="영문명"
+            />
 
             <v-select
               v-model="select.assetClass"
@@ -148,7 +207,8 @@ const select = reactive({
               return-object
               single-line
               variant="outlined"
-            /><v-select
+            />
+            <v-select
               v-model="select.currency"
               :items="commonStore.currency()"
               item-title="name"
@@ -176,11 +236,40 @@ const select = reactive({
 
             <v-checkbox v-model="edited" label="edited"></v-checkbox>
           </div>
-        </v-list>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn block @click="onSubmit" :loading="submitLoading">Save Ticker</v-btn>
-      </v-card-actions>
+        </v-card-text>
+      </template>
+
+      <template v-slot:actions>
+        <v-btn class="grow-[1]" height="48"> 취소 </v-btn>
+
+        <v-btn
+          @click="onSubmit"
+          :loading="submitLoading"
+          class="grow-[2]"
+          height="48"
+          color="blue"
+          variant="flat"
+        >
+          변경사항 저장
+        </v-btn>
+      </template>
     </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="avatarPickerDialogOpen"
+    transition="tab-transition"
+    max-width="480"
+    @update:modelValue="handleAvatarDialogClosed"
+  >
+    <v-card>
+      <StockItemAvatar
+        :color="editedStock.stockBgColorHex"
+        :icon-url="editedStock.stockIconUrl"
+        :size="52"
+        :showEdit="true"
+        :onEditClicked="onAvatarClicked" />
+      <v-color-picker v-model="editedStock.stockBgColorHex" mode="hex"
+    /></v-card>
   </v-dialog>
 </template>

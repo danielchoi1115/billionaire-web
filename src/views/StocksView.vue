@@ -19,13 +19,13 @@ onBeforeMount(() => {
 })
 function initData() {}
 
-const selectedStock = ref({})
+const selectedTicker = ref('')
 const detailModalOpen = ref(false)
 
 function openModal(stock) {
   nextTick(() => {
     // Object.assign(selectedStock.value, stock)
-    selectedStock.value = stock
+    selectedTicker.value = stock.ticker
     detailModalOpen.value = true
   })
 }
@@ -42,6 +42,6 @@ function openModal(stock) {
       </template>
     </StocksLayout>
 
-    <StockDetailModal v-model="detailModalOpen" :stock="selectedStock" />
+    <StockDetailModal v-model="detailModalOpen" :ticker="selectedTicker" />
   </main>
 </template>

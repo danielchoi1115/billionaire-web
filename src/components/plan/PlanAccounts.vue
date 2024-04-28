@@ -16,7 +16,7 @@ const submitLoading = ref(false)
 
 const stockMultiPickerModalRef = ref(null)
 
-const selectedTicker = ref({})
+const selectedTicker = ref('')
 const autoSort = ref(true)
 const detailModalOpen = ref(false)
 
@@ -44,7 +44,6 @@ async function onChangeQuantity(stockMap) {
 }
 
 function onStockClick(stock) {
-  console.log('onStockClick', stock.ticker)
   selectedTicker.value = stock.ticker
   detailModalOpen.value = true
 }
@@ -81,6 +80,7 @@ async function onUpdateStock() {
 
   <StockDetailModal
     v-model="detailModalOpen"
+    @update:modelValue="detailModalOpen = false"
     :ticker="selectedTicker"
     :onAfterSubmit="onUpdateStock"
   />
