@@ -89,9 +89,10 @@ async function onSubmit() {
     toast.error('You must be logged in')
     return
   }
-
   editedStock.value.modifiedBy = userNo
+  submitLoading.value = true
   let res = await StockApi.update(editedStock.value)
+  submitLoading.value = false
   if (res.status === 200) {
     // Object.assign(props.stock, editedStock.value)
     await props.onAfterSubmit(editedStock.value)
