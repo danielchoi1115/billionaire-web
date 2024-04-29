@@ -6,6 +6,7 @@ import { StockApi } from '@/services'
 import { imgBaseUrl } from '@/utils/index.js'
 import { useCommonStore, useUserStore } from '@/stores'
 import { useToast } from 'vue-toastification'
+import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -117,17 +118,24 @@ function handleAvatarDialogClosed(val) {
     avatarPickerDialogOpen.value = false
   }
 }
+
+function formatSubtitle(ticker, engName) {
+  return ticker + (engName ? ' - ' + engName : '')
+}
 </script>
 <template>
   <v-dialog
     :model-value="modelValue"
     @update:model-value="handleModalClose"
     transition="tab-transition"
-    max-width="720"
+    max-width="800"
   >
-    <v-card>
+    <v-card color="#f2f2f2">
+      <template v-slot:append>
+        <v-btn @click="handleModalClose" icon="mdi-close" variant="plain" density="comfortable" />
+      </template>
       <template v-slot:title>
-        <div class="flex justify-between w-full">
+        <div class="flex mb-4 justify-between w-full">
           <!--          <v-skeleton-loader-->
           <!--            color="transparent"-->
           <!--            :loading="stockLoading"-->
@@ -146,93 +154,142 @@ function handleAvatarDialogClosed(val) {
             <div>
               <div class="">
                 <span class="mr-2">{{ loadedStock.stockNameKor }}</span>
-                <span class="text-neutral-500 text-base">{{ loadedStock.stockNameEng }}</span>
+                <span class="text-neutral-500 text-sm">{{ loadedStock.stockNameEng }}</span>
               </div>
-              <div class="text-sm text-neutral-400 font-normal">{{ loadedStock.ticker }}</div>
+              <div class="text-sm text-neutral-400 font-normal">
+                {{ loadedStock.ticker }}
+              </div>
             </div>
           </div>
           <!--          </v-skeleton-loader>-->
-
-          <v-btn @click="handleModalClose" icon="mdi-close" variant="plain" density="compact" />
         </div>
       </template>
 
       <template v-slot:default>
-        {{ editedStock }}
-        <v-card-text class="bg-neutral-100 mt-4 mx-2 rounded h-[60dvh] px-4 overflow-y-auto">
+        <v-card-text class="bg-white mx-2 rounded h-[60dvh] px-4 overflow-y-auto">
           <div class="">
-            <v-text-field
-              bg-color="white"
-              variant="outlined"
-              v-model="editedStock.ticker"
-              label="ticker"
-            />
-            <v-text-field
-              bg-color="white"
-              variant="outlined"
-              v-model="editedStock.kisCd"
-              label="KisCd"
-            />
-            <v-text-field
-              bg-color="white"
-              variant="outlined"
-              v-model="editedStock.stockNameKor"
-              label="한글명"
-            />
-            <v-text-field
-              bg-color="white"
-              variant="outlined"
-              v-model="editedStock.stockNameEng"
-              label="영문명"
-            />
+            <!--            <v-text-field-->
+            <!--              variant="outlined"-->
+            <!--              v-model="editedStock.ticker"-->
+            <!--              label="ticker"-->
+            <!--              density="comfortable"-->
+            <!--              readonly-->
+            <!--              hide-details-->
+            <!--            />-->
+            <div class="my-4">
+              <TextFieldTitle title="한글명" />
+              <v-text-field
+                variant="outlined"
+                v-model="editedStock.stockNameKor"
+                density="comfortable"
+                hide-details
+              />
+            </div>
+            <div class="my-4">
+              <TextFieldTitle title="영문명" />
+              <v-text-field
+                bg-color="white"
+                variant="outlined"
+                v-model="editedStock.stockNameEng"
+                density="comfortable"
+                hide-details
+              />
+            </div>
+            <v-divider :thickness="1" class="border-neutral-200 border-opacity-100 rounded mx-2" />
 
-            <v-select
-              v-model="select.assetClass"
-              :items="commonStore.assetClass()"
-              item-title="name"
-              item-value="code"
-              label="Select"
-              persistent-hint
-              return-object
-              single-line
-              variant="outlined"
-            />
-            <v-select
-              v-model="select.assetCountry"
-              :items="commonStore.assetCountry()"
-              item-title="name"
-              item-value="code"
-              label="Select"
-              persistent-hint
-              return-object
-              single-line
-              variant="outlined"
-            />
-            <v-select
-              v-model="select.currency"
-              :items="commonStore.currency()"
-              item-title="name"
-              item-value="code"
-              label="Select"
-              persistent-hint
-              return-object
-              single-line
-              variant="outlined"
-            />
-            <v-divider></v-divider>
-            <!-- <v-list-subheader>User Controls</v-list-subheader> -->
+            <div class="flex gap-4 my-4">
+              <div class="grow">
+                <TextFieldTitle title="KIS 표준코드" />
+                <v-text-field
+                  variant="outlined"
+                  v-model="editedStock.kisCd"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+              <div class="grow">
+                <TextFieldTitle title="KIS 자산타입코드" />
+                <v-text-field
+                  variant="outlined"
+                  v-model="editedStock.secTypeCd"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+            </div>
 
-            <v-text-field
-              variant="outlined"
-              v-model="editedStock.stockBgColorHex"
-              label="stockBgColorHex"
-            />
-            <v-text-field
-              variant="outlined"
-              v-model="editedStock.stockIconUrl"
-              label="stockIconUrl"
-            />
-            <v-text-field variant="outlined" v-model="editedStock.secTypeCd" label="secTypeCd" />
+            <div class="flex gap-4 my-4">
+              <div class="grow">
+                <TextFieldTitle title="유형" />
+                <v-select
+                  v-model="select.assetClass"
+                  :items="commonStore.assetClass()"
+                  item-title="name"
+                  item-value="code"
+                  label="Select"
+                  persistent-hint
+                  return-object
+                  single-line
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+              <div class="grow">
+                <TextFieldTitle title="국가" />
+                <v-select
+                  v-model="select.assetCountry"
+                  :items="commonStore.assetCountry()"
+                  item-title="name"
+                  item-value="code"
+                  label="Select"
+                  persistent-hint
+                  return-object
+                  single-line
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+              <div class="grow">
+                <TextFieldTitle title="통화" />
+                <v-select
+                  v-model="select.currency"
+                  :items="commonStore.currency()"
+                  item-title="name"
+                  item-value="code"
+                  label="Select"
+                  persistent-hint
+                  return-object
+                  single-line
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+            </div>
+
+            <v-divider :thickness="1" class="border-neutral-200 border-opacity-100 rounded mx-2" />
+            <div class="flex gap-4 my-4">
+              <div class="grow">
+                <TextFieldTitle title="주식 로고" />
+                <v-text-field
+                  variant="outlined"
+                  v-model="editedStock.stockIconUrl"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+              <div class="grow">
+                <TextFieldTitle title="주식 배경색" />
+                <v-text-field
+                  variant="outlined"
+                  v-model="editedStock.stockBgColorHex"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+            </div>
 
             <v-checkbox v-model="edited" label="edited"></v-checkbox>
           </div>
@@ -240,7 +297,7 @@ function handleAvatarDialogClosed(val) {
       </template>
 
       <template v-slot:actions>
-        <v-btn class="grow-[1]" height="48"> 취소 </v-btn>
+        <v-btn @click="handleModalClose" class="grow-[1]" height="48"> 취소 </v-btn>
 
         <v-btn
           @click="onSubmit"
@@ -267,9 +324,10 @@ function handleAvatarDialogClosed(val) {
         :color="editedStock.stockBgColorHex"
         :icon-url="editedStock.stockIconUrl"
         :size="52"
-        :showEdit="true"
-        :onEditClicked="onAvatarClicked" />
-      <v-color-picker v-model="editedStock.stockBgColorHex" mode="hex"
-    /></v-card>
+        :clickable="false"
+        :onEditClicked="onAvatarClicked"
+      />
+      <v-color-picker v-model="editedStock.stockBgColorHex" mode="hex" />
+    </v-card>
   </v-dialog>
 </template>

@@ -29,7 +29,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-
+  clickable: {
+    type: Boolean,
+    default: true
+  },
   onEditClicked: {
     type: Function,
     default: () => {}
@@ -53,7 +56,7 @@ const sizes = computed(() => {
 </script>
 <template>
   <div
-    class="wrapper"
+    :class="clickable ? 'wrapper' : ''"
     :style="{ height: sizes.avatar, width: sizes.avatar }"
     @click="onEditClicked"
   >
