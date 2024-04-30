@@ -25,7 +25,7 @@ const toast = useToast()
 const stockLoading = ref(false)
 const submitLoading = ref(false)
 const loadedStock = ref({})
-
+const avatarColorPickerActivator = ref(false)
 watch(
   () => props.modelValue,
   async (newVal, oldVal) => {
@@ -105,23 +105,30 @@ async function onSubmit() {
 const select = reactive({
   assetClass: { code: '', name: '' },
   assetCountry: { code: '', name: '' },
-  currency: { code: '', name: '' }
+  currency: { code: '', name: '' },
+  avatarColor: ''
 })
 
 const avatarPickerDialogOpen = ref(false)
 function onAvatarClicked() {
+  select.avatarColor = loadedStock.stockBgColorHex
   avatarPickerDialogOpen.value = true
 }
 
 function handleAvatarDialogClosed(val) {
   if (!val) {
-    resetAvatar()
     avatarPickerDialogOpen.value = false
+    resetAvatar()
   }
 }
 
 function formatSubtitle(ticker, engName) {
   return ticker + (engName ? ' - ' + engName : '')
+}
+
+function onAvatarSubmit() {
+  editedStock.value.stockBgColorHex = select.bgColorHex
+  avatarPickerDialogOpen.value = false
 }
 </script>
 <template>
@@ -271,26 +278,6 @@ function formatSubtitle(ticker, engName) {
             </div>
 
             <v-divider :thickness="1" class="border-neutral-200 border-opacity-100 rounded mx-2" />
-            <div class="flex gap-4 my-4">
-              <div class="grow">
-                <TextFieldTitle title="주식 로고" />
-                <v-text-field
-                  variant="outlined"
-                  v-model="editedStock.stockIconUrl"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-              <div class="grow">
-                <TextFieldTitle title="주식 배경색" />
-                <v-text-field
-                  variant="outlined"
-                  v-model="editedStock.stockBgColorHex"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-            </div>
 
             <v-checkbox v-model="edited" label="edited"></v-checkbox>
           </div>
@@ -298,8 +285,6 @@ function formatSubtitle(ticker, engName) {
       </template>
 
       <template v-slot:actions>
-        <v-btn @click="handleModalClose" class="grow-[1]" height="48"> 취소 </v-btn>
-
         <v-btn
           @click="onSubmit"
           :loading="submitLoading"
@@ -310,6 +295,7 @@ function formatSubtitle(ticker, engName) {
         >
           변경사항 저장
         </v-btn>
+        <v-btn @click="handleModalClose" class="grow-[1]" height="48"> 취소 </v-btn>
       </template>
     </v-card>
   </v-dialog>
@@ -320,15 +306,74 @@ function formatSubtitle(ticker, engName) {
     max-width="480"
     @update:modelValue="handleAvatarDialogClosed"
   >
-    <v-card>
-      <StockItemAvatar
-        :color="editedStock.stockBgColorHex"
-        :icon-url="editedStock.stockIconUrl"
-        :size="52"
-        :clickable="false"
-        :onEditClicked="onAvatarClicked"
-      />
-      <v-color-picker v-model="editedStock.stockBgColorHex" mode="hex" />
+    <v-card color="#f2f2f2">
+      <v-card-item class="bg-white mx-2 rounded mt-2">
+        <div class="flex items-center justify-center">
+          <StockItemAvatar
+            :color="select.bgColorHex"
+            :icon-url="editedStock.stockIconUrl"
+            :size="120"
+            :clickable="false"
+            :onEditClicked="onAvatarClicked"
+          />
+        </div>
+
+        <div class="flex flex-col gap-4 my-4">
+          <div>
+            <TextFieldTitle title="주식 로고" />
+            <div class="flex gap-2">
+              <v-text-field
+                variant="outlined"
+                v-model="editedStock.stockIconUrl"
+                density="comfortable"
+                hide-details
+              />
+              <v-btn variant="tonal" size="sm">
+                <v-icon icon="mdi-upload" size="24" class="px-6"
+              /></v-btn>
+            </div>
+          </div>
+          <div>
+            <TextFieldTitle title="주식 배경색" />
+            <div class="flex gap-2">
+              <v-text-field
+                variant="outlined"
+                v-model="select.bgColorHex"
+                density="comfortable"
+                hide-details
+              />
+              <v-menu
+                v-model="avatarColorPickerActivator"
+                :close-on-content-click="false"
+                location="bottom right"
+                offset="4"
+              >
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn v-bind="activatorProps" variant="tonal" size="sm">
+                    <v-icon icon="mdi-palette" size="24" class="px-6" />
+                  </v-btn>
+                </template>
+                <v-color-picker v-model="select.bgColorHex" mode="hex" />
+              </v-menu>
+            </div>
+          </div>
+        </div>
+        <!--          <v-color-picker v-model="select.bgColorHex" mode="hex" hide-inputs />-->
+      </v-card-item>
+      <template v-slot:actions>
+        <v-btn
+          @click="onAvatarSubmit"
+          class="grow"
+          color="blue"
+          variant="flat"
+          prepend-icon="mdi-check"
+        >
+          확인
+        </v-btn>
+        <v-btn @click="handleAvatarDialogClosed(false)" class="grow" prepend-icon="mdi-close"
+          >취소
+        </v-btn>
+      </template>
     </v-card>
   </v-dialog>
 </template>
