@@ -3,10 +3,11 @@ import { StockItemAvatar } from '@/components'
 
 import { getCurrentInstance, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
 import { StockApi } from '@/services'
-import { imgBaseUrl } from '@/utils/index.js'
+import { imgBaseUrl, StockUtil } from '@/utils/index.js'
 import { useCommonStore, useUserStore } from '@/stores'
 import { useToast } from 'vue-toastification'
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
+import fileApi from '@/services/fileApi.js'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -26,11 +27,15 @@ const stockLoading = ref(false)
 const submitLoading = ref(false)
 const loadedStock = ref({})
 const avatarColorPickerActivator = ref(false)
+const avatarProfileUploaderActivator = ref(false)
+const profileUploadFile = ref(null)
+const stockIconUrlLists = ref([])
+
 watch(
   () => props.modelValue,
   async (newVal, oldVal) => {
     if (oldVal && !newVal) return
-    loadedStock.value = await loadStock(props.ticker)
+    await loadStock(props.ticker)
     resetStockInfo()
     resetAvatar()
   }
@@ -58,14 +63,19 @@ function resetAvatar() {
 
 async function loadStock(ticker) {
   stockLoading.value = true
-  let res = await StockApi.getByTicker(ticker)
+  let stockRes = await StockApi.getByTicker(ticker)
+  let iconRes = await fileApi.getAll()
   stockLoading.value = false
 
-  if (res.status === 200) {
-    return res.data
+  if (stockRes.status === 200) {
+    loadedStock.value = stockRes.data
   } else {
     console.error('fn:loadStock,  Failed to load Stock.')
-    return {}
+  }
+  if (iconRes.status === 200) {
+    stockIconUrlLists.value = iconRes.data?.files
+  } else {
+    console.error('fn:loadStock,  Failed to load Icons.')
   }
 }
 function handleModalClose(e) {
@@ -128,7 +138,12 @@ function formatSubtitle(ticker, engName) {
 
 function onAvatarSubmit() {
   editedStock.value.stockBgColorHex = select.bgColorHex
+  editedStock.value.stockIconUrl = select.iconUrl
   avatarPickerDialogOpen.value = false
+}
+function iconOnClick(item) {
+  select.iconUrl = item.value
+  item.onClick()
 }
 </script>
 <template>
@@ -311,7 +326,7 @@ function onAvatarSubmit() {
         <div class="flex items-center justify-center">
           <StockItemAvatar
             :color="select.bgColorHex"
-            :icon-url="editedStock.stockIconUrl"
+            :icon-url="select.iconUrl"
             :size="120"
             :clickable="false"
             :onEditClicked="onAvatarClicked"
@@ -321,17 +336,51 @@ function onAvatarSubmit() {
         <div class="flex flex-col gap-4 my-4">
           <div>
             <TextFieldTitle title="주식 로고" />
-            <div class="flex gap-2">
-              <v-text-field
+            <div class="flex gap-2 mb-2">
+              <v-autocomplete
                 variant="outlined"
-                v-model="editedStock.stockIconUrl"
+                v-model="select.iconUrl"
                 density="comfortable"
                 hide-details
-              />
-              <v-btn variant="tonal" size="sm">
-                <v-icon icon="mdi-upload" size="24" class="px-6"
-              /></v-btn>
+                :items="stockIconUrlLists"
+                item-value="iconUrl"
+                no-data-text="결과를 찾을 수 없습니다."
+                transition="fade-transition"
+              >
+                <template v-slot:item="{ props: item }">
+                  <v-list-item v-bind="props" @click="iconOnClick(item)">
+                    <template v-slot:prepend>
+                      <StockItemAvatar :icon-url="item.value" color="#494A50" :clickable="false" />
+                    </template>
+                    <div class="ml-2">{{ item.value }}</div>
+                  </v-list-item>
+                </template>
+              </v-autocomplete>
+              <v-btn
+                @click="avatarProfileUploaderActivator = !avatarProfileUploaderActivator"
+                variant="tonal"
+                size="sm"
+              >
+                <v-icon icon="mdi-upload" size="24" class="px-6" />
+              </v-btn>
             </div>
+            <v-expand-transition>
+              <v-file-input
+                v-if="avatarProfileUploaderActivator"
+                v-model="profileUploadFile"
+                label="클릭해서 로고 업로드하기"
+                density="comfortable"
+                accept="image/png, image/jpeg, image/bmp, image/svg+xml"
+                counter
+                show-size
+                chips
+                prepend-icon=""
+                prepend-inner-icon="mdi-file-image"
+                variant="outlined"
+                single-line
+                hide-details
+              />
+            </v-expand-transition>
           </div>
           <div>
             <TextFieldTitle title="주식 배경색" />

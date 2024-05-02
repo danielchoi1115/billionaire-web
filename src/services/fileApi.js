@@ -5,7 +5,10 @@ const FileApi = {
     let res = await ApiClient.post('/api/billionaire/file', data, 'fs')
     return res.data
   },
-  get: async (filename) => {
+  getAll: async () => {
+    return await ApiClient.get(`/api/billionaire/file`, {}, 'fs')
+  },
+  getOne: async (filename) => {
     return await ApiClient.get(`/api/billionaire/file/${filename}`, {}, 'fs')
   }
 }
