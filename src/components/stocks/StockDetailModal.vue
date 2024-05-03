@@ -8,6 +8,7 @@ import { useCommonStore, useUserStore } from '@/stores'
 import { useToast } from 'vue-toastification'
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
 import fileApi from '@/services/fileApi.js'
+import AvatarEditorDialog from '@/components/commons/AvatarEditorDialog.vue'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -26,10 +27,6 @@ const toast = useToast()
 const stockLoading = ref(false)
 const submitLoading = ref(false)
 const loadedStock = ref({})
-const avatarColorPickerActivator = ref(false)
-const avatarProfileUploaderActivator = ref(false)
-const profileUploadFile = ref(null)
-const stockIconUrlLists = ref([])
 
 watch(
   () => props.modelValue,
@@ -37,7 +34,6 @@ watch(
     if (oldVal && !newVal) return
     await loadStock(props.ticker)
     resetStockInfo()
-    resetAvatar()
   }
 )
 
@@ -56,26 +52,16 @@ function resetStockInfo() {
     name: commonStore.getCurrency(loadedStock.value.stockCurrency)
   }
 }
-function resetAvatar() {
-  select.bgColorHex = editedStock.value.stockBgColorHex
-  select.iconUrl = editedStock.value.stockIconUrl
-}
 
 async function loadStock(ticker) {
   stockLoading.value = true
   let stockRes = await StockApi.getByTicker(ticker)
-  let iconRes = await fileApi.getAll()
   stockLoading.value = false
 
   if (stockRes.status === 200) {
     loadedStock.value = stockRes.data
   } else {
     console.error('fn:loadStock,  Failed to load Stock.')
-  }
-  if (iconRes.status === 200) {
-    stockIconUrlLists.value = iconRes.data?.files
-  } else {
-    console.error('fn:loadStock,  Failed to load Icons.')
   }
 }
 function handleModalClose(e) {
@@ -115,35 +101,24 @@ async function onSubmit() {
 const select = reactive({
   assetClass: { code: '', name: '' },
   assetCountry: { code: '', name: '' },
-  currency: { code: '', name: '' },
-  avatarColor: ''
+  currency: { code: '', name: '' }
 })
-
-const avatarPickerDialogOpen = ref(false)
+const show = reactive({
+  avatar: false
+})
 function onAvatarClicked() {
   select.avatarColor = loadedStock.value.stockBgColorHex
-  avatarPickerDialogOpen.value = true
-}
-
-function handleAvatarDialogClosed(val) {
-  if (!val) {
-    avatarPickerDialogOpen.value = false
-    resetAvatar()
-  }
+  show.avatar = true
 }
 
 function formatSubtitle(ticker, engName) {
   return ticker + (engName ? ' - ' + engName : '')
 }
 
-function onAvatarSubmit() {
-  editedStock.value.stockBgColorHex = select.bgColorHex
-  editedStock.value.stockIconUrl = select.iconUrl
-  avatarPickerDialogOpen.value = false
-}
-function iconOnClick(item) {
-  select.iconUrl = item.value
-  item.onClick()
+function onAvatarSubmit(val) {
+  editedStock.value.stockBgColorHex = val.bgColorHex
+  editedStock.value.stockIconUrl = val.iconUrl
+  show.avatar = false
 }
 </script>
 <template>
@@ -155,7 +130,12 @@ function iconOnClick(item) {
   >
     <v-card color="#f2f2f2">
       <template v-slot:append>
-        <v-btn @click="handleModalClose" icon="mdi-close" variant="plain" density="comfortable" />
+        <v-btn
+          @click="() => handleModalClose(false)"
+          icon="mdi-close"
+          variant="plain"
+          density="comfortable"
+        />
       </template>
       <template v-slot:title>
         <div class="flex mb-4 justify-between w-full">
@@ -303,126 +283,22 @@ function iconOnClick(item) {
         <v-btn
           @click="onSubmit"
           :loading="submitLoading"
-          class="grow-[2]"
+          class="grow"
           height="48"
           color="blue"
           variant="flat"
         >
           변경사항 저장
         </v-btn>
-        <v-btn @click="handleModalClose" class="grow-[1]" height="48"> 취소 </v-btn>
+        <v-btn @click="() => handleModalClose(false)" class="grow" height="48"> 취소 </v-btn>
       </template>
     </v-card>
-  </v-dialog>
-
-  <v-dialog
-    v-model="avatarPickerDialogOpen"
-    transition="tab-transition"
-    max-width="480"
-    @update:modelValue="handleAvatarDialogClosed"
-  >
-    <v-card color="#f2f2f2">
-      <v-card-item class="bg-white mx-2 rounded mt-2">
-        <div class="flex items-center justify-center">
-          <StockItemAvatar
-            :color="select.bgColorHex"
-            :icon-url="select.iconUrl"
-            :size="120"
-            :clickable="false"
-            :onEditClicked="onAvatarClicked"
-          />
-        </div>
-
-        <div class="flex flex-col gap-4 my-4">
-          <div>
-            <TextFieldTitle title="주식 로고" />
-            <div class="flex gap-2 mb-2">
-              <v-autocomplete
-                variant="outlined"
-                v-model="select.iconUrl"
-                density="comfortable"
-                hide-details
-                :items="stockIconUrlLists"
-                item-value="iconUrl"
-                no-data-text="결과를 찾을 수 없습니다."
-                transition="fade-transition"
-              >
-                <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="props" @click="iconOnClick(item)">
-                    <template v-slot:prepend>
-                      <StockItemAvatar :icon-url="item.value" color="#494A50" :clickable="false" />
-                    </template>
-                    <div class="ml-2">{{ item.value }}</div>
-                  </v-list-item>
-                </template>
-              </v-autocomplete>
-              <v-btn
-                @click="avatarProfileUploaderActivator = !avatarProfileUploaderActivator"
-                variant="tonal"
-                size="sm"
-              >
-                <v-icon icon="mdi-upload" size="24" class="px-6" />
-              </v-btn>
-            </div>
-            <v-expand-transition>
-              <v-file-input
-                v-if="avatarProfileUploaderActivator"
-                v-model="profileUploadFile"
-                label="클릭해서 로고 업로드하기"
-                density="comfortable"
-                accept="image/png, image/jpeg, image/bmp, image/svg+xml"
-                counter
-                show-size
-                chips
-                prepend-icon=""
-                prepend-inner-icon="mdi-file-image"
-                variant="outlined"
-                single-line
-                hide-details
-              />
-            </v-expand-transition>
-          </div>
-          <div>
-            <TextFieldTitle title="주식 배경색" />
-            <div class="flex gap-2">
-              <v-text-field
-                variant="outlined"
-                v-model="select.bgColorHex"
-                density="comfortable"
-                hide-details
-              />
-              <v-menu
-                v-model="avatarColorPickerActivator"
-                :close-on-content-click="false"
-                location="bottom right"
-                offset="4"
-              >
-                <template v-slot:activator="{ props: activatorProps }">
-                  <v-btn v-bind="activatorProps" variant="tonal" size="sm">
-                    <v-icon icon="mdi-palette" size="24" class="px-6" />
-                  </v-btn>
-                </template>
-                <v-color-picker v-model="select.bgColorHex" mode="hex" />
-              </v-menu>
-            </div>
-          </div>
-        </div>
-        <!--          <v-color-picker v-model="select.bgColorHex" mode="hex" hide-inputs />-->
-      </v-card-item>
-      <template v-slot:actions>
-        <v-btn
-          @click="onAvatarSubmit"
-          class="grow"
-          color="blue"
-          variant="flat"
-          prepend-icon="mdi-check"
-        >
-          확인
-        </v-btn>
-        <v-btn @click="handleAvatarDialogClosed(false)" class="grow" prepend-icon="mdi-close"
-          >취소
-        </v-btn>
-      </template>
-    </v-card>
+    <AvatarEditorDialog
+      :model-value="show.avatar"
+      :icon-url="editedStock.stockIconUrl"
+      :color="editedStock.stockBgColorHex"
+      @update:model-value="(e) => (show.avatar = e)"
+      @submit="onAvatarSubmit"
+    />
   </v-dialog>
 </template>

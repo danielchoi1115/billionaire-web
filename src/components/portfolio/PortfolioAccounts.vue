@@ -40,7 +40,7 @@ function onAddClick(account) {
   })
 }
 
-async function onChangeQuantity(stockMap) {
+async function onStockAdded(stockMap) {
   submitLoading.value = true
   let tickers = []
   stockMap.forEach((k, v) => tickers.push(v))
@@ -66,15 +66,20 @@ function onAccountClick(account) {
 }
 
 function handleAccountDetailModal(val) {
-  console.log('before update', modal)
   modal.accountDetail = val
-  console.log('before update', modal)
 }
 async function onUpdateStock() {
   submitLoading.value = true
   await portfolioStore.refresh()
   submitLoading.value = false
   modal.stockDetail = false
+  toast.success('변경사항이 저장되었습니다.')
+}
+async function onUpdateAccount() {
+  submitLoading.value = true
+  await portfolioStore.refresh()
+  submitLoading.value = false
+  modal.accountDetail = false
   toast.success('변경사항이 저장되었습니다.')
 }
 </script>
@@ -95,7 +100,7 @@ async function onUpdateStock() {
   <StockMultiPickerModal
     ref="stockMultiPickerModalRef"
     v-model="modal.stockAdd"
-    @submit="onChangeQuantity"
+    @submit="onStockAdded"
     :loading="submitLoading"
   >
     <template v-slot:title> 주식 추가하기 </template>
@@ -112,5 +117,6 @@ async function onUpdateStock() {
     v-model="modal.accountDetail"
     @update:modelValue="handleAccountDetailModal"
     :account="selected.account"
+    :onAfterSubmit="onUpdateAccount"
   />
 </template>

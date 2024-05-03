@@ -4,6 +4,9 @@ const PortfolioApi = {
   getOnePortfolioMst: async (portfolioNo) => {
     return await ApiClient.get(`/portfolios/${portfolioNo}`)
   },
+  updateAccount: async (data) => {
+    return await ApiClient.patch(`/portfolios/${data.portfolioNo}/accounts/${data.accNo}`, data)
+  },
   insertStock: async (portfolioNo, accNo, data) => {
     return await ApiClient.post(`/portfolios/${portfolioNo}/accounts/${accNo}/stocks`, data)
   },

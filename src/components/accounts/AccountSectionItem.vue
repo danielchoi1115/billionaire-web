@@ -108,7 +108,9 @@ function addClicked() {
     <dt class="flex align-baseline justify-between mb-4 w-full">
       <div class="flex justify-between items-center w-full">
         <span class="text-xl font-bold mr-1">
-          <v-btn variant="text" @click="onAccountClick">{{ account.accName }}</v-btn>
+          <v-btn variant="flat" @click="onAccountClick">
+            <div class="text-lg px-1">{{ account.accName }}</div>
+          </v-btn>
         </span>
         <div v-if="!accountEditMode">
           <v-btn
