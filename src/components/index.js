@@ -7,11 +7,11 @@ import MyDividendsChart from './dividends/MyDividendsChart.vue'
 import MyDividendsSummary from './dividends/MyDividendsSummary.vue'
 import MonthlyDividendsHeading from './dividends/MonthlyDividendsHeading.vue'
 import DividendItem from './dividends/DividendItem.vue'
-import PlannerTitle from '@/components/plan/PlannerTitle.vue'
-import PlannerSummaryBarChart from '@/components/plan/PlannerSummaryBarChart.vue'
-import PlannerSummaryAccounts from '@/components/plan/PlannerSummaryAccounts.vue'
-import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
-import PlannerTab from '@/components/plan/PlannerTab.vue'
+import PlannerTitle from '@/components/portfolio/PlannerTitle.vue'
+import PlannerSummaryBarChart from '@/components/portfolio/PlannerSummaryBarChart.vue'
+import PlannerSummaryAccounts from '@/components/portfolio/PlannerSummaryAccounts.vue'
+import PortfolioAccountDetailModal from '@/components/portfolio/PortfolioAccountDetailModal.vue'
+import PlannerTab from '@/components/portfolio/PlannerTab.vue'
 import StockItem from './stocks/StockItem.vue'
 import StockItemColumn from './stocks/StockItemColumn.vue'
 import StockItemAvatar from './stocks/StockItemAvatar.vue'
@@ -22,7 +22,7 @@ import SearchBar from './commons/SearchBar.vue'
 import StockDetailModal from './stocks/StockDetailModal.vue'
 import StockAddButton from './stocks/StockAddButton.vue'
 import StockMultiPickerModal from './stocks/StockMultiPickerModal.vue'
-import PlanAccounts from './plan/PlanAccounts.vue'
+import PortfolioAccounts from './portfolio/PortfolioAccounts.vue'
 
 export {
   PieChart,
@@ -37,7 +37,7 @@ export {
   PlannerTitle,
   PlannerSummaryBarChart,
   PlannerSummaryAccounts,
-  AccountDetailModal,
+  PortfolioAccountDetailModal,
   PlannerTab,
   StockItem,
   StockSearchResult,
@@ -49,5 +49,5 @@ export {
   StockDetailModal,
   StockAddButton,
   StockMultiPickerModal,
-  PlanAccounts
+  PortfolioAccounts
 }

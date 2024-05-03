@@ -1,14 +1,18 @@
 <script setup>
-import { AccountSectionItem, StockDetailModal, StockMultiPickerModal } from '@/components'
-import { ref } from 'vue'
-import { usePlanStore } from '@/stores'
+import {
+  PortfolioAccountDetailModal,
+  AccountSectionItem,
+  StockDetailModal,
+  StockMultiPickerModal
+} from '@/components'
+import { ref, reactive } from 'vue'
+import { usePortfolioStore } from '@/stores'
 import { nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useToast } from 'vue-toastification'
-const planStore = usePlanStore()
-const { planData } = storeToRefs(planStore)
-const pickerModalOpen = ref(false)
+const portfolioStore = usePortfolioStore()
+const { portfolioData } = storeToRefs(portfolioStore)
 const toast = useToast()
 const selectedAccount = ref({})
 
@@ -18,11 +22,19 @@ const stockMultiPickerModalRef = ref(null)
 
 const selectedTicker = ref('')
 const autoSort = ref(true)
-const detailModalOpen = ref(false)
 
+const modal = reactive({
+  stockDetail: ref(false),
+  stockAdd: ref(false),
+  accountDetail: ref(false)
+})
+const selected = reactive({
+  ticker: '',
+  account: {}
+})
 function onAddClick(account) {
   selectedAccount.value = account
-  pickerModalOpen.value = true
+  modal.stockAdd = true
   nextTick(() => {
     stockMultiPickerModalRef.value.searchTextFieldRef.focus()
   })
@@ -33,44 +45,56 @@ async function onChangeQuantity(stockMap) {
   let tickers = []
   stockMap.forEach((k, v) => tickers.push(v))
 
-  await planStore.insertStocks(selectedAccount.value, tickers)
+  await portfolioStore.insertStocks(selectedAccount.value, tickers)
 
   toast.success('추가되었습니다.', {
     timeout: 2000
   })
   submitLoading.value = false
-  pickerModalOpen.value = false
+  modal.stockAdd = false
   stockMultiPickerModalRef.value.clearAllInput()
 }
 
 function onStockClick(stock) {
   selectedTicker.value = stock.ticker
-  detailModalOpen.value = true
+  modal.stockDetail = true
 }
 
+function onAccountClick(account) {
+  modal.accountDetail = true
+  selected.account = account
+}
+
+function handleAccountDetailModal(val) {
+  console.log('before update', modal)
+  modal.accountDetail = val
+  console.log('before update', modal)
+}
 async function onUpdateStock() {
   submitLoading.value = true
-  await planStore.refresh()
+  await portfolioStore.refresh()
   submitLoading.value = false
-  detailModalOpen.value = false
+  modal.stockDetail = false
   toast.success('변경사항이 저장되었습니다.')
 }
 </script>
 
 <template>
   <v-switch v-model="autoSort" color="primary" label="자동정렬" hide-details />
+
   <AccountSectionItem
-    v-for="(account, i) in planData?.accounts"
+    v-for="(account, i) in portfolioData?.accounts"
     :key="i"
     :account="account"
     :onAddClick="onAddClick"
     :onStockClick="onStockClick"
+    :onAccountClick="(e) => onAccountClick(account)"
     :autoSort="autoSort"
   />
 
   <StockMultiPickerModal
     ref="stockMultiPickerModalRef"
-    v-model="pickerModalOpen"
+    v-model="modal.stockAdd"
     @submit="onChangeQuantity"
     :loading="submitLoading"
   >
@@ -79,9 +103,14 @@ async function onUpdateStock() {
   </StockMultiPickerModal>
 
   <StockDetailModal
-    v-model="detailModalOpen"
-    @update:modelValue="detailModalOpen = false"
+    v-model="modal.stockDetail"
+    @update:modelValue="modal.stockDetail = false"
     :ticker="selectedTicker"
     :onAfterSubmit="onUpdateStock"
+  />
+  <PortfolioAccountDetailModal
+    v-model="modal.accountDetail"
+    @update:modelValue="handleAccountDetailModal"
+    :account="selected.account"
   />
 </template>

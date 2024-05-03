@@ -1,38 +1,27 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import {
-  PlannerTitle,
-  PlannerSummaryBarChart,
-  PlannerSummaryAccounts,
-  PlannerTab,
-  PlanAccounts,
-  PortfolioTreemap,
-  StockDetailModal
-} from '@/components'
+import { PortfolioAccounts, PortfolioTreemap } from '@/components'
 
-import AccountDetailModal from '@/components/plan/AccountDetailModal.vue'
-import PortfolioDoughnutChart from '@/components/charts/PortfolioDoughnutChart.vue'
-import { PlanApi } from '@/services'
-import { generate_plan_mst } from '@/utils/dummy_data_generator'
-
-const planMst = ref()
+const portfolioMst = ref()
 import { storeToRefs } from 'pinia'
-import { useStockStore, usePlanStore } from '@/stores'
+import { useStockStore, usePortfolioStore, useUserStore } from '@/stores'
 
 const stockStore = useStockStore()
-const planStore = usePlanStore()
-
+const portfolioStore = usePortfolioStore()
+const userStore = useUserStore()
+const { userData } = storeToRefs(userStore)
 const { totalBudgetAmount } = storeToRefs(stockStore)
 
 onMounted(async () => {
-  // let res = await PlanApi.getOnePlanMst(1)
-  // planMst.value = res.data
-  await planStore.setPlanNo(1)
-  await planStore.refresh()
+  userStore.setPlanYn('Y')
+  await userStore.loadPortfolioList()
+
+  await portfolioStore.setportfolioNo(1)
+  await portfolioStore.refresh()
 })
 
 const weights = computed(() =>
-  planMst.value.accounts?.reduce((acc, cur) => {
+  portfolioMst.value.accounts?.reduce((acc, cur) => {
     acc[cur.account.accNo] = (cur.budgetAmount / totalBudgetAmount.value) * 100
     return acc
   }, {})
@@ -61,7 +50,7 @@ function saveChanges(newAccount) {
 <template>
   <div class="px-3 max-w-[720px] my-0 mx-auto">
     <PortfolioTreemap />
-    <PlanAccounts />
+    <PortfolioAccounts />
   </div>
 </template>
 

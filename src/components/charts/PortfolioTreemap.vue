@@ -1,11 +1,11 @@
 <!-- https://chartjs-chart-treemap.pages.dev/samples/labelsFontsAndColors.html -->
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { usePlanStore } from '@/stores'
+import { usePortfolioStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 
-const planStore = usePlanStore()
-const { planSummary } = storeToRefs(planStore)
+const portfolioStore = usePortfolioStore()
+const { portfolioSummary } = storeToRefs(portfolioStore)
 // const series = computed(() => {
 //   const safe = {
 //     name: '안전자산',
@@ -15,8 +15,8 @@ const { planSummary } = storeToRefs(planStore)
 //     name: '위험자산',
 //     data: []
 //   }
-//   if (planSummary) {
-//     planSummary.value.forEach((obj) => {
+//   if (portfolioSummary) {
+//     portfolioSummary.value.forEach((obj) => {
 //       let data = { x: obj.assetClass, y: obj.value }
 //       if (obj.assetType === '위험자산') {
 //         danger.data.push(data)
@@ -38,7 +38,7 @@ const chartData = computed(() => {
       data: []
     }
   ]
-  planSummary.value.forEach((p) => {
+  portfolioSummary.value.forEach((p) => {
     const chartDataItem = { x: p.assetClass, y: p.value }
     if (p.assetType === '위험자산') {
       serise[0].data.push(chartDataItem)
@@ -66,7 +66,7 @@ const chartData = computed(() => {
 // ]
 
 const weightMap = computed(() =>
-  planSummary.value.reduce((acc, cur) => {
+  portfolioSummary.value.reduce((acc, cur) => {
     acc[cur.assetClass] = cur.weight
     return acc
   }, {})
@@ -136,7 +136,7 @@ onMounted(() => {})
 <template>
   <div id="chart">
     <apexchart
-      v-if="planStore.hasData()"
+      v-if="portfolioStore.hasData()"
       type="treemap"
       height="350"
       :options="chartOptions"

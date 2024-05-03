@@ -72,13 +72,13 @@ const rules = {
 function makePriceString(stock) {
   if (props.deposit) {
     if (props.depositAmount < 0) {
-      return '(' + props.depositAmount.toLocaleString() + '원)'
-    } else return props.depositAmount.toLocaleString() + '원'
+      return '(' + props.depositAmount?.toLocaleString() + '원)'
+    } else return props.depositAmount?.toLocaleString() + '원'
   }
   if (stock.quantity < 0) {
-    return '(' + calculateStockValueKRW(stock).toLocaleString() + '원)'
+    return '(' + calculateStockValueKRW(stock)?.toLocaleString() + '원)'
   }
-  return calculateStockValueKRW(stock).toLocaleString() + '원'
+  return calculateStockValueKRW(stock)?.toLocaleString() + '원'
 }
 function stockPriceColor(stock) {
   if ((props.deposit && props.depositAmount < 0) || stock.quantity < 0) return 'text-red-600'
@@ -171,10 +171,10 @@ function getAvatarIcon() {
 
         <StockItemColumn v-if="type === 'default'" cols="3" class="items-end">
           <template v-slot:title>
-            {{ toKRW(stock.price, stock.stockCurrency).toLocaleString() }}원
+            {{ toKRW(stock.price, stock.stockCurrency)?.toLocaleString() }}원
           </template>
           <template v-slot:subtitle>
-            ${{ toUSD(stock.price, stock.stockCurrency).toLocaleString() }}
+            ${{ toUSD(stock.price, stock.stockCurrency)?.toLocaleString() }}
           </template>
         </StockItemColumn>
       </v-row>

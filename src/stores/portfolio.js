@@ -1,21 +1,20 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { generate_plan_mst } from '@/utils/dummy_data_generator'
-import { calculateStockValueKRW, getAssetType, HttpStatus } from '@/utils'
-import { PlanApi } from '@/services'
+import { calculateStockValueKRW, getAssetType, getAssetClass, HttpStatus } from '@/utils'
+import { PortfolioApi } from '@/services'
 import { useToast } from 'vue-toastification'
 
-export const usePlanStore = defineStore('plan', () => {
-  const planData = ref(null)
+export const usePortfolioStore = defineStore('plan', () => {
+  const portfolioData = ref(null)
   const isLoading = ref(false)
-  const planNo = ref(null)
+  const portfolioNo = ref(null)
   const toast = useToast()
-  const hasData = () => planData.value != null
-  const setPlanNo = (val) => (planNo.value = val)
+  const hasData = () => portfolioData.value != null
+  const setportfolioNo = (val) => (portfolioNo.value = val)
   const fetchPlan = async () => {
-    const res = await PlanApi.getOnePlanMst(planNo.value)
-    if (res.status === 200) {
-      console.log('fetchPlan API 호출 완료!')
+    const res = await PortfolioApi.getOnePortfolioMst(portfolioNo.value)
+    if (res.status === HttpStatus.OK) {
       return res
     } else {
       console.log('fetchPlan API 호출 실패...')
@@ -25,26 +24,26 @@ export const usePlanStore = defineStore('plan', () => {
 
   const refresh = async () => {
     if (isLoading.value) return
-    if (!planNo.value) {
-      console.error('PlanNo must be set to refresh planStore')
+    if (!portfolioNo.value) {
+      console.error('portfolioNo must be set to refresh portfolioStore')
       return
     }
     isLoading.value = true
     let res = await fetchPlan()
-    planData.value = res.data
+    portfolioData.value = res.data
     isLoading.value = false
   }
 
   const updatePlanStock = async (account, stock) => {
     const d = {
-      planNo: planData.value.planNo,
+      portfolioNo: portfolioData.value.portfolioNo,
       accNo: account.accNo,
       ticker: stock.ticker,
       quantity: Number(stock.quantity)
     }
     console.debug('updatePlanStock call API', d)
-    const res = await PlanApi.updateStock(d)
-    return res.status === 200
+    const res = await PortfolioApi.updateStock(d)
+    return res.status === HttpStatus.OK
   }
 
   // Plan 계좌에 주식 추가
@@ -53,7 +52,7 @@ export const usePlanStore = defineStore('plan', () => {
     console.debug('insertStocks tickers: ', tickers)
 
     const promises = tickers.map(async (t) => {
-      const res = await PlanApi.insertStock(planData.value.planNo, account.accNo, {
+      const res = await PortfolioApi.insertStock(portfolioData.value.portfolioNo, account.accNo, {
         ticker: t,
         quantity: 1
       })
@@ -65,23 +64,23 @@ export const usePlanStore = defineStore('plan', () => {
 
   const deleteStocks = async (account, tickers) => {
     let d = {
-      planNo: planData.value.planNo,
+      portfolioNo: portfolioData.value.portfolioNo,
       accNo: account.accNo,
       params: {
         tickers: tickers.join(',')
       }
     }
-    let res = await PlanApi.deleteStocks(d)
+    let res = await PortfolioApi.deleteStocks(d)
     return res.status === HttpStatus.OK
   }
 
-  const planSummary = computed(() => {
-    if (!planData.value || !planData.value.accounts) return []
+  const portfolioSummary = computed(() => {
+    if (!portfolioData.value || !portfolioData.value.accounts) return []
     let temp = []
-    planData.value.accounts.forEach((account) => {
+    portfolioData.value.accounts.forEach((account) => {
       let totalValue = 0
       account.stocks.forEach((stock) => {
-        let assetClass = stock.assetCountryName + stock.assetClassName
+        let assetClass = getAssetClass(stock.assetClassName, stock.assetCountryName)
         let assetType = getAssetType(stock.assetClassCd)
         let value = calculateStockValueKRW(stock)
         totalValue += value
@@ -89,7 +88,7 @@ export const usePlanStore = defineStore('plan', () => {
       })
       upsertSummaryData(
         temp,
-        `현금(${account.accCurrency})`,
+        getAssetClass('현금', account.accCurrency),
         '안전자산',
         account.budgetAmount - totalValue
       )
@@ -119,19 +118,19 @@ export const usePlanStore = defineStore('plan', () => {
   }
 
   const totalBudgetAmount = computed(() =>
-    planData.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
+    portfolioData.value.accounts?.reduce((acc, cur) => acc + cur.budgetAmount, 0)
   )
 
   return {
     isLoading,
     refresh,
-    planSummary,
+    portfolioSummary,
     totalBudgetAmount,
-    planData,
+    portfolioData,
     updatePlanStock,
     hasData,
     insertStocks,
     deleteStocks,
-    setPlanNo
+    setportfolioNo
   }
 })

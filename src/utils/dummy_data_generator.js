@@ -1,6 +1,6 @@
 export const generate_plan_mst = () => {
   return {
-    planNo: 1,
+    portfolioNo: 1,
     userNo: '000000',
     planName: '테스트플랜',
     useYn: 'Y',

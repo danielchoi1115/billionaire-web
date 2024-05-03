@@ -9,7 +9,22 @@ const assetTypes = {
   '06': '안전자산'
 }
 
+const countryToCurrencyMap = {
+  미국: 'USD',
+  한국: 'KRW',
+  일본: 'JPY',
+  인도: 'INR',
+  USD: 'USD',
+  KRW: 'KRW',
+  JPY: 'JPY',
+  INR: 'INR'
+}
 export const getAssetType = (assetClassCd) => assetTypes[assetClassCd]
+export const getAssetClass = (_class, country) =>
+  _class === '현금' ? `현금(${currencyFromCountry(country)})` : country + _class
+
+const currencyFromCountry = (country) =>
+  country in countryToCurrencyMap ? countryToCurrencyMap[country] : 'N/A'
 
 export const imgBaseUrl = 'src/assets/icons/'
 

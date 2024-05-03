@@ -3,16 +3,17 @@ import { StockAddButton, StockItem, StockMultiPickerModal } from '@/components'
 import { ref, computed, reactive } from 'vue'
 import { calculateStockValueKRW, getAssetType } from '@/utils'
 import { storeToRefs } from 'pinia'
-import { useStockStore, usePlanStore } from '@/stores'
+import { useStockStore, usePortfolioStore } from '@/stores'
 import { useToast } from 'vue-toastification'
 
 // https://github.com/Maronato/vue-toastification
-const planStore = usePlanStore()
+const portfolioStore = usePortfolioStore()
 const toast = useToast()
 const props = defineProps({
   account: Object,
   onAddClick: Function,
   onStockClick: Function,
+  onAccountClick: Function,
   autoSort: Boolean
 })
 
@@ -57,7 +58,6 @@ const deselect = (ticker) => {
   selected.value.delete(ticker)
 }
 const accountEditMode = ref(false)
-const newBudget = ref()
 const setAccountEditMode = (val) => (accountEditMode.value = val)
 const saveAccountChanges = () => {}
 const discardAccountChanges = () => {
@@ -69,12 +69,12 @@ const loading = reactive({
 })
 const onDeletePlanStock = async () => {
   loading.delete = true
-  let result = await planStore.deleteStocks(props.account, Array.from(selected.value))
+  let result = await portfolioStore.deleteStocks(props.account, Array.from(selected.value))
   if (result) {
     toast.success('성공적으로 삭제했습니다.', {
       timeout: 2000
     })
-    await planStore.refresh()
+    await portfolioStore.refresh()
   } else {
     toast.success('삭제에 실패하였습니다.', {
       timeout: 2000
@@ -89,7 +89,7 @@ function weightFrom(numerator, denominator) {
 }
 
 const updateQuantity = (oldObj, newObj) => {
-  const result = planStore.updatePlanStock(props.account, newObj)
+  const result = portfolioStore.updatePlanStock(props.account, newObj)
   if (result) {
     Object.assign(oldObj, newObj)
   } else {
@@ -107,8 +107,9 @@ function addClicked() {
   <dl class="my-4">
     <dt class="flex align-baseline justify-between mb-4 w-full">
       <div class="flex justify-between items-center w-full">
-        <span class="text-xl font-bold mr-1">{{ account.accName }}</span>
-
+        <span class="text-xl font-bold mr-1">
+          <v-btn variant="text" @click="onAccountClick">{{ account.accName }}</v-btn>
+        </span>
         <div v-if="!accountEditMode">
           <v-btn
             @click="setAccountEditMode(true)"

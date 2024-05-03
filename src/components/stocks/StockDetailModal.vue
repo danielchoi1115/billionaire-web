@@ -3,7 +3,7 @@ import { StockItemAvatar } from '@/components'
 
 import { getCurrentInstance, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
 import { StockApi } from '@/services'
-import { imgBaseUrl, StockUtil } from '@/utils/index.js'
+import { HttpStatus, imgBaseUrl, StockUtil } from '@/utils/index.js'
 import { useCommonStore, useUserStore } from '@/stores'
 import { useToast } from 'vue-toastification'
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
@@ -103,7 +103,7 @@ async function onSubmit() {
   submitLoading.value = true
   let res = await StockApi.update(editedStock.value)
   submitLoading.value = false
-  if (res.status === 200) {
+  if (res.status === HttpStatus.OK) {
     // Object.assign(props.stock, editedStock.value)
     await props.onAfterSubmit(editedStock.value)
   } else {
@@ -121,7 +121,7 @@ const select = reactive({
 
 const avatarPickerDialogOpen = ref(false)
 function onAvatarClicked() {
-  select.avatarColor = loadedStock.stockBgColorHex
+  select.avatarColor = loadedStock.value.stockBgColorHex
   avatarPickerDialogOpen.value = true
 }
 

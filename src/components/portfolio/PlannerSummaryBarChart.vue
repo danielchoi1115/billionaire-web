@@ -47,11 +47,11 @@ const chartOptions = {
     }
   }
 }
-function createChartData(planMst) {
+function createChartData(portfolioMst) {
   let labels = []
   let datasets = []
 
-  planMst?.planAccDtl.forEach((a, i) => {
+  portfolioMst?.planAccDtl.forEach((a, i) => {
     labels.push(a.accMst.accName)
     let dataset = {
       label: a.accMst.accName,
