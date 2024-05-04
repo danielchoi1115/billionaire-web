@@ -65,6 +65,7 @@ function submitQuantity(e) {
   escapePressed.value = false
   quantitySelected.value = false
 }
+
 const rules = {
   nonNegative: (value) => Number(value) >= 0 || ''
 }

@@ -80,7 +80,7 @@ const sizes = computed(() => {
 
     <v-avatar v-if="showEdit" class="edit-avatar" :size="sizes.editBtn">
       <template v-slot:default>
-        <v-icon class="edit-icon" icon="mdi-pencil" :size="sizes.editIcon"></v-icon>
+        <v-icon class="edit-icon" icon="mdi-pencil" :size="sizes.editIcon" />
       </template>
     </v-avatar>
   </div>
@@ -95,7 +95,7 @@ img {
   position: absolute;
   top: 67%;
   left: 72%;
-  background-color: rgb(241, 243, 246);
+  background-color: #f3f3f3;
   color: black;
 }
 .wrapper {

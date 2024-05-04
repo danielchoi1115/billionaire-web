@@ -2,7 +2,7 @@
 import { ref, onBeforeMount, nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { StocksLayout } from '@/layouts'
-import { SearchBar, StockSearchResult, StockDetailModal } from '@/components'
+import { SearchBar, StockSearchResult, StockDetailModal, BillionaireTitle } from '@/components'
 import { StockApi, FileApi } from '@/services'
 
 const router = useRouter()
@@ -11,7 +11,6 @@ const searchResult = ref([])
 onMounted(async () => {})
 
 const handleSearchInput = async (searchInput) => {
-  console.log('parent: handlesearchinput started')
   searchResult.value = await StockApi.keywordSearch(searchInput)
 }
 onBeforeMount(() => {
@@ -34,6 +33,9 @@ function openModal(stock) {
 <template>
   <main>
     <StocksLayout>
+      <template v-slot:title>
+        <BillionaireTitle text="주식 검색" />
+      </template>
       <template v-slot:searchBar>
         <SearchBar :searchHandler="handleSearchInput" />
       </template>

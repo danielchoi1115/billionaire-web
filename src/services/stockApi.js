@@ -1,5 +1,6 @@
 import ApiClient from '@/services/api'
 import { generate_search_result } from '@/utils/dummy_data_generator'
+import { AuditUtil } from '@/utils/audit_util.js'
 
 function filterStock(stocks, keyword) {
   return stocks.filter((s) => {
@@ -27,6 +28,7 @@ const StockApi = {
   },
   update: async (stock) => {
     if (!stock || !stock.ticker) return {}
+    AuditUtil.setDefaultAudit(stock)
     return await ApiClient.patch(`/stocks/${stock.ticker}`, stock)
   }
 }

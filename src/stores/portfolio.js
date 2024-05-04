@@ -11,7 +11,7 @@ export const usePortfolioStore = defineStore('plan', () => {
   const portfolioNo = ref(null)
   const toast = useToast()
   const hasData = () => portfolioData.value != null
-  const setportfolioNo = (val) => (portfolioNo.value = val)
+  const setPortfolioNo = (val) => (portfolioNo.value = val)
   const fetchPlan = async () => {
     const res = await PortfolioApi.getOnePortfolioMst(portfolioNo.value)
     if (res.status === HttpStatus.OK) {
@@ -34,35 +34,39 @@ export const usePortfolioStore = defineStore('plan', () => {
     isLoading.value = false
   }
 
-  const updatePlanStock = async (account, stock) => {
+  const updatePortfolioStock = async (account, stock) => {
     const d = {
       portfolioNo: portfolioData.value.portfolioNo,
       accNo: account.accNo,
       ticker: stock.ticker,
       quantity: Number(stock.quantity)
     }
-    console.debug('updatePlanStock call API', d)
-    const res = await PortfolioApi.updateStock(d)
+    console.debug('updatePortfolioStock call API', d)
+    const res = await PortfolioApi.updatePortfolioStock(d)
     return res.status === HttpStatus.OK
   }
 
   // Plan 계좌에 주식 추가
-  const insertStocks = async (account, tickers) => {
-    console.debug('insertStocks: ', account)
-    console.debug('insertStocks tickers: ', tickers)
+  const insertPortfolioStocks = async (account, tickers) => {
+    console.debug('insertPortfolioStocks: ', account)
+    console.debug('insertPortfolioStocks tickers: ', tickers)
 
     const promises = tickers.map(async (t) => {
-      const res = await PortfolioApi.insertStock(portfolioData.value.portfolioNo, account.accNo, {
-        ticker: t,
-        quantity: 1
-      })
+      const res = await PortfolioApi.insertPortfolioStock(
+        portfolioData.value.portfolioNo,
+        account.accNo,
+        {
+          ticker: t,
+          quantity: 1
+        }
+      )
       console.log('Plan Stock inserted!', res.data)
     })
     await Promise.all(promises)
     await refresh()
   }
 
-  const deleteStocks = async (account, tickers) => {
+  const deletePortfolioStocks = async (account, tickers) => {
     let d = {
       portfolioNo: portfolioData.value.portfolioNo,
       accNo: account.accNo,
@@ -70,7 +74,7 @@ export const usePortfolioStore = defineStore('plan', () => {
         tickers: tickers.join(',')
       }
     }
-    let res = await PortfolioApi.deleteStocks(d)
+    let res = await PortfolioApi.deletePortfolioStocks(d)
     return res.status === HttpStatus.OK
   }
 
@@ -127,10 +131,10 @@ export const usePortfolioStore = defineStore('plan', () => {
     portfolioSummary,
     totalBudgetAmount,
     portfolioData,
-    updatePlanStock,
+    updatePortfolioStock,
     hasData,
-    insertStocks,
-    deleteStocks,
-    setportfolioNo
+    insertPortfolioStocks,
+    deletePortfolioStocks,
+    setPortfolioNo
   }
 })

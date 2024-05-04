@@ -76,15 +76,18 @@ const chartOptions = {
     show: true
   },
   chart: {
-    height: 350,
+    height: 200,
     type: 'treemap',
+    sparkline: {
+      enabled: true
+    },
     animations: {
       enabled: true,
       easing: 'easeinout',
-      speed: 800,
+      speed: 250,
       animateGradually: {
         enabled: true,
-        delay: 150
+        delay: 300
       },
       dynamicAnimation: {
         enabled: true,
@@ -95,8 +98,20 @@ const chartOptions = {
       show: false
     }
   },
+  plotOptions: {
+    treemap: {
+      dataLabels: {
+        format: 'scale'
+      }
+    }
+  },
+  grid: {
+    padding: {
+      bottom: 30
+    }
+  },
   xaxis: {
-    show: true,
+    show: false,
     labels: {
       show: false
     },
@@ -107,26 +122,24 @@ const chartOptions = {
       show: false
     }
   },
-  title: {
-    text: 'Multi-dimensional Treemap',
-    align: 'center'
-  },
   dataLabels: {
+    enabled: true,
     formatter: function (value, b) {
-      return [value, Math.round(weightMap.value[value] * 100) + '%']
+      if (weightMap.value[value] < 0.05) {
+        return ['', value]
+      }
+      return ['', value, Math.round(weightMap.value[value] * 100) + '%']
     },
     style: {
-      fontSize: '12px',
-      fontWeight: 'bold'
+      fontSize: '14px',
+      fontWeight: 'bold',
+      colors: ['#000000']
     },
+    offsetY: -14,
     background: {
       enabled: true,
       foreColor: '#fff',
-      borderRadius: 2,
-      padding: 4,
-      opacity: 0.9,
-      borderWidth: 1,
-      borderColor: '#fff'
+      borderWidth: 0
     }
   }
 }
@@ -134,11 +147,11 @@ const chartOptions = {
 onMounted(() => {})
 </script>
 <template>
-  <div id="chart">
+  <div id="chart" class="h-[300px]">
     <apexchart
       v-if="portfolioStore.hasData()"
       type="treemap"
-      height="350"
+      height="300"
       :options="chartOptions"
       :series="chartData"
     ></apexchart>

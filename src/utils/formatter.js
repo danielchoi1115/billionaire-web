@@ -3,6 +3,7 @@ const unit = 10000
 
 const Formatter = {
   readableMoney: (number) => {
+    if (!number) return
     let result = ''
     let idx = 0
     while (number > 0) {

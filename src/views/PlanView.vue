@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { PortfolioAccounts, PortfolioTreemap } from '@/components'
+import { BillionaireTitle, PortfolioAccounts, PortfolioTreemap } from '@/components'
 
 const portfolioMst = ref()
 import { storeToRefs } from 'pinia'
@@ -16,7 +16,7 @@ onMounted(async () => {
   userStore.setPlanYn('Y')
   await userStore.loadPortfolioList()
 
-  await portfolioStore.setportfolioNo(1)
+  await portfolioStore.setPortfolioNo(1)
   await portfolioStore.refresh()
 })
 
@@ -49,6 +49,7 @@ function saveChanges(newAccount) {
 
 <template>
   <div class="px-3 max-w-[720px] my-0 mx-auto">
+    <BillionaireTitle text="이달의 구매계획" />
     <PortfolioTreemap />
     <PortfolioAccounts />
   </div>

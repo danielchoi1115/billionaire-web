@@ -1,24 +1,38 @@
 <script setup>
 import { StockAddButton, StockItem, StockMultiPickerModal } from '@/components'
-import { ref, computed, reactive } from 'vue'
-import { calculateStockValueKRW, getAssetType } from '@/utils'
+import { ref, computed, reactive, watch, nextTick } from 'vue'
+import { calculateStockValueKRW, Formatter, getAssetType } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { useStockStore, usePortfolioStore } from '@/stores'
 import { useToast } from 'vue-toastification'
+import { PortfolioApi } from '@/services/index.js'
+import { HttpStatus } from '@/utils/index.js'
 
-// https://github.com/Maronato/vue-toastification
-const portfolioStore = usePortfolioStore()
-const toast = useToast()
 const props = defineProps({
   account: Object,
+  plan: Boolean,
   onAddClick: Function,
   onStockClick: Function,
-  onAccountClick: Function,
-  autoSort: Boolean
+  autoSort: Boolean,
+  onAccountEditClick: Function
+})
+
+const emits = defineEmits(['update:account'])
+
+const portfolioStore = usePortfolioStore()
+const { portfolioData } = storeToRefs(portfolioStore)
+const toast = useToast()
+const accountEditMode = ref(false)
+const selected = ref(new Set())
+const budgetAmountSelected = ref(false)
+const budgetAmountTextField = ref(null)
+const budgetAmountEdited = ref()
+const escapePressed = ref(false)
+const loading = reactive({
+  delete: false
 })
 
 const totalStockPrice = computed(() => calculateTotalStockPrice(props.account))
-
 const weights = computed(() =>
   props.account.stocks?.reduce((acc, cur) => {
     acc[cur.ticker] = weightFrom(calculateStockValueKRW(cur), props.account.budgetAmount)
@@ -37,7 +51,7 @@ const sortedStocks = computed(() => {
 function calculateTotalStockPrice(account) {
   return account?.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
 }
-const selected = ref(new Set())
+
 const handleStockClick = (event, stock) => {
   if (!accountEditMode.value) {
     if (event.target.getAttribute('type') === 'stockitem-wrapper') {
@@ -52,24 +66,22 @@ const handleStockClick = (event, stock) => {
     selected.value.add(stock.ticker)
   }
 }
+
 const isSelected = (ticker) => selected.value.has(ticker)
 
 const deselect = (ticker) => {
   selected.value.delete(ticker)
 }
-const accountEditMode = ref(false)
-const setAccountEditMode = (val) => (accountEditMode.value = val)
-const saveAccountChanges = () => {}
-const discardAccountChanges = () => {
+
+const setStockEditMode = (val) => (accountEditMode.value = val)
+const discardStockSelections = () => {
   selected.value = new Set()
-  setAccountEditMode(false)
+  setStockEditMode(false)
 }
-const loading = reactive({
-  delete: false
-})
-const onDeletePlanStock = async () => {
+
+const onDeletePortfolioStock = async () => {
   loading.delete = true
-  let result = await portfolioStore.deleteStocks(props.account, Array.from(selected.value))
+  let result = await portfolioStore.deletePortfolioStocks(props.account, Array.from(selected.value))
   if (result) {
     toast.success('성공적으로 삭제했습니다.', {
       timeout: 2000
@@ -89,7 +101,7 @@ function weightFrom(numerator, denominator) {
 }
 
 const updateQuantity = (oldObj, newObj) => {
-  const result = portfolioStore.updatePlanStock(props.account, newObj)
+  const result = portfolioStore.updatePortfolioStock(props.account, newObj)
   if (result) {
     Object.assign(oldObj, newObj)
   } else {
@@ -102,28 +114,73 @@ function addClicked() {
   }
   props.onAddClick(props.account)
 }
+
+watch(budgetAmountSelected, (val) => {
+  if (val) {
+    nextTick(() => {
+      budgetAmountTextField.value?.focus()
+    })
+  }
+})
+
+function resetBudgetAmount() {
+  escapePressed.value = true
+  budgetAmountSelected.value = false
+  budgetAmountEdited.value = null
+}
+
+async function submitBudgetAmount() {
+  if (!escapePressed.value && budgetAmountEdited.value && budgetAmountEdited.value >= 0) {
+    let data = {
+      portfolioNo: portfolioData.value.portfolioNo,
+      accNo: props.account.accNo,
+      budgetAmount: Math.round(budgetAmountEdited.value)
+    }
+    const result = await PortfolioApi.updatePortfolioAccount(data)
+    if (result.status === HttpStatus.OK) {
+      await portfolioStore.refresh()
+      budgetAmountEdited.value = null
+    } else {
+      console.error('Failed to update Budget Amount.', result)
+    }
+  }
+  escapePressed.value = false
+  budgetAmountSelected.value = false
+}
 </script>
 <template>
   <dl class="my-4">
     <dt class="flex align-baseline justify-between mb-4 w-full">
-      <div class="flex justify-between items-center w-full">
-        <span class="text-xl font-bold mr-1">
-          <v-btn variant="flat" @click="onAccountClick">
-            <div class="text-lg px-1">{{ account.accName }}</div>
+      <div class="flex justify-between items-start w-full overflow-visible">
+        <div v-if="props.plan" class="h-14">
+          <v-btn v-if="!budgetAmountSelected" @click="budgetAmountSelected = true" variant="text">
+            <span class="text-lg font-semibold" density="compact">
+              {{ account.budgetAmount?.toLocaleString() }}원
+            </span>
           </v-btn>
-        </span>
+          <div v-if="budgetAmountSelected">
+            <v-text-field
+              ref="budgetAmountTextField"
+              v-model="budgetAmountEdited"
+              variant="outlined"
+              density="compact"
+              type="number"
+              hide-spin-buttons
+              style="width: 150px"
+              :placeholder="account.budgetAmount?.toLocaleString()"
+              :persistent-placeholder="true"
+              @keydown.enter="$event.target.blur()"
+              @keydown.escape="resetBudgetAmount"
+              @blur="submitBudgetAmount"
+              suffix="원"
+              :hint="Formatter.readableMoney(budgetAmountEdited)"
+              persistent-hint
+            />
+          </div>
+        </div>
         <div v-if="!accountEditMode">
-          <v-btn
-            @click="setAccountEditMode(true)"
-            class="account-title"
-            :ripple="false"
-            variant="plain"
-          >
-            <template v-slot:append>
-              <v-icon class="text-[#696868]" icon="mdi-pencil" />
-            </template>
-            수정하기
-          </v-btn>
+          <v-btn variant="plain" @click="onAccountEditClick"> 계좌수정</v-btn>
+          <v-btn @click="setStockEditMode(true)" variant="plain"> 주식삭제 </v-btn>
         </div>
         <div v-if="accountEditMode">
           <v-btn
@@ -131,7 +188,7 @@ function addClicked() {
             class="mr-2"
             variant="tonal"
             color="grey-9"
-            @click="discardAccountChanges"
+            @click="discardStockSelections"
           >
             취소
           </v-btn>
@@ -139,7 +196,7 @@ function addClicked() {
             width="80"
             variant="flat"
             color="red"
-            @click="onDeletePlanStock"
+            @click="onDeletePortfolioStock"
             :disabled="selected.size === 0"
             :loading="loading.delete"
           >
@@ -171,12 +228,3 @@ function addClicked() {
     </dd>
   </dl>
 </template>
-
-<style scoped>
-.account-title > i {
-  color: rgb(233 233 233);
-}
-.account-title:hover .v-btn__content > i {
-  color: rgb(148, 148, 148);
-}
-</style>

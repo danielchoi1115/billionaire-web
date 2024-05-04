@@ -169,7 +169,7 @@ function onAvatarSubmit(val) {
       </template>
 
       <template v-slot:default>
-        <v-card-text class="bg-white mx-2 rounded h-[60dvh] px-4 overflow-y-auto">
+        <v-card-text class="bg-white mx-2 rounded h-[70dvh] px-4 overflow-y-auto">
           <div class="">
             <!--            <v-text-field-->
             <!--              variant="outlined"-->
@@ -202,6 +202,60 @@ function onAvatarSubmit(val) {
 
             <div class="flex gap-4 my-4">
               <div class="grow">
+                <TextFieldTitle title="국가" />
+                <v-select
+                  v-model="select.assetCountry"
+                  :items="commonStore.assetCountry()"
+                  item-title="name"
+                  item-value="code"
+                  label="Select"
+                  persistent-hint
+                  return-object
+                  single-line
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                  :list-props="{ maxHeight: '30vh' }"
+                />
+              </div>
+              <div class="grow">
+                <TextFieldTitle title="자산유형" />
+                <v-select
+                  v-model="select.assetClass"
+                  :items="commonStore.assetClass()"
+                  item-title="name"
+                  item-value="code"
+                  label="Select"
+                  persistent-hint
+                  return-object
+                  single-line
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                  :list-props="{ maxHeight: '30vh' }"
+                />
+              </div>
+              <div class="grow">
+                <TextFieldTitle title="통화" />
+                <v-select
+                  v-model="select.currency"
+                  :items="commonStore.currency()"
+                  item-title="name"
+                  item-value="code"
+                  label="Select"
+                  persistent-hint
+                  return-object
+                  single-line
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                  :list-props="{ maxHeight: '30vh' }"
+                />
+              </div>
+            </div>
+
+            <div class="flex gap-4 my-4">
+              <div class="grow">
                 <TextFieldTitle title="KIS 표준코드" />
                 <v-text-field
                   variant="outlined"
@@ -220,58 +274,6 @@ function onAvatarSubmit(val) {
                 />
               </div>
             </div>
-
-            <div class="flex gap-4 my-4">
-              <div class="grow">
-                <TextFieldTitle title="유형" />
-                <v-select
-                  v-model="select.assetClass"
-                  :items="commonStore.assetClass()"
-                  item-title="name"
-                  item-value="code"
-                  label="Select"
-                  persistent-hint
-                  return-object
-                  single-line
-                  variant="outlined"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-              <div class="grow">
-                <TextFieldTitle title="국가" />
-                <v-select
-                  v-model="select.assetCountry"
-                  :items="commonStore.assetCountry()"
-                  item-title="name"
-                  item-value="code"
-                  label="Select"
-                  persistent-hint
-                  return-object
-                  single-line
-                  variant="outlined"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-              <div class="grow">
-                <TextFieldTitle title="통화" />
-                <v-select
-                  v-model="select.currency"
-                  :items="commonStore.currency()"
-                  item-title="name"
-                  item-value="code"
-                  label="Select"
-                  persistent-hint
-                  return-object
-                  single-line
-                  variant="outlined"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-            </div>
-
             <v-divider :thickness="1" class="border-neutral-200 border-opacity-100 rounded mx-2" />
 
             <v-checkbox v-model="edited" label="edited"></v-checkbox>
@@ -280,17 +282,19 @@ function onAvatarSubmit(val) {
       </template>
 
       <template v-slot:actions>
-        <v-btn
-          @click="onSubmit"
-          :loading="submitLoading"
-          class="grow"
-          height="48"
-          color="blue"
-          variant="flat"
-        >
-          변경사항 저장
-        </v-btn>
-        <v-btn @click="() => handleModalClose(false)" class="grow" height="48"> 취소 </v-btn>
+        <div class="flex gap-2 w-full">
+          <v-btn
+            @click="onSubmit"
+            :loading="submitLoading"
+            class="grow"
+            height="48"
+            color="blue"
+            variant="flat"
+          >
+            변경사항 저장
+          </v-btn>
+          <v-btn @click="() => handleModalClose(false)" class="grow" height="48"> 취소 </v-btn>
+        </div>
       </template>
     </v-card>
     <AvatarEditorDialog

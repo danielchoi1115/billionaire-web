@@ -33,7 +33,6 @@ const myCustomLightTheme = {
 const vuetify = createVuetify({
   theme: {
     defaultTheme: 'myCustomLightTheme',
-
     themes: {
       myCustomLightTheme
     }

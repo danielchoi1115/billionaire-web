@@ -10,7 +10,7 @@ import DividendItem from './dividends/DividendItem.vue'
 import PlannerTitle from '@/components/portfolio/PlannerTitle.vue'
 import PlannerSummaryBarChart from '@/components/portfolio/PlannerSummaryBarChart.vue'
 import PlannerSummaryAccounts from '@/components/portfolio/PlannerSummaryAccounts.vue'
-import PortfolioAccountDetailModal from '@/components/portfolio/PortfolioAccountDetailModal.vue'
+import AccountDetailModal from '@/components/accounts/AccountDetailModal.vue'
 import PlannerTab from '@/components/portfolio/PlannerTab.vue'
 import StockItem from './stocks/StockItem.vue'
 import StockItemColumn from './stocks/StockItemColumn.vue'
@@ -23,6 +23,11 @@ import StockDetailModal from './stocks/StockDetailModal.vue'
 import StockAddButton from './stocks/StockAddButton.vue'
 import StockMultiPickerModal from './stocks/StockMultiPickerModal.vue'
 import PortfolioAccounts from './portfolio/PortfolioAccounts.vue'
+import AvatarEditorDialog from '@/components/commons/AvatarEditorDialog.vue'
+import EditTextField from '@/components/commons/EditTextField.vue'
+import AccountDetailModalLayout from '@/layouts/accounts/AccountDetailModalLayout.vue'
+import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
+import BillionaireTitle from '@/components/commons/BillionaireTitle.vue'
 
 export {
   PieChart,
@@ -37,7 +42,7 @@ export {
   PlannerTitle,
   PlannerSummaryBarChart,
   PlannerSummaryAccounts,
-  PortfolioAccountDetailModal,
+  AccountDetailModal,
   PlannerTab,
   StockItem,
   StockSearchResult,
@@ -49,5 +54,10 @@ export {
   StockDetailModal,
   StockAddButton,
   StockMultiPickerModal,
-  PortfolioAccounts
+  PortfolioAccounts,
+  AvatarEditorDialog,
+  EditTextField,
+  AccountDetailModalLayout,
+  TextFieldTitle,
+  BillionaireTitle
 }

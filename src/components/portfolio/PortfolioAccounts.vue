@@ -1,11 +1,11 @@
 <script setup>
 import {
-  PortfolioAccountDetailModal,
+  AccountDetailModal,
   AccountSectionItem,
   StockDetailModal,
   StockMultiPickerModal
 } from '@/components'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { usePortfolioStore } from '@/stores'
 import { nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -32,6 +32,8 @@ const selected = reactive({
   ticker: '',
   account: {}
 })
+const currentAccountNo = ref()
+
 function onAddClick(account) {
   selectedAccount.value = account
   modal.stockAdd = true
@@ -45,7 +47,7 @@ async function onStockAdded(stockMap) {
   let tickers = []
   stockMap.forEach((k, v) => tickers.push(v))
 
-  await portfolioStore.insertStocks(selectedAccount.value, tickers)
+  await portfolioStore.insertPortfolioStocks(selectedAccount.value, tickers)
 
   toast.success('추가되었습니다.', {
     timeout: 2000
@@ -60,9 +62,8 @@ function onStockClick(stock) {
   modal.stockDetail = true
 }
 
-function onAccountClick(account) {
+function onAccountEditClick() {
   modal.accountDetail = true
-  selected.account = account
 }
 
 function handleAccountDetailModal(val) {
@@ -82,20 +83,56 @@ async function onUpdateAccount() {
   modal.accountDetail = false
   toast.success('변경사항이 저장되었습니다.')
 }
+
+onMounted(() => {
+  const watchAccLoaded = watch(portfolioData, (newVal) => {
+    if (newVal?.accounts.length) {
+      currentAccountNo.value = newVal.accounts[0].accNo
+      watchAccLoaded()
+    }
+  })
+})
 </script>
 
 <template>
-  <v-switch v-model="autoSort" color="primary" label="자동정렬" hide-details />
+  <v-tabs v-model="currentAccountNo">
+    <div class="grow">
+      <v-tab
+        v-for="(account, i) in portfolioData?.accounts"
+        :key="account.accNo"
+        :value="account.accNo"
+      >
+        {{ account.accName }}
+      </v-tab>
+    </div>
+    <div class="flex items-center">
+      <v-btn
+        @click="autoSort = !autoSort"
+        text="자동정렬"
+        :color="autoSort ? 'black' : '#737373'"
+        prepend-icon="mdi-sort-variant"
+        :variant="autoSort ? 'tonal' : 'text'"
+        size="small"
+      />
+    </div>
+  </v-tabs>
 
-  <AccountSectionItem
-    v-for="(account, i) in portfolioData?.accounts"
-    :key="i"
-    :account="account"
-    :onAddClick="onAddClick"
-    :onStockClick="onStockClick"
-    :onAccountClick="(e) => onAccountClick(account)"
-    :autoSort="autoSort"
-  />
+  <v-window v-model="currentAccountNo" class="h-[800px] overflow-y-auto">
+    <v-window-item
+      v-for="(account, i) in portfolioData?.accounts"
+      :key="account.accNo"
+      :value="account.accNo"
+    >
+      <AccountSectionItem
+        plan
+        :account="account"
+        :onAddClick="onAddClick"
+        :onStockClick="onStockClick"
+        :autoSort="autoSort"
+        :onAccountEditClick="onAccountEditClick"
+      />
+    </v-window-item>
+  </v-window>
 
   <StockMultiPickerModal
     ref="stockMultiPickerModalRef"
@@ -113,10 +150,10 @@ async function onUpdateAccount() {
     :ticker="selectedTicker"
     :onAfterSubmit="onUpdateStock"
   />
-  <PortfolioAccountDetailModal
+  <AccountDetailModal
     v-model="modal.accountDetail"
     @update:modelValue="handleAccountDetailModal"
-    :account="selected.account"
+    :accountNo="currentAccountNo"
     :onAfterSubmit="onUpdateAccount"
   />
 </template>
