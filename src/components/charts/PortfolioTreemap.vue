@@ -98,6 +98,15 @@ const chartOptions = {
       show: false
     }
   },
+  tooltip: {
+    enabled: true,
+    y: {
+      formatter: (f) => {
+        return f.toLocaleString() + '원'
+      }
+    }
+  },
+
   plotOptions: {
     treemap: {
       dataLabels: {
@@ -125,7 +134,7 @@ const chartOptions = {
   dataLabels: {
     enabled: true,
     formatter: function (value, b) {
-      if (weightMap.value[value] < 0.05) {
+      if (weightMap.value[value] < 0.01) {
         return ['', value]
       }
       return ['', value, Math.round(weightMap.value[value] * 100) + '%']
@@ -145,9 +154,13 @@ const chartOptions = {
 }
 
 onMounted(() => {})
+const showChart = computed(
+  () => chartData.value[0]?.data.length > 0 || chartData.value[1]?.data.length > 0
+)
 </script>
 <template>
-  <div id="chart" class="h-[300px]">
+  <div v-if="!showChart" class="h-[300px]">주식을 추가해 주세요.</div>
+  <div v-else id="chart" class="h-[300px]">
     <apexchart
       v-if="portfolioStore.hasData()"
       type="treemap"

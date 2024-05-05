@@ -1,21 +1,24 @@
 import { UserApi } from '@/services'
 import { defineStore } from 'pinia'
 import { onMounted, ref } from 'vue'
+import { HttpStatus } from '@/utils/index.js'
+import { TimeScale } from 'chart.js'
+import { usePortfolioStore } from '@/stores/portfolio.js'
 
 export const useUserStore = defineStore('user', () => {
   const userData = ref({
     userNo: '000000',
     portfolios: []
   })
-  const planYn = ref(null)
-
-  const setPlanYn = (val) => (planYn.value = val)
-
   const loadPortfolioList = async () => {
-    userData.value.portfolios = await UserApi.getAllPortfolio(userData.value.userNo, planYn.value)
+    const portfolioStore = usePortfolioStore()
+    let res = await UserApi.getAllPortfolio(userData.value.userNo, portfolioStore.getPlanYn())
+    if (res.status === HttpStatus.OK) {
+      userData.value.portfolios = res.data
+    }
   }
   const getUser = () => userData.value
   const getUserNo = () => userData.value?.userNo
 
-  return { getUser, getUserNo, setPlanYn, loadPortfolioList, userData }
+  return { getUser, getUserNo, loadPortfolioList, userData }
 })

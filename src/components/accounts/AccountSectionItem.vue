@@ -1,7 +1,7 @@
 <script setup>
 import { StockAddButton, StockItem, StockMultiPickerModal } from '@/components'
 import { ref, computed, reactive, watch, nextTick } from 'vue'
-import { calculateStockValueKRW, Formatter, getAssetType } from '@/utils'
+import { calculateStockValueKRW, Formatter, getAssetType, accountValueKRW } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { useStockStore, usePortfolioStore } from '@/stores'
 import { useToast } from 'vue-toastification'
@@ -32,13 +32,14 @@ const loading = reactive({
   delete: false
 })
 
-const totalStockPrice = computed(() => calculateTotalStockPrice(props.account))
-const weights = computed(() =>
-  props.account.stocks?.reduce((acc, cur) => {
-    acc[cur.ticker] = weightFrom(calculateStockValueKRW(cur), props.account.budgetAmount)
+const totalStockPrice = computed(() => accountValueKRW(props.account))
+const weights = computed(() => {
+  let divider = portfolioStore.isPlan() ? props.account.budgetAmount : totalStockPrice.value
+  return props.account.stocks?.reduce((acc, cur) => {
+    acc[cur.ticker] = weightFrom(calculateStockValueKRW(cur), divider)
     return acc
   }, {})
-)
+})
 const sortedStocks = computed(() => {
   if (!props.autoSort) {
     return props.account.stocks
@@ -47,10 +48,6 @@ const sortedStocks = computed(() => {
     (a, b) => calculateStockValueKRW(b) - calculateStockValueKRW(a)
   )
 })
-
-function calculateTotalStockPrice(account) {
-  return account?.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
-}
 
 const handleStockClick = (event, stock) => {
   if (!accountEditMode.value) {
@@ -151,31 +148,37 @@ async function submitBudgetAmount() {
 <template>
   <dl class="my-4">
     <dt class="flex align-baseline justify-between mb-4 w-full">
-      <div class="flex justify-between items-start w-full overflow-visible">
-        <div v-if="props.plan" class="h-14">
-          <v-btn v-if="!budgetAmountSelected" @click="budgetAmountSelected = true" variant="text">
-            <span class="text-lg font-semibold" density="compact">
-              {{ account.budgetAmount?.toLocaleString() }}원
-            </span>
-          </v-btn>
-          <div v-if="budgetAmountSelected">
-            <v-text-field
-              ref="budgetAmountTextField"
-              v-model="budgetAmountEdited"
-              variant="outlined"
-              density="compact"
-              type="number"
-              hide-spin-buttons
-              style="width: 150px"
-              :placeholder="account.budgetAmount?.toLocaleString()"
-              :persistent-placeholder="true"
-              @keydown.enter="$event.target.blur()"
-              @keydown.escape="resetBudgetAmount"
-              @blur="submitBudgetAmount"
-              suffix="원"
-              :hint="Formatter.readableMoney(budgetAmountEdited)"
-              persistent-hint
-            />
+      <div class="flex justify-between items-end w-full overflow-visible">
+        <div>
+          <div v-if="props.plan">
+            <div class="ml-4 text-sm text-neutral-500 font-medium">계좌예산</div>
+            <v-btn v-if="!budgetAmountSelected" @click="budgetAmountSelected = true" variant="text">
+              <div class="text-lg font-semibold">
+                {{ account.budgetAmount?.toLocaleString() }}원
+              </div>
+            </v-btn>
+            <div v-if="budgetAmountSelected">
+              <v-text-field
+                ref="budgetAmountTextField"
+                v-model="budgetAmountEdited"
+                variant="outlined"
+                density="compact"
+                type="number"
+                hide-spin-buttons
+                hide-details
+                style="width: 150px"
+                :placeholder="account.budgetAmount?.toLocaleString()"
+                :persistent-placeholder="true"
+                @keydown.enter="$event.target.blur()"
+                @keydown.escape="resetBudgetAmount"
+                @blur="submitBudgetAmount"
+                suffix="원"
+              />
+            </div>
+          </div>
+          <div v-else>
+            <div class="ml-4 mb-[6px] text-sm text-neutral-500 font-medium">보유금액</div>
+            <div class="ml-4 text-lg font-semibold">{{ totalStockPrice.toLocaleString() }}원</div>
           </div>
         </div>
         <div v-if="!accountEditMode">
@@ -218,6 +221,7 @@ async function submitBudgetAmount() {
         :selected="isSelected(stock.ticker)"
       />
       <StockItem
+        v-if="props.plan"
         :deposit="true"
         :account="account"
         :accountEditMode="accountEditMode"

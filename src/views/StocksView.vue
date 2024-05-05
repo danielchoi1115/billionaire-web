@@ -34,7 +34,7 @@ function openModal(stock) {
   <main>
     <StocksLayout>
       <template v-slot:title>
-        <BillionaireTitle text="주식 검색" />
+        <BillionaireTitle title="주식 검색" />
       </template>
       <template v-slot:searchBar>
         <SearchBar :searchHandler="handleSearchInput" />

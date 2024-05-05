@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia'
-import { ref, computed, reactive } from 'vue'
-import { generate_common_code } from '@/utils/dummy_data_generator.js'
 
 export const useCommonStore = defineStore('common', () => {
   const dataMap = {
@@ -19,8 +17,10 @@ export const useCommonStore = defineStore('common', () => {
       '04': '인도'
     },
     currency: {
-      KRW: '원화 (₩)',
-      USD: '달러 ($)'
+      KRW: 'KRW (₩)',
+      USD: 'USD ($)',
+      JPY: 'JPY (¥)',
+      INR: 'INR (₹)'
     }
   }
 
@@ -40,8 +40,10 @@ export const useCommonStore = defineStore('common', () => {
       { code: '04', name: '인도' }
     ],
     currency: [
-      { code: 'KRW', name: '원화 (₩)' },
-      { code: 'USD', name: '달러 ($)' }
+      { code: 'KRW', name: 'KRW (₩)' },
+      { code: 'USD', name: 'USD ($)' },
+      { code: 'JPY', name: 'JPY (¥)' },
+      { code: 'INR', name: 'INR (₹)' }
     ]
   }
   // const isLoading = ref(false)

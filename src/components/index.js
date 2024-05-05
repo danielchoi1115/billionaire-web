@@ -28,6 +28,8 @@ import EditTextField from '@/components/commons/EditTextField.vue'
 import AccountDetailModalLayout from '@/layouts/accounts/AccountDetailModalLayout.vue'
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
 import BillionaireTitle from '@/components/commons/BillionaireTitle.vue'
+import PortfolioSelector from '@/components/portfolio/PortfolioSelector.vue'
+import PortfolioValue from '@/components/portfolio/PortfolioValue.vue'
 
 export {
   PieChart,
@@ -59,5 +61,7 @@ export {
   EditTextField,
   AccountDetailModalLayout,
   TextFieldTitle,
-  BillionaireTitle
+  BillionaireTitle,
+  PortfolioSelector,
+  PortfolioValue
 }

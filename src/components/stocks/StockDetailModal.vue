@@ -77,7 +77,7 @@ async function onSubmit() {
   if (!editedStock.value) return
 
   editedStock.value.assetClassCd = select.assetClass.code
-  editedStock.value.currency = select.currency.code
+  editedStock.value.stockCurrency = select.currency.code
   editedStock.value.assetCountryCd = select.assetCountry.code
   const userNo = userStore.getUserNo()
   if (!userNo) {

@@ -25,5 +25,9 @@ function calculateStockValueKRW(stock) {
   if (!stock) return 0
   return toKRW(stock.price, stock.stockCurrency) * stock.quantity
 }
+function accountValueKRW(account) {
+  if (!account || account.length === 0) return 0
+  return account.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
+}
 
-export { toKRW, toUSD, calculateStockValueKRW }
+export { toKRW, toUSD, calculateStockValueKRW, accountValueKRW }

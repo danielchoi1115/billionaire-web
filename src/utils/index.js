@@ -1,4 +1,4 @@
-import { toKRW, toUSD, calculateStockValueKRW } from './money_util'
+import { toKRW, toUSD, calculateStockValueKRW, accountValueKRW } from './money_util'
 import { getAssetType, getAssetClass, imgBaseUrl, StockUtil } from './stock_utils'
 import HttpStatus from './httpStatus.js'
 import { Formatter } from './formatter'
@@ -11,5 +11,6 @@ export {
   imgBaseUrl,
   HttpStatus,
   StockUtil,
-  Formatter
+  Formatter,
+  accountValueKRW
 }

@@ -1,5 +1,4 @@
 import ApiClient from '@/services/api'
-import { generate_search_result } from '@/utils/dummy_data_generator'
 import { AuditUtil } from '@/utils/audit_util.js'
 
 function filterStock(stocks, keyword) {

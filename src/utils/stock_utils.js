@@ -12,6 +12,7 @@ const assetTypes = {
 const countryToCurrencyMap = {
   미국: 'USD',
   한국: 'KRW',
+  국내: 'KRW',
   일본: 'JPY',
   인도: 'INR',
   USD: 'USD',
