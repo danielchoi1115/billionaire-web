@@ -49,7 +49,7 @@ const sortedStocks = computed(() => {
 
 const handleStockClick = (event, stock) => {
   if (!accountEditMode.value) {
-    if (event.target.getAttribute('type') === 'stockitem-wrapper') {
+    if (event.target.getAttribute('type') !== 'quantity-edit') {
       props.onStockClick(stock)
     }
     return

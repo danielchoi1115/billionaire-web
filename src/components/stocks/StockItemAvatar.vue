@@ -98,6 +98,12 @@ img {
   color: black;
 }
 
+.wrapper {
+  /*사용하는 클래스임*/
+  position: relative;
+  cursor: pointer;
+}
+
 .wrapper:hover .edit-avatar {
   background-color: rgba(220, 225, 231);
 }

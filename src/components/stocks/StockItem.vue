@@ -136,12 +136,16 @@ function getAvatarIcon() {
               @click="quantitySelected = true"
               :disabled="accountEditMode"
             >
-              <div class="text-base font-semibold text-neutral-700 flex gap-1 leading-6">
+              <div
+                type="quantity-edit"
+                class="text-base font-semibold text-neutral-700 flex gap-1 leading-6"
+              >
                 {{ stock.quantity }}주
               </div>
             </v-btn>
             <div v-if="quantitySelected">
               <v-text-field
+                type="quantity-edit"
                 ref="quantityTextField"
                 :rules="[rules.nonNegative]"
                 variant="outlined"

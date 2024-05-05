@@ -1,5 +1,4 @@
 <script setup>
-import { onBeforeUnmount } from 'vue'
 import {
   BillionaireTitle,
   PortfolioAccounts,
@@ -7,14 +6,6 @@ import {
   PortfolioTreemap,
   PortfolioValue
 } from '@/components'
-
-import { usePortfolioStore } from '@/stores'
-
-const portfolioStore = usePortfolioStore()
-
-onBeforeUnmount(() => {
-  portfolioStore.resetData()
-})
 </script>
 
 <template>

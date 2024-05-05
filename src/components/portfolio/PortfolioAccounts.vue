@@ -5,7 +5,7 @@ import {
   StockDetailModal,
   StockMultiPickerModal
 } from '@/components'
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, onBeforeUnmount } from 'vue'
 import { usePortfolioStore } from '@/stores'
 import { nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -14,6 +14,10 @@ import { useToast } from 'vue-toastification'
 
 const portfolioStore = usePortfolioStore()
 const { portfolioData } = storeToRefs(portfolioStore)
+
+onBeforeUnmount(() => {
+  portfolioStore.resetData()
+})
 
 const toast = useToast()
 const selectedAccount = ref({})
@@ -117,7 +121,7 @@ watch(
       />
     </div>
   </v-tabs>
-  <v-window v-model="currentAccountNo" class="h-[1500px]">
+  <v-window v-model="currentAccountNo" class="min-h-[1000px]">
     <v-window-item
       v-for="(account, i) in portfolioData?.accounts"
       :key="account.accNo"

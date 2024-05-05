@@ -6,14 +6,6 @@ import {
   PortfolioSelector,
   PortfolioValue
 } from '@/components'
-import { onBeforeUnmount } from 'vue'
-import { usePortfolioStore } from '@/stores/index.js'
-
-const portfolioStore = usePortfolioStore()
-
-onBeforeUnmount(() => {
-  portfolioStore.resetData()
-})
 </script>
 
 <template>
