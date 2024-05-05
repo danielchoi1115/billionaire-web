@@ -1,7 +1,6 @@
 <script setup>
 import { StockUtil } from '@/utils'
 import { computed } from 'vue'
-import { StockItemAvatar } from '@/components/index.js'
 
 const props = defineProps({
   color: {
@@ -97,10 +96,6 @@ img {
   left: 72%;
   background-color: #f3f3f3;
   color: black;
-}
-.wrapper {
-  position: relative;
-  cursor: pointer;
 }
 
 .wrapper:hover .edit-avatar {

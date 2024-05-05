@@ -1,7 +1,3 @@
-import PieChart from './PieChart.vue'
-import StockAccount from './StockAccount.vue'
-import MyPortfolioChart from './MyPortfolioChart.vue'
-import MyPortfolioList from './MyPortfolioList.vue'
 import MyDividendsHistory from './dividends/MyDividendsHistory.vue'
 import MyDividendsChart from './dividends/MyDividendsChart.vue'
 import MyDividendsSummary from './dividends/MyDividendsSummary.vue'
@@ -30,12 +26,9 @@ import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
 import BillionaireTitle from '@/components/commons/BillionaireTitle.vue'
 import PortfolioSelector from '@/components/portfolio/PortfolioSelector.vue'
 import PortfolioValue from '@/components/portfolio/PortfolioValue.vue'
+import AccountItem from '@/components/accounts/AccountItem.vue'
 
 export {
-  PieChart,
-  StockAccount,
-  MyPortfolioChart,
-  MyPortfolioList,
   MyDividendsHistory,
   MyDividendsChart,
   MyDividendsSummary,
@@ -63,5 +56,6 @@ export {
   TextFieldTitle,
   BillionaireTitle,
   PortfolioSelector,
-  PortfolioValue
+  PortfolioValue,
+  AccountItem
 }

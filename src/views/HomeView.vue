@@ -17,21 +17,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="px-3 max-w-[720px] my-0 mx-auto">
+  <div>
     <BillionaireTitle title="나의 포트폴리오" />
     <PortfolioSelector />
-    <PortfolioValue />
     <PortfolioTreemap />
+    <PortfolioValue />
     <PortfolioAccounts />
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style></style>

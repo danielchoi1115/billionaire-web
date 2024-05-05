@@ -13,7 +13,7 @@ const props = defineProps({
   }
 })
 </script>
-<!-- #f3f5f6 -->
+
 <template>
   <div v-if="!notFound">
     <StockItem

@@ -1,16 +1,6 @@
 import ApiClient from '@/services/api'
 import { AuditUtil } from '@/utils/audit_util.js'
 
-function filterStock(stocks, keyword) {
-  return stocks.filter((s) => {
-    keyword = keyword.toLowerCase()
-
-    return (
-      s.ticker.toLowerCase().startsWith(keyword) || s.stockNameKor.toLowerCase().includes(keyword)
-    )
-  })
-}
-
 const StockApi = {
   keywordSearch: async (keyword) => {
     if (!keyword) return []

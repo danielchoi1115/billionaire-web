@@ -5,7 +5,7 @@ import {
   StockDetailModal,
   StockMultiPickerModal
 } from '@/components'
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { usePortfolioStore } from '@/stores'
 import { nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -99,16 +99,14 @@ watch(
 
 <template>
   <v-tabs v-model="currentAccountNo">
-    <div class="grow">
-      <v-tab
-        v-for="(account, i) in portfolioData?.accounts"
-        :key="account.accNo"
-        :value="account.accNo"
-      >
-        {{ account.accName }}
-      </v-tab>
-    </div>
-    <div class="flex items-center" v-if="portfolioData?.accounts">
+    <v-tab
+      v-for="(account, i) in portfolioData?.accounts"
+      :key="account.accNo"
+      :value="account.accNo"
+    >
+      {{ account.accName }}
+    </v-tab>
+    <div class="flex grow justify-end items-center" v-if="portfolioData?.accounts">
       <v-btn
         @click="autoSort = !autoSort"
         text="자동정렬"

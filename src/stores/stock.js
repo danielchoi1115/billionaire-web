@@ -13,16 +13,7 @@ export const useStockStore = defineStore('stock', () => {
       stockData.value = res.data
     }
   }
-  // const refresh = async () => {
-  //   if (isLoading.value) return
-  //   isLoading.value = true
-  //   let res = await fetchStockPricesByTickers()
-  //   if (res?.status === 200) {
-  //     console.log(res)
-  //     stockData.value = res.data
-  //   }
-  //   isLoading.value = false
-  // }
+
   const priceMap = computed(() => {
     let tempMap = {}
     stockData.value?.forEach((stock) => {

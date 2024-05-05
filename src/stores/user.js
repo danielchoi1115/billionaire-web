@@ -1,8 +1,7 @@
 import { UserApi } from '@/services'
 import { defineStore } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { HttpStatus } from '@/utils/index.js'
-import { TimeScale } from 'chart.js'
 import { usePortfolioStore } from '@/stores/portfolio.js'
 
 export const useUserStore = defineStore('user', () => {

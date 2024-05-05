@@ -1,9 +1,9 @@
 <script setup>
-import { StockAddButton, StockItem, StockMultiPickerModal } from '@/components'
+import { StockAddButton, StockItem } from '@/components'
 import { ref, computed, reactive, watch, nextTick } from 'vue'
-import { calculateStockValueKRW, Formatter, getAssetType, accountValueKRW } from '@/utils'
+import { calculateStockValueKRW, accountValueKRW, NumberUtil } from '@/utils'
 import { storeToRefs } from 'pinia'
-import { useStockStore, usePortfolioStore } from '@/stores'
+import { usePortfolioStore } from '@/stores'
 import { useToast } from 'vue-toastification'
 import { PortfolioApi } from '@/services/index.js'
 import { HttpStatus } from '@/utils/index.js'
@@ -16,8 +16,6 @@ const props = defineProps({
   autoSort: Boolean,
   onAccountEditClick: Function
 })
-
-const emits = defineEmits(['update:account'])
 
 const portfolioStore = usePortfolioStore()
 const { portfolioData } = storeToRefs(portfolioStore)
@@ -36,7 +34,7 @@ const totalStockPrice = computed(() => accountValueKRW(props.account))
 const weights = computed(() => {
   let divider = portfolioStore.isPlan() ? props.account.budgetAmount : totalStockPrice.value
   return props.account.stocks?.reduce((acc, cur) => {
-    acc[cur.ticker] = weightFrom(calculateStockValueKRW(cur), divider)
+    acc[cur.ticker] = NumberUtil.weightFrom(calculateStockValueKRW(cur), divider)
     return acc
   }, {})
 })
@@ -83,6 +81,7 @@ const onDeletePortfolioStock = async () => {
     toast.success('성공적으로 삭제했습니다.', {
       timeout: 2000
     })
+    discardStockSelections()
     await portfolioStore.refresh()
   } else {
     toast.success('삭제에 실패하였습니다.', {
@@ -91,10 +90,6 @@ const onDeletePortfolioStock = async () => {
   }
   loading.delete = false
   accountEditMode.value = false
-}
-
-function weightFrom(numerator, denominator) {
-  return Math.round((numerator / denominator) * 10000) / 100
 }
 
 const updateQuantity = (oldObj, newObj) => {
@@ -150,7 +145,7 @@ async function submitBudgetAmount() {
     <dt class="flex align-baseline justify-between mb-4 w-full">
       <div class="flex justify-between items-end w-full overflow-visible">
         <div>
-          <div v-if="props.plan">
+          <div v-if="props.plan" class="ml-2">
             <div class="ml-4 text-sm text-neutral-500 font-medium">계좌예산</div>
             <v-btn v-if="!budgetAmountSelected" @click="budgetAmountSelected = true" variant="text">
               <div class="text-lg font-semibold">
@@ -176,7 +171,7 @@ async function submitBudgetAmount() {
               />
             </div>
           </div>
-          <div v-else>
+          <div v-else class="ml-2">
             <div class="ml-4 mb-[6px] text-sm text-neutral-500 font-medium">보유금액</div>
             <div class="ml-4 text-lg font-semibold">{{ totalStockPrice.toLocaleString() }}원</div>
           </div>
@@ -226,7 +221,9 @@ async function submitBudgetAmount() {
         :account="account"
         :accountEditMode="accountEditMode"
         :deposit-amount="account.budgetAmount - totalStockPrice"
-        :weight="weightFrom(account.budgetAmount - totalStockPrice, account.budgetAmount)"
+        :weight="
+          NumberUtil.weightFrom(account.budgetAmount - totalStockPrice, account.budgetAmount)
+        "
       />
       <StockAddButton :disabled="accountEditMode" @click="addClicked" />
     </dd>

@@ -1,13 +1,12 @@
 <script setup>
 import { StockItemAvatar } from '@/components'
 
-import { getCurrentInstance, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { StockApi } from '@/services'
-import { HttpStatus, imgBaseUrl, StockUtil } from '@/utils/index.js'
+import { HttpStatus } from '@/utils/index.js'
 import { useCommonStore, useUserStore } from '@/stores'
 import { useToast } from 'vue-toastification'
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
-import fileApi from '@/services/fileApi.js'
 import AvatarEditorDialog from '@/components/commons/AvatarEditorDialog.vue'
 
 const props = defineProps({
@@ -74,6 +73,7 @@ function handleModalClose(e) {
 }
 
 async function onSubmit() {
+  console.log(editedStock.value)
   if (!editedStock.value) return
 
   editedStock.value.assetClassCd = select.assetClass.code
@@ -139,12 +139,6 @@ function onAvatarSubmit(val) {
       </template>
       <template v-slot:title>
         <div class="flex mb-4 justify-between w-full">
-          <!--          <v-skeleton-loader-->
-          <!--            color="transparent"-->
-          <!--            :loading="stockLoading"-->
-          <!--            class="mx-auto w-full"-->
-          <!--            type="avatar, sentences"-->
-          <!--          >-->
           <div class="flex items-center gap-4">
             <StockItemAvatar
               :color="editedStock.stockBgColorHex"
@@ -164,21 +158,12 @@ function onAvatarSubmit(val) {
               </div>
             </div>
           </div>
-          <!--          </v-skeleton-loader>-->
         </div>
       </template>
 
       <template v-slot:default>
-        <v-card-text class="bg-white mx-2 rounded h-[70dvh] px-4 overflow-y-auto">
+        <v-card-text class="bg-white mx-2 rounded max-h-[50dvh] px-4 overflow-y-auto">
           <div class="">
-            <!--            <v-text-field-->
-            <!--              variant="outlined"-->
-            <!--              v-model="editedStock.ticker"-->
-            <!--              label="ticker"-->
-            <!--              density="comfortable"-->
-            <!--              readonly-->
-            <!--              hide-details-->
-            <!--            />-->
             <div class="my-4">
               <TextFieldTitle title="한글명" />
               <v-text-field
@@ -274,9 +259,6 @@ function onAvatarSubmit(val) {
                 />
               </div>
             </div>
-            <v-divider :thickness="1" class="border-neutral-200 border-opacity-100 rounded mx-2" />
-
-            <v-checkbox v-model="edited" label="edited"></v-checkbox>
           </div>
         </v-card-text>
       </template>

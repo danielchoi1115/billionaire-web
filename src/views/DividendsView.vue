@@ -11,7 +11,7 @@ const dividendsData = reactive({
   headers: reactive([
     { title: '주식', align: 'start', key: 'stockName' },
     { title: '지급일', key: 'paymentDate' },
-    { title: '계좌', key: 'accoundName' },
+    { title: '계좌', key: 'accountName' },
     { title: '금액', key: 'amount' },
     { title: '통화', key: 'currency' }
   ]),
@@ -31,7 +31,7 @@ const dividendsData = reactive({
           paymentDate: '2024-02-02',
           displayDate: '2.2',
           accountId: '1',
-          accoundName: 'ISA',
+          accountName: 'ISA',
           amount: 1400,
           currency: 'KRW',
           iconUrl: 'moneybag.svg',
@@ -44,7 +44,7 @@ const dividendsData = reactive({
           paymentDate: '2024-02-06',
           displayDate: '2.6',
           accountId: '1',
-          accoundName: 'ISA',
+          accountName: 'ISA',
           amount: 2800,
           currency: 'KRW',
           iconUrl: 'woori-financial-group.svg',
@@ -64,7 +64,7 @@ const dividendsData = reactive({
           paymentDate: '2024-03-01',
           displayDate: '3.1',
           accountId: '1',
-          accoundName: '일반',
+          accountName: '일반',
           amount: 2.5,
           currency: 'USD',
           iconUrl: 'moneybag.svg',
@@ -77,7 +77,7 @@ const dividendsData = reactive({
           paymentDate: '2024-03-02',
           displayDate: '3.2',
           accountId: '1',
-          accoundName: 'ISA',
+          accountName: 'ISA',
           amount: 2800,
           currency: 'KRW',
           iconUrl: 'moneybag.svg',
@@ -90,7 +90,7 @@ const dividendsData = reactive({
           paymentDate: '2024-03-06',
           displayDate: '3.6',
           accountId: '1',
-          accoundName: 'ISA',
+          accountName: 'ISA',
           amount: 2800,
           currency: 'KRW',
           iconUrl: 'woori-financial-group.svg',
@@ -102,7 +102,7 @@ const dividendsData = reactive({
 })
 </script>
 <template>
-  <div class="dividends px-6 max-w-[720px] my-0 mx-auto">
+  <div>
     <BillionaireTitle title="배당내역" />
     <div class="wrapper">
       <MyDividendsSummary v-model="dividendsData" />

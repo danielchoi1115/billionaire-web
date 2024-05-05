@@ -46,27 +46,7 @@ export const useCommonStore = defineStore('common', () => {
       { code: 'INR', name: 'INR (₹)' }
     ]
   }
-  // const isLoading = ref(false)
-  //
-  // const hasData = () => data.value != null
-  // const fetchCommonCode = async () => {
-  //   isLoading.value = true
-  //   try {
-  //     const res = await generate_common_code()
-  //     console.log('generate_plan_mst API 호출 완료!')
-  //     console.log(res)
-  //     return res
-  //   } catch (error) {
-  //     console.log('generate_plan_mst API 호출 실패...')
-  //   } finally {
-  //     isLoading.value = false
-  //   }
-  // }
-  //
-  // const refresh = async () => {
-  //   if (isLoading.value) return
-  //   data.value = await fetchCommonCode()
-  // }
+
   const assetCountry = () => data.assetCountry
   const assetClass = () => data.assetClass
   const currency = () => data.currency

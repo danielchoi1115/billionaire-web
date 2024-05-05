@@ -1,7 +1,6 @@
 <script setup>
-import CompletionEffect from './CompletionEffect.vue'
 import { imgBaseUrl } from '@/utils'
-// https://lottiefiles.com/category/checkmark/animations
+
 const props = defineProps({
   stock: Object,
   selected: Boolean

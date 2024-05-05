@@ -4,7 +4,7 @@ import { nextTick } from 'vue'
 import { watch, ref } from 'vue'
 import StockItemAvatar from '@/components/stocks/StockItemAvatar.vue'
 import StockItemColumn from '@/components/stocks/StockItemColumn.vue'
-import { FileApi } from '@/services'
+
 const props = defineProps({
   stock: {
     type: Object,
@@ -106,13 +106,12 @@ function getAvatarIcon() {
       :class="type === 'default' ? 'clickable-inner-wrapper' : ''"
     >
       <v-row class="w-full">
-        <v-col cols="1" class="flex items-center mr-4">
-          <StockItemAvatar
-            :color="getAvatarColor()"
-            :icon-url="getAvatarIcon()"
-            :selected="selected"
-          />
-        </v-col>
+        <StockItemAvatar
+          class="flex items-center m-4"
+          :color="getAvatarColor()"
+          :icon-url="getAvatarIcon()"
+          :selected="selected"
+        />
         <StockItemColumn>
           <template v-slot:title>
             {{ deposit ? '예수금' : stock.stockNameKor }}

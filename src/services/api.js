@@ -7,12 +7,6 @@ const backendInstance = axios.create({
     'Content-Type': 'application/json'
   }
 })
-// const aiInstance = axios.create({
-//   baseURL: AI_SERVER_BASE_URL,
-//   headers: {
-//     'Content-Type': 'application/json'
-//   }
-// })
 const fsInstance = axios.create({
   baseURL: FILE_SERVER_BASE_URL
 })
@@ -36,9 +30,6 @@ function instanceResolver(type) {
   if (type === 'fs') {
     return fsInstance
   }
-  // if (type === 'ai') {
-  //   return aiInstance
-  // }
   return backendInstance
 }
 
@@ -114,11 +105,11 @@ function removeTokenOnLocalStorage() {
   localStorage.removeItem('userRoleName')
 }
 
-async function me() {
-  let role = localStorage.getItem('userRoleName')
-  if (role === null) return null
-  return get(`/${role}s/me`)
-}
+// async function me() {
+//   let role = localStorage.getItem('userRoleName')
+//   if (role === null) return null
+//   return get(`/${role}s/me`)
+// }
 
 const ApiClient = {
   get: (url, config, type) => _get(url, config, type),

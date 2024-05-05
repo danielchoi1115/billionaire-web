@@ -105,7 +105,6 @@ export const usePortfolioStore = defineStore('plan', () => {
     let portfolioValue = getPortfolioValueKRW()
 
     portfolioData.value.accounts.forEach((account) => {
-      let accValue = 0
       account.stocks.forEach((stock) => {
         let assetClass = getAssetClass(stock.assetClassName, stock.assetCountryName)
         let assetType = getAssetType(stock.assetClassCd)

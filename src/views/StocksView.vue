@@ -1,17 +1,20 @@
 <script setup>
 import { ref, onBeforeMount, nextTick, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { StocksLayout } from '@/layouts'
 import { SearchBar, StockSearchResult, StockDetailModal, BillionaireTitle } from '@/components'
-import { StockApi, FileApi } from '@/services'
+import { StockApi } from '@/services'
+import { useToast } from 'vue-toastification'
 
-const router = useRouter()
-const route = useRoute()
 const searchResult = ref([])
 onMounted(async () => {})
+const lastSearchInput = ref('')
 
 const handleSearchInput = async (searchInput) => {
-  searchResult.value = await StockApi.keywordSearch(searchInput)
+  lastSearchInput.value = searchInput
+  await search()
+}
+const search = async () => {
+  searchResult.value = await StockApi.keywordSearch(lastSearchInput.value)
 }
 onBeforeMount(() => {
   initData()
@@ -20,7 +23,7 @@ function initData() {}
 
 const selectedTicker = ref('')
 const detailModalOpen = ref(false)
-
+const toast = useToast()
 function openModal(stock) {
   nextTick(() => {
     // Object.assign(selectedStock.value, stock)
@@ -28,13 +31,18 @@ function openModal(stock) {
     detailModalOpen.value = true
   })
 }
+function onUpdateStock() {
+  search()
+  detailModalOpen.value = false
+  toast.success('변경사항이 저장되었습니다.')
+}
 </script>
 
 <template>
   <main>
     <StocksLayout>
       <template v-slot:title>
-        <BillionaireTitle title="주식 검색" />
+        <BillionaireTitle title="주식검색" />
       </template>
       <template v-slot:searchBar>
         <SearchBar :searchHandler="handleSearchInput" />
@@ -44,6 +52,10 @@ function openModal(stock) {
       </template>
     </StocksLayout>
 
-    <StockDetailModal v-model="detailModalOpen" :ticker="selectedTicker" />
+    <StockDetailModal
+      v-model="detailModalOpen"
+      :ticker="selectedTicker"
+      :onAfterSubmit="onUpdateStock"
+    />
   </main>
 </template>

@@ -1,7 +1,4 @@
-import { useStockStore } from '@/stores/stock.js'
-import { storeToRefs } from 'pinia'
-
-const usdToKrwRate = 1384
+const usdToKrwRate = 1360
 
 const convertCurrency = (amount, currencyFrom, currencyTo) => {
   if (currencyFrom === currencyTo) {
@@ -27,7 +24,7 @@ function calculateStockValueKRW(stock) {
 }
 function accountValueKRW(account) {
   if (!account || account.length === 0) return 0
-  return account.stocks.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
+  return account.stocks?.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
 }
 
 export { toKRW, toUSD, calculateStockValueKRW, accountValueKRW }

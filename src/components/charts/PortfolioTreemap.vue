@@ -1,32 +1,10 @@
-<!-- https://chartjs-chart-treemap.pages.dev/samples/labelsFontsAndColors.html -->
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, computed } from 'vue'
 import { usePortfolioStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 
 const portfolioStore = usePortfolioStore()
 const { portfolioSummary } = storeToRefs(portfolioStore)
-// const series = computed(() => {
-//   const safe = {
-//     name: '안전자산',
-//     data: []
-//   }
-//   const danger = {
-//     name: '위험자산',
-//     data: []
-//   }
-//   if (portfolioSummary) {
-//     portfolioSummary.value.forEach((obj) => {
-//       let data = { x: obj.assetClass, y: obj.value }
-//       if (obj.assetType === '위험자산') {
-//         danger.data.push(data)
-//       } else safe.data.push(data)
-//     })
-//     console.log(JSON.stringify([danger, safe]))
-//     return [danger, safe]
-//   }
-//   return []
-// })
 const chartData = computed(() => {
   const serise = [
     {
@@ -48,23 +26,6 @@ const chartData = computed(() => {
   })
   return serise
 })
-// const series = [
-//   {
-//     name: '위험자산',
-//     data: [
-//       { x: '국내주식', y: 1029731 },
-//       { x: '미국주식', y: 404128 }
-//     ]
-//   },
-//   {
-//     name: '안전자산',
-//     data: [
-//       { x: '현금(KRW)', y: 780900 },
-//       { x: '현금(USD)', y: 215241 }
-//     ]
-//   }
-// ]
-
 const weightMap = computed(() =>
   portfolioSummary.value.reduce((acc, cur) => {
     acc[cur.assetClass] = cur.weight
@@ -133,7 +94,7 @@ const chartOptions = {
   },
   dataLabels: {
     enabled: true,
-    formatter: function (value, b) {
+    formatter: function (value) {
       if (weightMap.value[value] < 0.01) {
         return ['', value]
       }

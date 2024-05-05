@@ -1,7 +1,7 @@
 <script setup>
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
 
-const prop = defineProps({
+defineProps({
   title: String,
   modelValue: [Object, String, Number],
   readonly: Boolean

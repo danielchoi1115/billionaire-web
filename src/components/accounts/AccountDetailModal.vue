@@ -1,19 +1,15 @@
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
-import { Formatter, HttpStatus } from '@/utils/index.js'
+import { ref, reactive, watch } from 'vue'
+import { HttpStatus } from '@/utils/index.js'
 import {
   AccountDetailModalLayout,
   AvatarEditorDialog,
   EditTextField,
-  StockItemAvatar,
-  TextFieldTitle
+  StockItemAvatar
 } from '@/components/index.js'
-import { AccApi, PortfolioApi, StockApi } from '@/services/index.js'
+import { AccApi } from '@/services/index.js'
 import { usePortfolioStore, useUserStore } from '@/stores/index.js'
 import { useToast } from 'vue-toastification'
-
-import fileApi from '@/services/fileApi.js'
-import { storeToRefs } from 'pinia'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -29,9 +25,7 @@ const emits = defineEmits(['update:modelValue', 'closeModal', 'submit'])
 const userStore = useUserStore()
 const toast = useToast()
 const submitLoading = ref(false)
-const stockIconUrlLists = ref([])
 const portfolioStore = usePortfolioStore()
-const { portfolioData } = storeToRefs(portfolioStore)
 
 const loading = reactive({
   account: false,

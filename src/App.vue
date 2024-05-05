@@ -1,18 +1,12 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+import NavBar from '@/components/commons/NavBar.vue'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav class="w-full flex justify-center gap-4 mb-10">
-        <RouterLink to="/" class="bg-red">Home</RouterLink>
-        <RouterLink to="/plans" class="bg-red">Planner</RouterLink>
-        <RouterLink to="/dividends" class="bg-red">Dividends</RouterLink>
-        <RouterLink to="/stocks" class="bg-red">Stocks</RouterLink>
-      </nav>
-    </div>
+  <header class="z-50 fixed w-full top-0">
+    <NavBar />
   </header>
 
-  <RouterView />
+  <RouterView class="mt-[80px] px-3 max-w-7xl mx-auto" />
 </template>

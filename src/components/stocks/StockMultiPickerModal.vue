@@ -1,10 +1,8 @@
 <script setup>
-import { watch } from 'vue'
 import { ref } from 'vue'
 import { StockApi } from '@/services'
 import { StockItem } from '@/components'
-// loading prop은 submit 시 사용
-// search loading은 검색 시 사용
+
 const props = defineProps({
   modelValue: Boolean,
   onSubmit: Function,
@@ -100,7 +98,6 @@ defineExpose({ clearAllInput, searchTextFieldRef })
           />
           <div class="my-2 h-8">
             <v-chip
-              class="animate__animated animate__fadeInRight animate__faster"
               v-for="s in selected"
               :key="s[0]"
               variant="tonal"

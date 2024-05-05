@@ -3,6 +3,9 @@ import { StockItemAvatar } from '@/components/index.js'
 import TextFieldTitle from '@/components/stocks/TextFieldTitle.vue'
 import { reactive, watch } from 'vue'
 import fileApi from '@/services/fileApi.js'
+import { FileApi } from '@/services/index.js'
+import { HttpStatus } from '@/utils/index.js'
+import { useToast } from 'vue-toastification'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -10,7 +13,7 @@ const props = defineProps({
   iconUrl: String
 })
 const emits = defineEmits(['update:modelValue', 'submit'])
-
+const toast = useToast()
 const files = reactive({
   icons: []
 })
@@ -20,11 +23,15 @@ const select = reactive({
   iconUrl: '',
   profileUploadFile: null
 })
-const loading = reactive({ account: false })
+const loading = reactive({
+  account: false,
+  submit: false
+})
 const show = reactive({
   avatarColorPicker: false,
   avatarProfileUploader: false
 })
+
 watch(
   () => props.modelValue,
   async (val) => {
@@ -48,12 +55,32 @@ function iconOnClick(item) {
   select.iconUrl = item.value
   item.onClick()
 }
-function onAvatarSubmit() {
-  // 아이콘 업로드 시도
-  // 성공 시 submit과 update:modelValue 실행
 
+function clear() {
+  show.avatarProfileUploader = false
+  select.profileUploadFile = null
+}
+
+async function onAvatarSubmit() {
+  loading.submit = true
+  if (show.avatarProfileUploader && select.profileUploadFile) {
+    const formData = new FormData()
+    formData.append('file', select.profileUploadFile)
+    let res = await FileApi.post(formData)
+    if (res.status === HttpStatus.CREATED) {
+      select.iconUrl = select.profileUploadFile.name
+      toast.success('파일을 성공적으로 업로드하였습니다.')
+    } else {
+      console.error('파일 업로드에 실패하였습니다.', res)
+      toast.error('파일 업로드에 실패하였습니다.')
+      loading.submit = false
+      return
+    }
+  }
+  clear()
   emits('submit', select)
   emits('update:modelValue', false)
+  loading.submit = false
 }
 function closeModal() {
   emits('update:modelValue', false)
@@ -89,6 +116,7 @@ function closeModal() {
               <v-autocomplete
                 variant="outlined"
                 v-model="select.iconUrl"
+                :disabled="show.avatarProfileUploader"
                 density="comfortable"
                 hide-details
                 :items="files.icons"
@@ -165,6 +193,7 @@ function closeModal() {
           color="blue"
           variant="flat"
           prepend-icon="mdi-check"
+          :loading="loading.submit"
         >
           확인
         </v-btn>

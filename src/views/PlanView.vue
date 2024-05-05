@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import {
   BillionaireTitle,
   PortfolioAccounts,
@@ -8,7 +8,7 @@ import {
   PortfolioValue
 } from '@/components'
 
-import { usePortfolioStore, useUserStore } from '@/stores'
+import { usePortfolioStore } from '@/stores'
 
 const portfolioStore = usePortfolioStore()
 
@@ -18,21 +18,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="px-3 max-w-[720px] my-0 mx-auto">
+  <div>
     <BillionaireTitle title="이달의 구매계획" />
     <PortfolioSelector plan />
-    <PortfolioValue />
     <PortfolioTreemap />
+    <PortfolioValue />
     <PortfolioAccounts />
   </div>
 </template>
-
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
