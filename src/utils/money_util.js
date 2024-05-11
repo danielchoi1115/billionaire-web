@@ -1,12 +1,15 @@
-const usdToKrwRate = 1360
+import { useCurrencyStore } from '@/stores/currency.js'
+import { storeToRefs } from 'pinia'
 
 const convertCurrency = (amount, currencyFrom, currencyTo) => {
+  const currencyStore = useCurrencyStore()
+  const { currencyData } = storeToRefs(currencyStore)
   if (currencyFrom === currencyTo) {
     return amount
   } else if (currencyTo === 'USD') {
-    return Math.round((amount / usdToKrwRate) * 100) / 100
+    return Math.round((amount / currencyData.value.KRWUSD) * 100) / 100
   } else {
-    return Math.round(amount * usdToKrwRate)
+    return Math.round(amount * currencyData.value.KRWUSD)
   }
 }
 
