@@ -187,6 +187,7 @@ function closeModal() {
         <!--          <v-color-picker v-model="select.bgColorHex" mode="hex" hide-inputs />-->
       </v-card-item>
       <template v-slot:actions>
+        <v-btn @click="closeModal" class="grow" prepend-icon="mdi-close"> 취소 </v-btn>
         <v-btn
           @click="onAvatarSubmit"
           class="grow"
@@ -197,7 +198,6 @@ function closeModal() {
         >
           확인
         </v-btn>
-        <v-btn @click="closeModal" class="grow" prepend-icon="mdi-close"> 취소 </v-btn>
       </template>
     </v-card>
   </v-dialog>

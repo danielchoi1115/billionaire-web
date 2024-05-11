@@ -23,7 +23,6 @@ export const useCommonStore = defineStore('common', () => {
       INR: 'INR (₹)'
     }
   }
-
   const data = {
     assetClass: [
       { code: '01', name: '주식' },
@@ -55,5 +54,12 @@ export const useCommonStore = defineStore('common', () => {
   const getAssetClass = (cd) => dataMap.assetClass[cd]
   const getCurrency = (cd) => dataMap.currency[cd]
 
-  return { assetClass, assetCountry, currency, getAssetCountry, getAssetClass, getCurrency }
+  return {
+    assetClass,
+    assetCountry,
+    currency,
+    getAssetCountry,
+    getAssetClass,
+    getCurrency
+  }
 })

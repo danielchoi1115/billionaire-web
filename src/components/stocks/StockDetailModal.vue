@@ -265,6 +265,7 @@ function onAvatarSubmit(val) {
 
       <template v-slot:actions>
         <div class="flex gap-2 w-full">
+          <v-btn @click="() => handleModalClose(false)" class="grow" height="48"> 취소 </v-btn>
           <v-btn
             @click="onSubmit"
             :loading="submitLoading"
@@ -275,7 +276,6 @@ function onAvatarSubmit(val) {
           >
             변경사항 저장
           </v-btn>
-          <v-btn @click="() => handleModalClose(false)" class="grow" height="48"> 취소 </v-btn>
         </div>
       </template>
     </v-card>
