@@ -33,9 +33,10 @@ const dividendsData = reactive({
           accountId: '1',
           accountName: 'ISA',
           amount: 1400,
-          currency: 'KRW',
+          stockCurrency: 'KRW',
           iconUrl: 'moneybag.svg',
-          bgColorHex: '#F18321'
+          bgColorHex: '#F18321',
+          krwUsd: 1365
         },
         {
           stockName: '우리금융지주',
@@ -46,9 +47,10 @@ const dividendsData = reactive({
           accountId: '1',
           accountName: 'ISA',
           amount: 2800,
-          currency: 'KRW',
+          stockCurrency: 'KRW',
           iconUrl: 'woori-financial-group.svg',
-          bgColorHex: '#B0D8F1'
+          bgColorHex: '#B0D8F1',
+          krwUsd: 1365
         }
       ]
     },
@@ -66,9 +68,10 @@ const dividendsData = reactive({
           accountId: '1',
           accountName: '일반',
           amount: 2.5,
-          currency: 'USD',
+          stockCurrency: 'USD',
           iconUrl: 'moneybag.svg',
-          bgColorHex: '#96151D'
+          bgColorHex: '#96151D',
+          krwUsd: 1365
         },
         {
           stockName: 'TIGER 미국배당다우존스',
@@ -79,9 +82,10 @@ const dividendsData = reactive({
           accountId: '1',
           accountName: 'ISA',
           amount: 2800,
-          currency: 'KRW',
+          stockCurrency: 'KRW',
           iconUrl: 'moneybag.svg',
-          bgColorHex: '#F18321'
+          bgColorHex: '#F18321',
+          krwUsd: 1365
         },
         {
           stockName: '우리금융지주',
@@ -92,9 +96,10 @@ const dividendsData = reactive({
           accountId: '1',
           accountName: 'ISA',
           amount: 2800,
-          currency: 'KRW',
+          stockCurrency: 'KRW',
           iconUrl: 'woori-financial-group.svg',
-          bgColorHex: '#B0D8F1'
+          bgColorHex: '#B0D8F1',
+          krwUsd: 1365
         }
       ]
     }

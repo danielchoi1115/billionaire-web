@@ -1,33 +1,22 @@
-import { useCurrencyStore } from '@/stores/currency.js'
-import { storeToRefs } from 'pinia'
-
-const convertCurrency = (amount, currencyFrom, currencyTo) => {
-  const currencyStore = useCurrencyStore()
-  const { currencyData } = storeToRefs(currencyStore)
-  if (currencyFrom === currencyTo) {
-    return amount
-  } else if (currencyTo === 'USD') {
-    return Math.round((amount / currencyData.value.KRWUSD) * 100) / 100
-  } else {
-    return Math.round(amount * currencyData.value.KRWUSD)
-  }
-}
-
-const toKRW = (amount, currencyFrom) => {
-  return convertCurrency(amount, currencyFrom, 'KRW')
-}
-
-const toUSD = (amount, currencyFrom) => {
-  return convertCurrency(amount, currencyFrom, 'USD')
-}
-
-function calculateStockValueKRW(stock) {
+function convertStockPrice(stock, currencyTo) {
   if (!stock) return 0
-  return toKRW(stock.price, stock.stockCurrency) * stock.quantity
+  // no conversion
+  if (stock.stockCurrency === currencyTo) return stock.price
+  // USD to KRW
+  if (currencyTo === 'USD') return stock.price / stock.krwUsd
+  // KRW to USD
+  if (currencyTo === 'KRW') return Math.round(stock.price * stock.krwUsd)
+
+  return 0
 }
+function calculateStockValue(stock, currencyTo = 'KRW') {
+  // 환율을 적용한 주식의 총 가격을 계산 (갯수 포함) default: KRW
+  return convertStockPrice(stock, currencyTo) * stock.quantity
+}
+
 function accountValueKRW(account) {
   if (!account || account.length === 0) return 0
-  return account.stocks?.reduce((acc, cur) => acc + calculateStockValueKRW(cur), 0)
+  return account.stocks?.reduce((acc, stock) => acc + calculateStockValue(stock, 'KRW'), 0)
 }
 
-export { toKRW, toUSD, calculateStockValueKRW, accountValueKRW }
+export { calculateStockValue, accountValueKRW, convertStockPrice }

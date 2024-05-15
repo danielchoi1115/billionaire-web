@@ -1,5 +1,5 @@
 <script setup>
-import { calculateStockValueKRW, toKRW, toUSD } from '@/utils'
+import { calculateStockValue, convertStockPrice } from '@/utils'
 import { nextTick } from 'vue'
 import { watch, ref } from 'vue'
 import StockItemAvatar from '@/components/stocks/StockItemAvatar.vue'
@@ -77,9 +77,9 @@ function makePriceString(stock) {
     } else return props.depositAmount?.toLocaleString() + '원'
   }
   if (stock.quantity < 0) {
-    return '(' + calculateStockValueKRW(stock)?.toLocaleString() + '원)'
+    return '(' + calculateStockValue(stock, 'KRW')?.toLocaleString() + '원)'
   }
-  return calculateStockValueKRW(stock)?.toLocaleString() + '원'
+  return calculateStockValue(stock, 'KRW')?.toLocaleString() + '원'
 }
 function stockPriceColor(stock) {
   if ((props.deposit && props.depositAmount < 0) || stock.quantity < 0) return 'text-red-600'
@@ -175,10 +175,10 @@ function getAvatarIcon() {
 
         <StockItemColumn v-if="type === 'default'" cols="3" class="items-end">
           <template v-slot:title>
-            {{ toKRW(stock.price, stock.stockCurrency)?.toLocaleString() }}원
+            {{ convertStockPrice(stock, 'KRW')?.toLocaleString() }}원
           </template>
           <template v-slot:subtitle>
-            ${{ toUSD(stock.price, stock.stockCurrency)?.toLocaleString() }}
+            ${{ convertStockPrice(stock, 'USD')?.toLocaleString() }}
           </template>
         </StockItemColumn>
       </v-row>

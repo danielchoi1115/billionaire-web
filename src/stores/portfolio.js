@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, reactive } from 'vue'
 import {
-  calculateStockValueKRW,
+  calculateStockValue,
   getAssetType,
   getAssetClass,
   HttpStatus,
@@ -108,7 +108,7 @@ export const usePortfolioStore = defineStore('plan', () => {
       account.stocks.forEach((stock) => {
         let assetClass = getAssetClass(stock.assetClassName, stock.assetCountryName)
         let assetType = getAssetType(stock.assetClassCd)
-        let value = calculateStockValueKRW(stock)
+        let value = calculateStockValue(stock, 'KRW')
         upsertSummaryData(temp, assetClass, assetType, value)
       })
       if (isPlan()) {

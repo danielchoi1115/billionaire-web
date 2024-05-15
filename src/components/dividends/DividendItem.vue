@@ -1,7 +1,7 @@
 <script setup>
-import { toKRW, toUSD } from '@/utils'
 import StockItemAvatar from '@/components/stocks/StockItemAvatar.vue'
 import StockItemColumn from '@/components/stocks/StockItemColumn.vue'
+import { convertStockPrice } from '@/utils'
 const props = defineProps({
   dividend: Object
 })
@@ -16,8 +16,8 @@ const emit = defineEmits(['openDividendItemModal'])
       <StockItemAvatar :color="dividend.bgColorHex" :icon-url="dividend.iconUrl" />
       <StockItemColumn color-subtitle="text-black">
         <template v-slot:title>
-          <span>${{ toUSD(dividend.amount, dividend.currency).toLocaleString() }}</span>
-          <span>({{ toKRW(dividend.amount, dividend.currency).toLocaleString() }}원)</span>
+          <span>${{ convertStockPrice(dividend.amount, 'USD') }}</span>
+          <span>({{ convertStockPrice(dividend.amount, 'KRW') }}원)</span>
         </template>
         <template v-slot:subtitle>
           {{ dividend.stockName }}

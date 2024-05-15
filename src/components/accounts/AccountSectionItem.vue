@@ -1,7 +1,7 @@
 <script setup>
 import { StockAddButton, StockItem } from '@/components'
 import { ref, computed, reactive, watch, nextTick } from 'vue'
-import { calculateStockValueKRW, accountValueKRW, NumberUtil } from '@/utils'
+import { calculateStockValue, accountValueKRW, NumberUtil } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { usePortfolioStore } from '@/stores'
 import { useToast } from 'vue-toastification'
@@ -33,8 +33,8 @@ const loading = reactive({
 const totalStockPrice = computed(() => accountValueKRW(props.account))
 const weights = computed(() => {
   let divider = portfolioStore.isPlan() ? props.account.budgetAmount : totalStockPrice.value
-  return props.account.stocks?.reduce((acc, cur) => {
-    acc[cur.ticker] = NumberUtil.weightFrom(calculateStockValueKRW(cur), divider)
+  return props.account.stocks?.reduce((acc, stock) => {
+    acc[stock.ticker] = NumberUtil.weightFrom(calculateStockValue(stock, 'KRW'), divider)
     return acc
   }, {})
 })
@@ -42,9 +42,7 @@ const sortedStocks = computed(() => {
   if (!props.autoSort) {
     return props.account.stocks
   }
-  return [...props.account.stocks]?.sort(
-    (a, b) => calculateStockValueKRW(b) - calculateStockValueKRW(a)
-  )
+  return [...props.account.stocks]?.sort((a, b) => calculateStockValue(b) - calculateStockValue(a))
 })
 
 const handleStockClick = (event, stock) => {
